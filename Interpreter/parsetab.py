@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftMASMENOSMAS MENOS NUMEROexpresion : NUMEROexpresion : expresion MAS expresionexpresion : expresion MENOS expresion'
+_lr_signature = 'inicioleftMASMENOSleftPORDIVIDIDODIVIDIDO ENTERO FLOTANTE ID IGUAL INT MAS MENOS PARDER PARIZQ POR PTCOMAexpresion : INT ID IGUAL expresion PTCOMAexpresion : ENTEROexpresion : FLOTANTEexpresion : expresion MAS expresionexpresion : expresion MENOS expresionexpresion : expresion POR expresionexpresion : INT PARIZQ expresion PARDER PTCOMAinicio : expresionexpresion : expresion DIVIDIDO expresion'
     
-_lr_action_items = {'NUMERO':([0,3,4,],[2,2,2,]),'$end':([1,2,5,6,],[0,-1,-2,-3,]),'MAS':([1,2,5,6,],[3,-1,-2,-3,]),'MENOS':([1,2,5,6,],[4,-1,-2,-3,]),}
+_lr_action_items = {'INT':([0,6,7,8,9,11,16,],[3,3,3,3,3,3,3,]),'ENTERO':([0,6,7,8,9,11,16,],[4,4,4,4,4,4,4,]),'FLOTANTE':([0,6,7,8,9,11,16,],[5,5,5,5,5,5,5,]),'$end':([1,2,4,5,12,13,14,15,20,21,],[0,-8,-2,-3,-4,-5,-6,-9,-1,-7,]),'MAS':([2,4,5,12,13,14,15,17,18,20,21,],[6,-2,-3,-4,-5,-6,-9,6,6,-1,-7,]),'MENOS':([2,4,5,12,13,14,15,17,18,20,21,],[7,-2,-3,-4,-5,-6,-9,7,7,-1,-7,]),'POR':([2,4,5,12,13,14,15,17,18,20,21,],[8,-2,-3,8,8,-6,-9,8,8,-1,-7,]),'DIVIDIDO':([2,4,5,12,13,14,15,17,18,20,21,],[9,-2,-3,9,9,-6,-9,9,9,-1,-7,]),'ID':([3,],[10,]),'PARIZQ':([3,],[11,]),'PARDER':([4,5,12,13,14,15,17,20,21,],[-2,-3,-4,-5,-6,-9,19,-1,-7,]),'PTCOMA':([4,5,12,13,14,15,18,19,20,21,],[-2,-3,-4,-5,-6,-9,20,21,-1,-7,]),'IGUAL':([10,],[16,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expresion':([0,3,4,],[1,5,6,]),}
+_lr_goto_items = {'inicio':([0,],[1,]),'expresion':([0,6,7,8,9,11,16,],[2,12,13,14,15,17,18,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,8 +26,14 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> expresion","S'",1,None,None,None),
-  ('expresion -> NUMERO','expresion',1,'p_expresion_numero','parser.py',11),
-  ('expresion -> expresion MAS expresion','expresion',3,'p_expresion_suma','parser.py',16),
-  ('expresion -> expresion MENOS expresion','expresion',3,'p_expresion_resta','parser.py',21),
+  ("S' -> inicio","S'",1,None,None,None),
+  ('expresion -> INT ID IGUAL expresion PTCOMA','expresion',5,'p_declaracion_asignacion','parser.py',20),
+  ('expresion -> ENTERO','expresion',1,'p_expresion_entero','parser.py',24),
+  ('expresion -> FLOTANTE','expresion',1,'p_expresion_decimal','parser.py',28),
+  ('expresion -> expresion MAS expresion','expresion',3,'p_expresion_suma','parser.py',32),
+  ('expresion -> expresion MENOS expresion','expresion',3,'p_expresion_resta','parser.py',36),
+  ('expresion -> expresion POR expresion','expresion',3,'p_expresion_multi','parser.py',40),
+  ('expresion -> INT PARIZQ expresion PARDER PTCOMA','expresion',5,'p_asignacion','parser.py',44),
+  ('inicio -> expresion','inicio',1,'p_inicio','parser.py',48),
+  ('expresion -> expresion DIVIDIDO expresion','expresion',3,'p_expresion_div','parser.py',52),
 ]
