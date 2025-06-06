@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftMASMENOSMAS MENOS NUMEROexpresion : NUMEROexpresion : expresion MAS expresionexpresion : expresion MENOS expresion'
+_lr_signature = 'instruccionesleftMASMENOSCOMENTARIO COMENTARIO_MULTI C_MULTI_APERTURA C_MULTI_CIERRE C_UNA_LINEA MAS MENOS NUMEROinstrucciones : instruccion instrucciones\n                     | instruccioninstruccion : comentario_una_linea\n                   | comentario_multi_lineacomentario_una_linea : C_UNA_LINEA COMENTARIOcomentario_multi_linea : C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERREexpresion : NUMEROexpresion : expresion MAS expresionexpresion : expresion MENOS expresion'
     
-_lr_action_items = {'NUMERO':([0,3,4,],[2,2,2,]),'$end':([1,2,5,6,],[0,-1,-2,-3,]),'MAS':([1,2,5,6,],[3,-1,-2,-3,]),'MENOS':([1,2,5,6,],[4,-1,-2,-3,]),}
+_lr_action_items = {'C_UNA_LINEA':([0,2,3,4,8,10,],[5,5,-3,-4,-5,-6,]),'C_MULTI_APERTURA':([0,2,3,4,8,10,],[6,6,-3,-4,-5,-6,]),'$end':([1,2,3,4,7,8,10,],[0,-2,-3,-4,-1,-5,-6,]),'COMENTARIO':([5,],[8,]),'COMENTARIO_MULTI':([6,],[9,]),'C_MULTI_CIERRE':([9,],[10,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expresion':([0,3,4,],[1,5,6,]),}
+_lr_goto_items = {'instrucciones':([0,2,],[1,7,]),'instruccion':([0,2,],[2,2,]),'comentario_una_linea':([0,2,],[3,3,]),'comentario_multi_linea':([0,2,],[4,4,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,8 +26,14 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> expresion","S'",1,None,None,None),
-  ('expresion -> NUMERO','expresion',1,'p_expresion_numero','parser.py',11),
-  ('expresion -> expresion MAS expresion','expresion',3,'p_expresion_suma','parser.py',16),
-  ('expresion -> expresion MENOS expresion','expresion',3,'p_expresion_resta','parser.py',21),
+  ("S' -> instrucciones","S'",1,None,None,None),
+  ('instrucciones -> instruccion instrucciones','instrucciones',2,'p_instrucciones','parser.py',11),
+  ('instrucciones -> instruccion','instrucciones',1,'p_instrucciones','parser.py',12),
+  ('instruccion -> comentario_una_linea','instruccion',1,'p_instruccion','parser.py',16),
+  ('instruccion -> comentario_multi_linea','instruccion',1,'p_instruccion','parser.py',17),
+  ('comentario_una_linea -> C_UNA_LINEA COMENTARIO','comentario_una_linea',2,'p_comentario_una_linea','parser.py',22),
+  ('comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE','comentario_multi_linea',3,'p_comentario_multi_linea','parser.py',27),
+  ('expresion -> NUMERO','expresion',1,'p_expresion_numero','parser.py',35),
+  ('expresion -> expresion MAS expresion','expresion',3,'p_expresion_suma','parser.py',40),
+  ('expresion -> expresion MENOS expresion','expresion',3,'p_expresion_resta','parser.py',45),
 ]

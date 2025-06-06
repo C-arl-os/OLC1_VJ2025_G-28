@@ -1,7 +1,7 @@
 from parser import parser
 
 def main():
-    texto = "3 + 4 - 2 + 7 - 5"
+    texto = "//comentario prueba\n//comentario prueba 2\n/*salto\nlinea*/"
 
     # 1) Parsear y obtener el AST
     raiz = parser.parse(texto)

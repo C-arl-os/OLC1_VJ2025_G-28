@@ -2,100 +2,143 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
 Grammar
 
-Rule 0     S' -> expresion
-Rule 1     expresion -> NUMERO
-Rule 2     expresion -> expresion MAS expresion
-Rule 3     expresion -> expresion MENOS expresion
+Rule 0     S' -> instrucciones
+Rule 1     instrucciones -> instruccion instrucciones
+Rule 2     instrucciones -> instruccion
+Rule 3     instruccion -> comentario_una_linea
+Rule 4     instruccion -> comentario_multi_linea
+Rule 5     comentario_una_linea -> C_UNA_LINEA COMENTARIO
+Rule 6     comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE
+Rule 7     expresion -> NUMERO
+Rule 8     expresion -> expresion MAS expresion
+Rule 9     expresion -> expresion MENOS expresion
 
 Terminals, with rules where they appear
 
-MAS                  : 2
-MENOS                : 3
-NUMERO               : 1
+COMENTARIO           : 5
+COMENTARIO_MULTI     : 6
+C_MULTI_APERTURA     : 6
+C_MULTI_CIERRE       : 6
+C_UNA_LINEA          : 5
+MAS                  : 8
+MENOS                : 9
+NUMERO               : 7
 error                : 
 
 Nonterminals, with rules where they appear
 
-expresion            : 2 2 3 3 0
+comentario_multi_linea : 4
+comentario_una_linea : 3
+expresion            : 8 8 9 9
+instruccion          : 1 2
+instrucciones        : 1 0
 
 Parsing method: LALR
 
 state 0
 
-    (0) S' -> . expresion
-    (1) expresion -> . NUMERO
-    (2) expresion -> . expresion MAS expresion
-    (3) expresion -> . expresion MENOS expresion
+    (0) S' -> . instrucciones
+    (1) instrucciones -> . instruccion instrucciones
+    (2) instrucciones -> . instruccion
+    (3) instruccion -> . comentario_una_linea
+    (4) instruccion -> . comentario_multi_linea
+    (5) comentario_una_linea -> . C_UNA_LINEA COMENTARIO
+    (6) comentario_multi_linea -> . C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE
 
-    NUMERO          shift and go to state 2
+    C_UNA_LINEA     shift and go to state 5
+    C_MULTI_APERTURA shift and go to state 6
 
-    expresion                      shift and go to state 1
+    instrucciones                  shift and go to state 1
+    instruccion                    shift and go to state 2
+    comentario_una_linea           shift and go to state 3
+    comentario_multi_linea         shift and go to state 4
 
 state 1
 
-    (0) S' -> expresion .
-    (2) expresion -> expresion . MAS expresion
-    (3) expresion -> expresion . MENOS expresion
+    (0) S' -> instrucciones .
 
-    MAS             shift and go to state 3
-    MENOS           shift and go to state 4
 
 
 state 2
 
-    (1) expresion -> NUMERO .
+    (1) instrucciones -> instruccion . instrucciones
+    (2) instrucciones -> instruccion .
+    (1) instrucciones -> . instruccion instrucciones
+    (2) instrucciones -> . instruccion
+    (3) instruccion -> . comentario_una_linea
+    (4) instruccion -> . comentario_multi_linea
+    (5) comentario_una_linea -> . C_UNA_LINEA COMENTARIO
+    (6) comentario_multi_linea -> . C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE
 
-    MAS             reduce using rule 1 (expresion -> NUMERO .)
-    MENOS           reduce using rule 1 (expresion -> NUMERO .)
-    $end            reduce using rule 1 (expresion -> NUMERO .)
+    $end            reduce using rule 2 (instrucciones -> instruccion .)
+    C_UNA_LINEA     shift and go to state 5
+    C_MULTI_APERTURA shift and go to state 6
 
+    instruccion                    shift and go to state 2
+    instrucciones                  shift and go to state 7
+    comentario_una_linea           shift and go to state 3
+    comentario_multi_linea         shift and go to state 4
 
 state 3
 
-    (2) expresion -> expresion MAS . expresion
-    (1) expresion -> . NUMERO
-    (2) expresion -> . expresion MAS expresion
-    (3) expresion -> . expresion MENOS expresion
+    (3) instruccion -> comentario_una_linea .
 
-    NUMERO          shift and go to state 2
+    C_UNA_LINEA     reduce using rule 3 (instruccion -> comentario_una_linea .)
+    C_MULTI_APERTURA reduce using rule 3 (instruccion -> comentario_una_linea .)
+    $end            reduce using rule 3 (instruccion -> comentario_una_linea .)
 
-    expresion                      shift and go to state 5
 
 state 4
 
-    (3) expresion -> expresion MENOS . expresion
-    (1) expresion -> . NUMERO
-    (2) expresion -> . expresion MAS expresion
-    (3) expresion -> . expresion MENOS expresion
+    (4) instruccion -> comentario_multi_linea .
 
-    NUMERO          shift and go to state 2
+    C_UNA_LINEA     reduce using rule 4 (instruccion -> comentario_multi_linea .)
+    C_MULTI_APERTURA reduce using rule 4 (instruccion -> comentario_multi_linea .)
+    $end            reduce using rule 4 (instruccion -> comentario_multi_linea .)
 
-    expresion                      shift and go to state 6
 
 state 5
 
-    (2) expresion -> expresion MAS expresion .
-    (2) expresion -> expresion . MAS expresion
-    (3) expresion -> expresion . MENOS expresion
+    (5) comentario_una_linea -> C_UNA_LINEA . COMENTARIO
 
-    MAS             reduce using rule 2 (expresion -> expresion MAS expresion .)
-    MENOS           reduce using rule 2 (expresion -> expresion MAS expresion .)
-    $end            reduce using rule 2 (expresion -> expresion MAS expresion .)
-
-  ! MAS             [ shift and go to state 3 ]
-  ! MENOS           [ shift and go to state 4 ]
+    COMENTARIO      shift and go to state 8
 
 
 state 6
 
-    (3) expresion -> expresion MENOS expresion .
-    (2) expresion -> expresion . MAS expresion
-    (3) expresion -> expresion . MENOS expresion
+    (6) comentario_multi_linea -> C_MULTI_APERTURA . COMENTARIO_MULTI C_MULTI_CIERRE
 
-    MAS             reduce using rule 3 (expresion -> expresion MENOS expresion .)
-    MENOS           reduce using rule 3 (expresion -> expresion MENOS expresion .)
-    $end            reduce using rule 3 (expresion -> expresion MENOS expresion .)
+    COMENTARIO_MULTI shift and go to state 9
 
-  ! MAS             [ shift and go to state 3 ]
-  ! MENOS           [ shift and go to state 4 ]
+
+state 7
+
+    (1) instrucciones -> instruccion instrucciones .
+
+    $end            reduce using rule 1 (instrucciones -> instruccion instrucciones .)
+
+
+state 8
+
+    (5) comentario_una_linea -> C_UNA_LINEA COMENTARIO .
+
+    C_UNA_LINEA     reduce using rule 5 (comentario_una_linea -> C_UNA_LINEA COMENTARIO .)
+    C_MULTI_APERTURA reduce using rule 5 (comentario_una_linea -> C_UNA_LINEA COMENTARIO .)
+    $end            reduce using rule 5 (comentario_una_linea -> C_UNA_LINEA COMENTARIO .)
+
+
+state 9
+
+    (6) comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI . C_MULTI_CIERRE
+
+    C_MULTI_CIERRE  shift and go to state 10
+
+
+state 10
+
+    (6) comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE .
+
+    C_UNA_LINEA     reduce using rule 6 (comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE .)
+    C_MULTI_APERTURA reduce using rule 6 (comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE .)
+    $end            reduce using rule 6 (comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE .)
 
