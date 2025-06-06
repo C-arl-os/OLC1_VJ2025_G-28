@@ -2,100 +2,378 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
 Grammar
 
-Rule 0     S' -> expresion
-Rule 1     expresion -> NUMERO
-Rule 2     expresion -> expresion MAS expresion
-Rule 3     expresion -> expresion MENOS expresion
+Rule 0     S' -> inicio
+Rule 1     expresion -> INT ID IGUAL expresion PTCOMA
+Rule 2     expresion -> ENTERO
+Rule 3     expresion -> FLOTANTE
+Rule 4     expresion -> expresion MAS expresion
+Rule 5     expresion -> expresion MENOS expresion
+Rule 6     expresion -> expresion POR expresion
+Rule 7     expresion -> INT PARIZQ expresion PARDER PTCOMA
+Rule 8     inicio -> expresion
+Rule 9     expresion -> expresion DIVIDIDO expresion
 
 Terminals, with rules where they appear
 
-MAS                  : 2
-MENOS                : 3
-NUMERO               : 1
+DIVIDIDO             : 9
+ENTERO               : 2
+FLOTANTE             : 3
+ID                   : 1
+IGUAL                : 1
+INT                  : 1 7
+MAS                  : 4
+MENOS                : 5
+PARDER               : 7
+PARIZQ               : 7
+POR                  : 6
+PTCOMA               : 1 7
 error                : 
 
 Nonterminals, with rules where they appear
 
-expresion            : 2 2 3 3 0
+expresion            : 1 4 4 5 5 6 6 7 8 9 9
+inicio               : 0
 
 Parsing method: LALR
 
 state 0
 
-    (0) S' -> . expresion
-    (1) expresion -> . NUMERO
-    (2) expresion -> . expresion MAS expresion
-    (3) expresion -> . expresion MENOS expresion
+    (0) S' -> . inicio
+    (8) inicio -> . expresion
+    (1) expresion -> . INT ID IGUAL expresion PTCOMA
+    (2) expresion -> . ENTERO
+    (3) expresion -> . FLOTANTE
+    (4) expresion -> . expresion MAS expresion
+    (5) expresion -> . expresion MENOS expresion
+    (6) expresion -> . expresion POR expresion
+    (7) expresion -> . INT PARIZQ expresion PARDER PTCOMA
+    (9) expresion -> . expresion DIVIDIDO expresion
 
-    NUMERO          shift and go to state 2
+    INT             shift and go to state 3
+    ENTERO          shift and go to state 4
+    FLOTANTE        shift and go to state 5
 
-    expresion                      shift and go to state 1
+    inicio                         shift and go to state 1
+    expresion                      shift and go to state 2
 
 state 1
 
-    (0) S' -> expresion .
-    (2) expresion -> expresion . MAS expresion
-    (3) expresion -> expresion . MENOS expresion
+    (0) S' -> inicio .
 
-    MAS             shift and go to state 3
-    MENOS           shift and go to state 4
 
 
 state 2
 
-    (1) expresion -> NUMERO .
+    (8) inicio -> expresion .
+    (4) expresion -> expresion . MAS expresion
+    (5) expresion -> expresion . MENOS expresion
+    (6) expresion -> expresion . POR expresion
+    (9) expresion -> expresion . DIVIDIDO expresion
 
-    MAS             reduce using rule 1 (expresion -> NUMERO .)
-    MENOS           reduce using rule 1 (expresion -> NUMERO .)
-    $end            reduce using rule 1 (expresion -> NUMERO .)
+    $end            reduce using rule 8 (inicio -> expresion .)
+    MAS             shift and go to state 6
+    MENOS           shift and go to state 7
+    POR             shift and go to state 8
+    DIVIDIDO        shift and go to state 9
 
 
 state 3
 
-    (2) expresion -> expresion MAS . expresion
-    (1) expresion -> . NUMERO
-    (2) expresion -> . expresion MAS expresion
-    (3) expresion -> . expresion MENOS expresion
+    (1) expresion -> INT . ID IGUAL expresion PTCOMA
+    (7) expresion -> INT . PARIZQ expresion PARDER PTCOMA
 
-    NUMERO          shift and go to state 2
+    ID              shift and go to state 10
+    PARIZQ          shift and go to state 11
 
-    expresion                      shift and go to state 5
 
 state 4
 
-    (3) expresion -> expresion MENOS . expresion
-    (1) expresion -> . NUMERO
-    (2) expresion -> . expresion MAS expresion
-    (3) expresion -> . expresion MENOS expresion
+    (2) expresion -> ENTERO .
 
-    NUMERO          shift and go to state 2
+    MAS             reduce using rule 2 (expresion -> ENTERO .)
+    MENOS           reduce using rule 2 (expresion -> ENTERO .)
+    POR             reduce using rule 2 (expresion -> ENTERO .)
+    DIVIDIDO        reduce using rule 2 (expresion -> ENTERO .)
+    $end            reduce using rule 2 (expresion -> ENTERO .)
+    PARDER          reduce using rule 2 (expresion -> ENTERO .)
+    PTCOMA          reduce using rule 2 (expresion -> ENTERO .)
 
-    expresion                      shift and go to state 6
 
 state 5
 
-    (2) expresion -> expresion MAS expresion .
-    (2) expresion -> expresion . MAS expresion
-    (3) expresion -> expresion . MENOS expresion
+    (3) expresion -> FLOTANTE .
 
-    MAS             reduce using rule 2 (expresion -> expresion MAS expresion .)
-    MENOS           reduce using rule 2 (expresion -> expresion MAS expresion .)
-    $end            reduce using rule 2 (expresion -> expresion MAS expresion .)
-
-  ! MAS             [ shift and go to state 3 ]
-  ! MENOS           [ shift and go to state 4 ]
+    MAS             reduce using rule 3 (expresion -> FLOTANTE .)
+    MENOS           reduce using rule 3 (expresion -> FLOTANTE .)
+    POR             reduce using rule 3 (expresion -> FLOTANTE .)
+    DIVIDIDO        reduce using rule 3 (expresion -> FLOTANTE .)
+    $end            reduce using rule 3 (expresion -> FLOTANTE .)
+    PARDER          reduce using rule 3 (expresion -> FLOTANTE .)
+    PTCOMA          reduce using rule 3 (expresion -> FLOTANTE .)
 
 
 state 6
 
-    (3) expresion -> expresion MENOS expresion .
-    (2) expresion -> expresion . MAS expresion
-    (3) expresion -> expresion . MENOS expresion
+    (4) expresion -> expresion MAS . expresion
+    (1) expresion -> . INT ID IGUAL expresion PTCOMA
+    (2) expresion -> . ENTERO
+    (3) expresion -> . FLOTANTE
+    (4) expresion -> . expresion MAS expresion
+    (5) expresion -> . expresion MENOS expresion
+    (6) expresion -> . expresion POR expresion
+    (7) expresion -> . INT PARIZQ expresion PARDER PTCOMA
+    (9) expresion -> . expresion DIVIDIDO expresion
 
-    MAS             reduce using rule 3 (expresion -> expresion MENOS expresion .)
-    MENOS           reduce using rule 3 (expresion -> expresion MENOS expresion .)
-    $end            reduce using rule 3 (expresion -> expresion MENOS expresion .)
+    INT             shift and go to state 3
+    ENTERO          shift and go to state 4
+    FLOTANTE        shift and go to state 5
 
-  ! MAS             [ shift and go to state 3 ]
-  ! MENOS           [ shift and go to state 4 ]
+    expresion                      shift and go to state 12
+
+state 7
+
+    (5) expresion -> expresion MENOS . expresion
+    (1) expresion -> . INT ID IGUAL expresion PTCOMA
+    (2) expresion -> . ENTERO
+    (3) expresion -> . FLOTANTE
+    (4) expresion -> . expresion MAS expresion
+    (5) expresion -> . expresion MENOS expresion
+    (6) expresion -> . expresion POR expresion
+    (7) expresion -> . INT PARIZQ expresion PARDER PTCOMA
+    (9) expresion -> . expresion DIVIDIDO expresion
+
+    INT             shift and go to state 3
+    ENTERO          shift and go to state 4
+    FLOTANTE        shift and go to state 5
+
+    expresion                      shift and go to state 13
+
+state 8
+
+    (6) expresion -> expresion POR . expresion
+    (1) expresion -> . INT ID IGUAL expresion PTCOMA
+    (2) expresion -> . ENTERO
+    (3) expresion -> . FLOTANTE
+    (4) expresion -> . expresion MAS expresion
+    (5) expresion -> . expresion MENOS expresion
+    (6) expresion -> . expresion POR expresion
+    (7) expresion -> . INT PARIZQ expresion PARDER PTCOMA
+    (9) expresion -> . expresion DIVIDIDO expresion
+
+    INT             shift and go to state 3
+    ENTERO          shift and go to state 4
+    FLOTANTE        shift and go to state 5
+
+    expresion                      shift and go to state 14
+
+state 9
+
+    (9) expresion -> expresion DIVIDIDO . expresion
+    (1) expresion -> . INT ID IGUAL expresion PTCOMA
+    (2) expresion -> . ENTERO
+    (3) expresion -> . FLOTANTE
+    (4) expresion -> . expresion MAS expresion
+    (5) expresion -> . expresion MENOS expresion
+    (6) expresion -> . expresion POR expresion
+    (7) expresion -> . INT PARIZQ expresion PARDER PTCOMA
+    (9) expresion -> . expresion DIVIDIDO expresion
+
+    INT             shift and go to state 3
+    ENTERO          shift and go to state 4
+    FLOTANTE        shift and go to state 5
+
+    expresion                      shift and go to state 15
+
+state 10
+
+    (1) expresion -> INT ID . IGUAL expresion PTCOMA
+
+    IGUAL           shift and go to state 16
+
+
+state 11
+
+    (7) expresion -> INT PARIZQ . expresion PARDER PTCOMA
+    (1) expresion -> . INT ID IGUAL expresion PTCOMA
+    (2) expresion -> . ENTERO
+    (3) expresion -> . FLOTANTE
+    (4) expresion -> . expresion MAS expresion
+    (5) expresion -> . expresion MENOS expresion
+    (6) expresion -> . expresion POR expresion
+    (7) expresion -> . INT PARIZQ expresion PARDER PTCOMA
+    (9) expresion -> . expresion DIVIDIDO expresion
+
+    INT             shift and go to state 3
+    ENTERO          shift and go to state 4
+    FLOTANTE        shift and go to state 5
+
+    expresion                      shift and go to state 17
+
+state 12
+
+    (4) expresion -> expresion MAS expresion .
+    (4) expresion -> expresion . MAS expresion
+    (5) expresion -> expresion . MENOS expresion
+    (6) expresion -> expresion . POR expresion
+    (9) expresion -> expresion . DIVIDIDO expresion
+
+    MAS             reduce using rule 4 (expresion -> expresion MAS expresion .)
+    MENOS           reduce using rule 4 (expresion -> expresion MAS expresion .)
+    $end            reduce using rule 4 (expresion -> expresion MAS expresion .)
+    PARDER          reduce using rule 4 (expresion -> expresion MAS expresion .)
+    PTCOMA          reduce using rule 4 (expresion -> expresion MAS expresion .)
+    POR             shift and go to state 8
+    DIVIDIDO        shift and go to state 9
+
+  ! POR             [ reduce using rule 4 (expresion -> expresion MAS expresion .) ]
+  ! DIVIDIDO        [ reduce using rule 4 (expresion -> expresion MAS expresion .) ]
+  ! MAS             [ shift and go to state 6 ]
+  ! MENOS           [ shift and go to state 7 ]
+
+
+state 13
+
+    (5) expresion -> expresion MENOS expresion .
+    (4) expresion -> expresion . MAS expresion
+    (5) expresion -> expresion . MENOS expresion
+    (6) expresion -> expresion . POR expresion
+    (9) expresion -> expresion . DIVIDIDO expresion
+
+    MAS             reduce using rule 5 (expresion -> expresion MENOS expresion .)
+    MENOS           reduce using rule 5 (expresion -> expresion MENOS expresion .)
+    $end            reduce using rule 5 (expresion -> expresion MENOS expresion .)
+    PARDER          reduce using rule 5 (expresion -> expresion MENOS expresion .)
+    PTCOMA          reduce using rule 5 (expresion -> expresion MENOS expresion .)
+    POR             shift and go to state 8
+    DIVIDIDO        shift and go to state 9
+
+  ! POR             [ reduce using rule 5 (expresion -> expresion MENOS expresion .) ]
+  ! DIVIDIDO        [ reduce using rule 5 (expresion -> expresion MENOS expresion .) ]
+  ! MAS             [ shift and go to state 6 ]
+  ! MENOS           [ shift and go to state 7 ]
+
+
+state 14
+
+    (6) expresion -> expresion POR expresion .
+    (4) expresion -> expresion . MAS expresion
+    (5) expresion -> expresion . MENOS expresion
+    (6) expresion -> expresion . POR expresion
+    (9) expresion -> expresion . DIVIDIDO expresion
+
+    MAS             reduce using rule 6 (expresion -> expresion POR expresion .)
+    MENOS           reduce using rule 6 (expresion -> expresion POR expresion .)
+    POR             reduce using rule 6 (expresion -> expresion POR expresion .)
+    DIVIDIDO        reduce using rule 6 (expresion -> expresion POR expresion .)
+    $end            reduce using rule 6 (expresion -> expresion POR expresion .)
+    PARDER          reduce using rule 6 (expresion -> expresion POR expresion .)
+    PTCOMA          reduce using rule 6 (expresion -> expresion POR expresion .)
+
+  ! MAS             [ shift and go to state 6 ]
+  ! MENOS           [ shift and go to state 7 ]
+  ! POR             [ shift and go to state 8 ]
+  ! DIVIDIDO        [ shift and go to state 9 ]
+
+
+state 15
+
+    (9) expresion -> expresion DIVIDIDO expresion .
+    (4) expresion -> expresion . MAS expresion
+    (5) expresion -> expresion . MENOS expresion
+    (6) expresion -> expresion . POR expresion
+    (9) expresion -> expresion . DIVIDIDO expresion
+
+    MAS             reduce using rule 9 (expresion -> expresion DIVIDIDO expresion .)
+    MENOS           reduce using rule 9 (expresion -> expresion DIVIDIDO expresion .)
+    POR             reduce using rule 9 (expresion -> expresion DIVIDIDO expresion .)
+    DIVIDIDO        reduce using rule 9 (expresion -> expresion DIVIDIDO expresion .)
+    $end            reduce using rule 9 (expresion -> expresion DIVIDIDO expresion .)
+    PARDER          reduce using rule 9 (expresion -> expresion DIVIDIDO expresion .)
+    PTCOMA          reduce using rule 9 (expresion -> expresion DIVIDIDO expresion .)
+
+  ! MAS             [ shift and go to state 6 ]
+  ! MENOS           [ shift and go to state 7 ]
+  ! POR             [ shift and go to state 8 ]
+  ! DIVIDIDO        [ shift and go to state 9 ]
+
+
+state 16
+
+    (1) expresion -> INT ID IGUAL . expresion PTCOMA
+    (1) expresion -> . INT ID IGUAL expresion PTCOMA
+    (2) expresion -> . ENTERO
+    (3) expresion -> . FLOTANTE
+    (4) expresion -> . expresion MAS expresion
+    (5) expresion -> . expresion MENOS expresion
+    (6) expresion -> . expresion POR expresion
+    (7) expresion -> . INT PARIZQ expresion PARDER PTCOMA
+    (9) expresion -> . expresion DIVIDIDO expresion
+
+    INT             shift and go to state 3
+    ENTERO          shift and go to state 4
+    FLOTANTE        shift and go to state 5
+
+    expresion                      shift and go to state 18
+
+state 17
+
+    (7) expresion -> INT PARIZQ expresion . PARDER PTCOMA
+    (4) expresion -> expresion . MAS expresion
+    (5) expresion -> expresion . MENOS expresion
+    (6) expresion -> expresion . POR expresion
+    (9) expresion -> expresion . DIVIDIDO expresion
+
+    PARDER          shift and go to state 19
+    MAS             shift and go to state 6
+    MENOS           shift and go to state 7
+    POR             shift and go to state 8
+    DIVIDIDO        shift and go to state 9
+
+
+state 18
+
+    (1) expresion -> INT ID IGUAL expresion . PTCOMA
+    (4) expresion -> expresion . MAS expresion
+    (5) expresion -> expresion . MENOS expresion
+    (6) expresion -> expresion . POR expresion
+    (9) expresion -> expresion . DIVIDIDO expresion
+
+    PTCOMA          shift and go to state 20
+    MAS             shift and go to state 6
+    MENOS           shift and go to state 7
+    POR             shift and go to state 8
+    DIVIDIDO        shift and go to state 9
+
+
+state 19
+
+    (7) expresion -> INT PARIZQ expresion PARDER . PTCOMA
+
+    PTCOMA          shift and go to state 21
+
+
+state 20
+
+    (1) expresion -> INT ID IGUAL expresion PTCOMA .
+
+    MAS             reduce using rule 1 (expresion -> INT ID IGUAL expresion PTCOMA .)
+    MENOS           reduce using rule 1 (expresion -> INT ID IGUAL expresion PTCOMA .)
+    POR             reduce using rule 1 (expresion -> INT ID IGUAL expresion PTCOMA .)
+    DIVIDIDO        reduce using rule 1 (expresion -> INT ID IGUAL expresion PTCOMA .)
+    $end            reduce using rule 1 (expresion -> INT ID IGUAL expresion PTCOMA .)
+    PARDER          reduce using rule 1 (expresion -> INT ID IGUAL expresion PTCOMA .)
+    PTCOMA          reduce using rule 1 (expresion -> INT ID IGUAL expresion PTCOMA .)
+
+
+state 21
+
+    (7) expresion -> INT PARIZQ expresion PARDER PTCOMA .
+
+    MAS             reduce using rule 7 (expresion -> INT PARIZQ expresion PARDER PTCOMA .)
+    MENOS           reduce using rule 7 (expresion -> INT PARIZQ expresion PARDER PTCOMA .)
+    POR             reduce using rule 7 (expresion -> INT PARIZQ expresion PARDER PTCOMA .)
+    DIVIDIDO        reduce using rule 7 (expresion -> INT PARIZQ expresion PARDER PTCOMA .)
+    $end            reduce using rule 7 (expresion -> INT PARIZQ expresion PARDER PTCOMA .)
+    PARDER          reduce using rule 7 (expresion -> INT PARIZQ expresion PARDER PTCOMA .)
+    PTCOMA          reduce using rule 7 (expresion -> INT PARIZQ expresion PARDER PTCOMA .)
 
