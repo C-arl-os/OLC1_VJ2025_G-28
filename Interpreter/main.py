@@ -1,20 +1,28 @@
 from parser import parser
+from lexer import lexer
+
+
+def imprimir_tokens(codigo):
+    lexer.input(codigo)
+    print("Tokens:\n")
+    while True:
+        tok = lexer.token()
+        if not tok:
+            break
+        print(f"{tok.type:<12} → {tok.value}")
 
 def main():
-    texto = "3 + 4 - 2 + 7 - 5"
+    codigo = '''
+        int a = 5;
+        float pi = 3.14;
+        char letra = 'x';
+        string saludo = "hola mundo";
+        bool activo = true;
+    '''
 
-    # 1) Parsear y obtener el AST
-    raiz = parser.parse(texto)
-    if raiz is None:
-        print("Hubo un error al parsear la expresión.")
-        return
-
-    # 2) Mostrar representación infija (invoca __str__() de cada nodo)
-    print("Representación infija (con paréntesis):", raiz)
-
-    # 3) Interpretar (evalúa numéricamente)
-    valor = raiz.interpret()
-    print("Resultado numérico:", valor)
+    print("prueba:\n\t", codigo.strip(), "\n")
+    
+    imprimir_tokens(codigo)
 
 if __name__ == "__main__":
     main()

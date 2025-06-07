@@ -6,17 +6,32 @@ Rule 0     S' -> expresion
 Rule 1     expresion -> NUMERO
 Rule 2     expresion -> expresion MAS expresion
 Rule 3     expresion -> expresion MENOS expresion
+Rule 4     expresion -> tipo ID ASIGNACION expresion PTCOMA
+Rule 5     tipo -> ID
+Rule 6     expresion -> DECIMAL
+Rule 7     expresion -> CARACTER
+Rule 8     expresion -> CADENA
+Rule 9     expresion -> BOLEANO
+Rule 10    expresion -> ID
 
 Terminals, with rules where they appear
 
+ASIGNACION           : 4
+BOLEANO              : 9
+CADENA               : 8
+CARACTER             : 7
+DECIMAL              : 6
+ID                   : 4 5 10
 MAS                  : 2
 MENOS                : 3
 NUMERO               : 1
+PTCOMA               : 4
 error                : 
 
 Nonterminals, with rules where they appear
 
-expresion            : 2 2 3 3 0
+expresion            : 2 2 3 3 4 0
+tipo                 : 4
 
 Parsing method: LALR
 
@@ -26,10 +41,23 @@ state 0
     (1) expresion -> . NUMERO
     (2) expresion -> . expresion MAS expresion
     (3) expresion -> . expresion MENOS expresion
+    (4) expresion -> . tipo ID ASIGNACION expresion PTCOMA
+    (6) expresion -> . DECIMAL
+    (7) expresion -> . CARACTER
+    (8) expresion -> . CADENA
+    (9) expresion -> . BOLEANO
+    (10) expresion -> . ID
+    (5) tipo -> . ID
 
     NUMERO          shift and go to state 2
+    DECIMAL         shift and go to state 5
+    CARACTER        shift and go to state 6
+    CADENA          shift and go to state 7
+    BOLEANO         shift and go to state 8
+    ID              shift and go to state 4
 
     expresion                      shift and go to state 1
+    tipo                           shift and go to state 3
 
 state 1
 
@@ -37,8 +65,8 @@ state 1
     (2) expresion -> expresion . MAS expresion
     (3) expresion -> expresion . MENOS expresion
 
-    MAS             shift and go to state 3
-    MENOS           shift and go to state 4
+    MAS             shift and go to state 9
+    MENOS           shift and go to state 10
 
 
 state 2
@@ -48,31 +76,124 @@ state 2
     MAS             reduce using rule 1 (expresion -> NUMERO .)
     MENOS           reduce using rule 1 (expresion -> NUMERO .)
     $end            reduce using rule 1 (expresion -> NUMERO .)
+    PTCOMA          reduce using rule 1 (expresion -> NUMERO .)
 
 
 state 3
+
+    (4) expresion -> tipo . ID ASIGNACION expresion PTCOMA
+
+    ID              shift and go to state 11
+
+
+state 4
+
+    (10) expresion -> ID .
+    (5) tipo -> ID .
+
+    MAS             reduce using rule 10 (expresion -> ID .)
+    MENOS           reduce using rule 10 (expresion -> ID .)
+    $end            reduce using rule 10 (expresion -> ID .)
+    PTCOMA          reduce using rule 10 (expresion -> ID .)
+    ID              reduce using rule 5 (tipo -> ID .)
+
+
+state 5
+
+    (6) expresion -> DECIMAL .
+
+    MAS             reduce using rule 6 (expresion -> DECIMAL .)
+    MENOS           reduce using rule 6 (expresion -> DECIMAL .)
+    $end            reduce using rule 6 (expresion -> DECIMAL .)
+    PTCOMA          reduce using rule 6 (expresion -> DECIMAL .)
+
+
+state 6
+
+    (7) expresion -> CARACTER .
+
+    MAS             reduce using rule 7 (expresion -> CARACTER .)
+    MENOS           reduce using rule 7 (expresion -> CARACTER .)
+    $end            reduce using rule 7 (expresion -> CARACTER .)
+    PTCOMA          reduce using rule 7 (expresion -> CARACTER .)
+
+
+state 7
+
+    (8) expresion -> CADENA .
+
+    MAS             reduce using rule 8 (expresion -> CADENA .)
+    MENOS           reduce using rule 8 (expresion -> CADENA .)
+    $end            reduce using rule 8 (expresion -> CADENA .)
+    PTCOMA          reduce using rule 8 (expresion -> CADENA .)
+
+
+state 8
+
+    (9) expresion -> BOLEANO .
+
+    MAS             reduce using rule 9 (expresion -> BOLEANO .)
+    MENOS           reduce using rule 9 (expresion -> BOLEANO .)
+    $end            reduce using rule 9 (expresion -> BOLEANO .)
+    PTCOMA          reduce using rule 9 (expresion -> BOLEANO .)
+
+
+state 9
 
     (2) expresion -> expresion MAS . expresion
     (1) expresion -> . NUMERO
     (2) expresion -> . expresion MAS expresion
     (3) expresion -> . expresion MENOS expresion
+    (4) expresion -> . tipo ID ASIGNACION expresion PTCOMA
+    (6) expresion -> . DECIMAL
+    (7) expresion -> . CARACTER
+    (8) expresion -> . CADENA
+    (9) expresion -> . BOLEANO
+    (10) expresion -> . ID
+    (5) tipo -> . ID
 
     NUMERO          shift and go to state 2
+    DECIMAL         shift and go to state 5
+    CARACTER        shift and go to state 6
+    CADENA          shift and go to state 7
+    BOLEANO         shift and go to state 8
+    ID              shift and go to state 4
 
-    expresion                      shift and go to state 5
+    expresion                      shift and go to state 12
+    tipo                           shift and go to state 3
 
-state 4
+state 10
 
     (3) expresion -> expresion MENOS . expresion
     (1) expresion -> . NUMERO
     (2) expresion -> . expresion MAS expresion
     (3) expresion -> . expresion MENOS expresion
+    (4) expresion -> . tipo ID ASIGNACION expresion PTCOMA
+    (6) expresion -> . DECIMAL
+    (7) expresion -> . CARACTER
+    (8) expresion -> . CADENA
+    (9) expresion -> . BOLEANO
+    (10) expresion -> . ID
+    (5) tipo -> . ID
 
     NUMERO          shift and go to state 2
+    DECIMAL         shift and go to state 5
+    CARACTER        shift and go to state 6
+    CADENA          shift and go to state 7
+    BOLEANO         shift and go to state 8
+    ID              shift and go to state 4
 
-    expresion                      shift and go to state 6
+    expresion                      shift and go to state 13
+    tipo                           shift and go to state 3
 
-state 5
+state 11
+
+    (4) expresion -> tipo ID . ASIGNACION expresion PTCOMA
+
+    ASIGNACION      shift and go to state 14
+
+
+state 12
 
     (2) expresion -> expresion MAS expresion .
     (2) expresion -> expresion . MAS expresion
@@ -81,12 +202,13 @@ state 5
     MAS             reduce using rule 2 (expresion -> expresion MAS expresion .)
     MENOS           reduce using rule 2 (expresion -> expresion MAS expresion .)
     $end            reduce using rule 2 (expresion -> expresion MAS expresion .)
+    PTCOMA          reduce using rule 2 (expresion -> expresion MAS expresion .)
 
-  ! MAS             [ shift and go to state 3 ]
-  ! MENOS           [ shift and go to state 4 ]
+  ! MAS             [ shift and go to state 9 ]
+  ! MENOS           [ shift and go to state 10 ]
 
 
-state 6
+state 13
 
     (3) expresion -> expresion MENOS expresion .
     (2) expresion -> expresion . MAS expresion
@@ -95,7 +217,53 @@ state 6
     MAS             reduce using rule 3 (expresion -> expresion MENOS expresion .)
     MENOS           reduce using rule 3 (expresion -> expresion MENOS expresion .)
     $end            reduce using rule 3 (expresion -> expresion MENOS expresion .)
+    PTCOMA          reduce using rule 3 (expresion -> expresion MENOS expresion .)
 
-  ! MAS             [ shift and go to state 3 ]
-  ! MENOS           [ shift and go to state 4 ]
+  ! MAS             [ shift and go to state 9 ]
+  ! MENOS           [ shift and go to state 10 ]
+
+
+state 14
+
+    (4) expresion -> tipo ID ASIGNACION . expresion PTCOMA
+    (1) expresion -> . NUMERO
+    (2) expresion -> . expresion MAS expresion
+    (3) expresion -> . expresion MENOS expresion
+    (4) expresion -> . tipo ID ASIGNACION expresion PTCOMA
+    (6) expresion -> . DECIMAL
+    (7) expresion -> . CARACTER
+    (8) expresion -> . CADENA
+    (9) expresion -> . BOLEANO
+    (10) expresion -> . ID
+    (5) tipo -> . ID
+
+    NUMERO          shift and go to state 2
+    DECIMAL         shift and go to state 5
+    CARACTER        shift and go to state 6
+    CADENA          shift and go to state 7
+    BOLEANO         shift and go to state 8
+    ID              shift and go to state 4
+
+    tipo                           shift and go to state 3
+    expresion                      shift and go to state 15
+
+state 15
+
+    (4) expresion -> tipo ID ASIGNACION expresion . PTCOMA
+    (2) expresion -> expresion . MAS expresion
+    (3) expresion -> expresion . MENOS expresion
+
+    PTCOMA          shift and go to state 16
+    MAS             shift and go to state 9
+    MENOS           shift and go to state 10
+
+
+state 16
+
+    (4) expresion -> tipo ID ASIGNACION expresion PTCOMA .
+
+    MAS             reduce using rule 4 (expresion -> tipo ID ASIGNACION expresion PTCOMA .)
+    MENOS           reduce using rule 4 (expresion -> tipo ID ASIGNACION expresion PTCOMA .)
+    $end            reduce using rule 4 (expresion -> tipo ID ASIGNACION expresion PTCOMA .)
+    PTCOMA          reduce using rule 4 (expresion -> tipo ID ASIGNACION expresion PTCOMA .)
 

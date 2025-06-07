@@ -60,3 +60,90 @@ class Resta(Expresion):
 
     def __repr__(self):
         return f"Resta({self.izquierda!r}, {self.derecha!r})"
+
+class Decimal(Expresion):
+    def __init__(self, valor):
+        self.valor = valor
+
+    def interpret(self):
+        return self.valor
+
+    def __str__(self):
+        return str(self.valor)
+
+    def __repr__(self):
+        return f"Decimal({self.valor})"
+
+
+class Caracter(Expresion):
+    def __init__(self, valor):
+        self.valor = valor
+
+    def interpret(self):
+        return self.valor  
+
+    def __str__(self):
+        return f"'{self.valor}'"
+
+    def __repr__(self):
+        return f"Caracter('{self.valor}')"
+
+
+class Cadena(Expresion):
+    def __init__(self, valor):
+        self.valor = valor
+
+    def interpret(self):
+        return self.valor
+
+    def __str__(self):
+        return f'"{self.valor}"'
+
+    def __repr__(self):
+        return f"Cadena({self.valor!r})"
+
+
+class Boleano(Expresion):
+    def __init__(self, valor):
+        self.valor = valor 
+
+    def interpret(self):
+        return self.valor
+
+    def __str__(self):
+        return "true" if self.valor else "false"
+
+    def __repr__(self):
+        return f"Boleano({self.valor})"
+
+
+class Identificador(Expresion):
+    def __init__(self, nombre):
+        self.nombre = nombre
+
+    def interpret(self):
+      
+        raise NotImplementedError("interpret() de Identificador necesita un contexto")
+
+    def __str__(self):
+        return self.nombre
+
+    def __repr__(self):
+        return f"Identificador('{self.nombre}')"
+
+
+class Asignacion(Expresion):
+    def __init__(self, tipo, identificador, valor):
+        self.tipo = tipo          
+        self.identificador = identificador  
+        self.valor = valor        
+
+    def interpret(self):
+    
+        return f"{self.tipo or ''} {self.identificador} = {self.valor.interpret()}"
+
+    def __str__(self):
+        return f"{self.tipo or ''} {self.identificador} = {self.valor};"
+
+    def __repr__(self):
+        return f"Asignacion(tipo={self.tipo!r}, identificador={self.identificador!r}, valor={self.valor!r})"

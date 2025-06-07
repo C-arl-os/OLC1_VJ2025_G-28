@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftMASMENOSMAS MENOS NUMEROexpresion : NUMEROexpresion : expresion MAS expresionexpresion : expresion MENOS expresion'
+_lr_signature = 'leftMASMENOSASIGNACION BOLEANO CADENA CARACTER DECIMAL ID MAS MENOS NUMERO PTCOMAexpresion : NUMEROexpresion : expresion MAS expresionexpresion : expresion MENOS expresionexpresion : tipo ID ASIGNACION expresion PTCOMAtipo : IDexpresion : DECIMALexpresion : CARACTERexpresion : CADENAexpresion : BOLEANOexpresion : ID'
     
-_lr_action_items = {'NUMERO':([0,3,4,],[2,2,2,]),'$end':([1,2,5,6,],[0,-1,-2,-3,]),'MAS':([1,2,5,6,],[3,-1,-2,-3,]),'MENOS':([1,2,5,6,],[4,-1,-2,-3,]),}
+_lr_action_items = {'NUMERO':([0,9,10,14,],[2,2,2,2,]),'DECIMAL':([0,9,10,14,],[5,5,5,5,]),'CARACTER':([0,9,10,14,],[6,6,6,6,]),'CADENA':([0,9,10,14,],[7,7,7,7,]),'BOLEANO':([0,9,10,14,],[8,8,8,8,]),'ID':([0,3,4,9,10,14,],[4,11,-5,4,4,4,]),'$end':([1,2,4,5,6,7,8,12,13,16,],[0,-1,-10,-6,-7,-8,-9,-2,-3,-4,]),'MAS':([1,2,4,5,6,7,8,12,13,15,16,],[9,-1,-10,-6,-7,-8,-9,-2,-3,9,-4,]),'MENOS':([1,2,4,5,6,7,8,12,13,15,16,],[10,-1,-10,-6,-7,-8,-9,-2,-3,10,-4,]),'PTCOMA':([2,4,5,6,7,8,12,13,15,16,],[-1,-10,-6,-7,-8,-9,-2,-3,16,-4,]),'ASIGNACION':([11,],[14,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expresion':([0,3,4,],[1,5,6,]),}
+_lr_goto_items = {'expresion':([0,9,10,14,],[1,12,13,15,]),'tipo':([0,9,10,14,],[3,3,3,3,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,7 +27,14 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> expresion","S'",1,None,None,None),
-  ('expresion -> NUMERO','expresion',1,'p_expresion_numero','parser.py',11),
-  ('expresion -> expresion MAS expresion','expresion',3,'p_expresion_suma','parser.py',16),
-  ('expresion -> expresion MENOS expresion','expresion',3,'p_expresion_resta','parser.py',21),
+  ('expresion -> NUMERO','expresion',1,'p_expresion_numero','parser.py',12),
+  ('expresion -> expresion MAS expresion','expresion',3,'p_expresion_suma','parser.py',17),
+  ('expresion -> expresion MENOS expresion','expresion',3,'p_expresion_resta','parser.py',22),
+  ('expresion -> tipo ID ASIGNACION expresion PTCOMA','expresion',5,'p_asignacion','parser.py',27),
+  ('tipo -> ID','tipo',1,'p_tipo','parser.py',31),
+  ('expresion -> DECIMAL','expresion',1,'p_expresion_decimal','parser.py',35),
+  ('expresion -> CARACTER','expresion',1,'p_expresion_caracter','parser.py',39),
+  ('expresion -> CADENA','expresion',1,'p_expresion_cadena','parser.py',43),
+  ('expresion -> BOLEANO','expresion',1,'p_expresion_boleano','parser.py',47),
+  ('expresion -> ID','expresion',1,'p_expresion_id','parser.py',51),
 ]
