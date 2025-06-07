@@ -1,0 +1,4 @@
+Jose-API con frontend y backend
+Carlos-While
+Bryan- Ciclo For
+Katherin-Println
