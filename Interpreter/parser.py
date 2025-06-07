@@ -11,6 +11,7 @@ from nodes.Div import Div
 # Precedencia
 precedence = (
     ('left', 'MAS', 'MENOS'),
+<<<<<<< HEAD
     ('left', 'POR', 'DIVIDIDO'),
     
 )
@@ -26,6 +27,37 @@ def p_expresion_entero(p):
 
 def p_expresion_decimal(p):
     'expresion : FLOTANTE'
+=======
+)
+
+def p_instrucciones(t):
+    '''instrucciones : instruccion instrucciones
+                     | instruccion'''
+    pass
+
+def p_instruccion(t):
+    '''instruccion : comentario_una_linea
+                   | comentario_multi_linea'''
+    pass
+
+
+def p_comentario_una_linea(t):
+    'comentario_una_linea : C_UNA_LINEA COMENTARIO'
+    print(f'Apertura Comentario Unico : {t[1]}')
+    print(f'Comentario: {t[2]}')
+
+def p_comentario_multi_linea(t):
+    'comentario_multi_linea : C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE'
+    print(f'Apertura Comentario: {t[1]}')
+    print(f'Comentario: {t[2]}')
+    print(f'Cierre Comentario: {t[3]}')
+
+start = 'instrucciones'
+
+def p_expresion_numero(p):
+    'expresion : NUMERO'
+    # Creamos un nodo hoja con el valor entero
+>>>>>>> Operaciones
     p[0] = Numero(p[1])
 
 def p_expresion_suma(p):
@@ -59,4 +91,8 @@ def p_error(p):
         print("Error de sintaxis: fin de entrada inesperado")
 
 # Construimos el parser
+<<<<<<< HEAD
 parser = yacc.yacc(start='inicio')
+=======
+parser = yacc.yacc()
+>>>>>>> Operaciones

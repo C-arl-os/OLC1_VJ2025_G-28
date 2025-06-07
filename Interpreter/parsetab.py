@@ -6,9 +6,15 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
+<<<<<<< HEAD
 _lr_signature = 'inicioleftMASMENOSleftPORDIVIDIDODIVIDIDO ENTERO FLOTANTE ID IGUAL INT MAS MENOS PARDER PARIZQ POR PTCOMAexpresion : INT ID IGUAL expresion PTCOMAexpresion : ENTEROexpresion : FLOTANTEexpresion : expresion MAS expresionexpresion : expresion MENOS expresionexpresion : expresion POR expresionexpresion : INT PARIZQ expresion PARDER PTCOMAinicio : expresionexpresion : expresion DIVIDIDO expresion'
     
 _lr_action_items = {'INT':([0,6,7,8,9,11,16,],[3,3,3,3,3,3,3,]),'ENTERO':([0,6,7,8,9,11,16,],[4,4,4,4,4,4,4,]),'FLOTANTE':([0,6,7,8,9,11,16,],[5,5,5,5,5,5,5,]),'$end':([1,2,4,5,12,13,14,15,20,21,],[0,-8,-2,-3,-4,-5,-6,-9,-1,-7,]),'MAS':([2,4,5,12,13,14,15,17,18,20,21,],[6,-2,-3,-4,-5,-6,-9,6,6,-1,-7,]),'MENOS':([2,4,5,12,13,14,15,17,18,20,21,],[7,-2,-3,-4,-5,-6,-9,7,7,-1,-7,]),'POR':([2,4,5,12,13,14,15,17,18,20,21,],[8,-2,-3,8,8,-6,-9,8,8,-1,-7,]),'DIVIDIDO':([2,4,5,12,13,14,15,17,18,20,21,],[9,-2,-3,9,9,-6,-9,9,9,-1,-7,]),'ID':([3,],[10,]),'PARIZQ':([3,],[11,]),'PARDER':([4,5,12,13,14,15,17,20,21,],[-2,-3,-4,-5,-6,-9,19,-1,-7,]),'PTCOMA':([4,5,12,13,14,15,18,19,20,21,],[-2,-3,-4,-5,-6,-9,20,21,-1,-7,]),'IGUAL':([10,],[16,]),}
+=======
+_lr_signature = 'instruccionesleftMASMENOSCOMENTARIO COMENTARIO_MULTI C_MULTI_APERTURA C_MULTI_CIERRE C_UNA_LINEA MAS MENOS NUMEROinstrucciones : instruccion instrucciones\n                     | instruccioninstruccion : comentario_una_linea\n                   | comentario_multi_lineacomentario_una_linea : C_UNA_LINEA COMENTARIOcomentario_multi_linea : C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERREexpresion : NUMEROexpresion : expresion MAS expresionexpresion : expresion MENOS expresion'
+    
+_lr_action_items = {'C_UNA_LINEA':([0,2,3,4,8,10,],[5,5,-3,-4,-5,-6,]),'C_MULTI_APERTURA':([0,2,3,4,8,10,],[6,6,-3,-4,-5,-6,]),'$end':([1,2,3,4,7,8,10,],[0,-2,-3,-4,-1,-5,-6,]),'COMENTARIO':([5,],[8,]),'COMENTARIO_MULTI':([6,],[9,]),'C_MULTI_CIERRE':([9,],[10,]),}
+>>>>>>> Operaciones
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +23,11 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
+<<<<<<< HEAD
 _lr_goto_items = {'inicio':([0,],[1,]),'expresion':([0,6,7,8,9,11,16,],[2,12,13,14,15,17,18,]),}
+=======
+_lr_goto_items = {'instrucciones':([0,2,],[1,7,]),'instruccion':([0,2,],[2,2,]),'comentario_una_linea':([0,2,],[3,3,]),'comentario_multi_linea':([0,2,],[4,4,]),}
+>>>>>>> Operaciones
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,6 +36,7 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
+<<<<<<< HEAD
   ("S' -> inicio","S'",1,None,None,None),
   ('expresion -> INT ID IGUAL expresion PTCOMA','expresion',5,'p_declaracion_asignacion','parser.py',20),
   ('expresion -> ENTERO','expresion',1,'p_expresion_entero','parser.py',24),
@@ -36,4 +47,16 @@ _lr_productions = [
   ('expresion -> INT PARIZQ expresion PARDER PTCOMA','expresion',5,'p_asignacion','parser.py',44),
   ('inicio -> expresion','inicio',1,'p_inicio','parser.py',48),
   ('expresion -> expresion DIVIDIDO expresion','expresion',3,'p_expresion_div','parser.py',52),
+=======
+  ("S' -> instrucciones","S'",1,None,None,None),
+  ('instrucciones -> instruccion instrucciones','instrucciones',2,'p_instrucciones','parser.py',11),
+  ('instrucciones -> instruccion','instrucciones',1,'p_instrucciones','parser.py',12),
+  ('instruccion -> comentario_una_linea','instruccion',1,'p_instruccion','parser.py',16),
+  ('instruccion -> comentario_multi_linea','instruccion',1,'p_instruccion','parser.py',17),
+  ('comentario_una_linea -> C_UNA_LINEA COMENTARIO','comentario_una_linea',2,'p_comentario_una_linea','parser.py',22),
+  ('comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE','comentario_multi_linea',3,'p_comentario_multi_linea','parser.py',27),
+  ('expresion -> NUMERO','expresion',1,'p_expresion_numero','parser.py',35),
+  ('expresion -> expresion MAS expresion','expresion',3,'p_expresion_suma','parser.py',40),
+  ('expresion -> expresion MENOS expresion','expresion',3,'p_expresion_resta','parser.py',45),
+>>>>>>> Operaciones
 ]
