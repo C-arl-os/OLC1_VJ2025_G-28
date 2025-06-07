@@ -1,13 +1,8 @@
 from parser import parser
 
 def main():
-<<<<<<< HEAD
-    texto = """3 / 4 - 2 + 7 - 5
-int x = 1.5 + 2.5 - 0.5 * 4.1 - 1.0;
+    texto = """//Hola soy Jose
 """
-=======
-    texto = "//comentario prueba\n//comentario prueba 2\n/*salto\nlinea*/"
->>>>>>> Operaciones
 
     for linea in texto.splitlines():
         if not linea.strip():
