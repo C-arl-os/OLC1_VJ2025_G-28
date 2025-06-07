@@ -1,35 +1,49 @@
 import ply.ply.lex as lex
 
+# palabras reservadas
+reserved = {
+    'int': 'INT',
+    'float': 'FLOAT',
+    'char': 'CHAR',
+    'string': 'STRING',
+    'bool': 'BOOL',
+    'true': 'BOLEANO',
+    'false': 'BOLEANO',
+}
+
 # Lista de nombres de tokens
 tokens = (
-    'NUMERO',
+    'PARIZQ',
+    'PARDER',
     'MAS',
     'MENOS',
     'DECIMAL',
-    'BOLEANO',
+    'ENTERO',
     'CARACTER',
     'CADENA',
     'ID',
     'ASIGNACION',
-    'PTCOMA'
-)
+    'PTCOMA',
+    'POR',
+    'DIVIDIDO',
+    'POTENCIA',
+    'MODULO',
+) + tuple(reserved.values())  # Incluye BOLEANO aquí
+
+
 
 # Reglas para tokens de un solo carácter
 t_MAS   = r'\+'
 t_MENOS = r'-'
-
 t_ASIGNACION = r'='
 t_PTCOMA = r';'
+t_POTENCIA = r'\*\*'
+t_POR = r'\*'
+t_DIVIDIDO = r'/'
+t_MODULO = r'%'
 
 # Ignorar espacios y tabulaciones
 t_ignore = ' \t'
-
-
-
-# manejo de asignacion de variables
-def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z0-9_]*'
-    return t
 
 def t_DECIMAL(t):
     r'-?\d+\.\d+'
@@ -40,7 +54,7 @@ def t_DECIMAL(t):
         t.value = 0.0
     return t
 
-def t_NUMERO(t):
+def t_ENTERO(t):
     r'-?\d+'
     try:
         valor = int(t.value)
@@ -54,22 +68,17 @@ def t_NUMERO(t):
         t.value = 0
     return t
 
-def t_CADENA(t):
-    r'"([^\\"]|\\.)*"'
-    try:
-        # Procesa secuencias de escape como \n, \" usando unicode_escape
-        t.value = bytes(t.value[1:-1], "utf-8").decode("unicode_escape")
-    except Exception as e:
-        print(f"Error al procesar cadena: {t.value} → {e}")
-        t.value = ""
+def t_BOLEANO(t):
+    r'true|false'
+    t.value = True if t.value == 'true' else False
     return t
+
 
 def t_CARACTER(t):
     r"\'(\\[ntr'\"\\]|[^\\'])\'"
     try:
-        contenido = t.value[1:-1]  # Elimina las comillas simples
+        contenido = t.value[1:-1]  
         if contenido.startswith("\\"):
-            # Decodifica secuencia de escape
             t.value = bytes(contenido, "utf-8").decode("unicode_escape")
         else:
             t.value = contenido
@@ -78,16 +87,27 @@ def t_CARACTER(t):
         t.value = '\u0000'  # Valor por defecto: carácter nulo
     return t
 
-def t_BOLEANO(t):
-    r'true|false'
-    t.value = True if t.value == 'true' else False
+def t_CADENA(t):
+    r'"([^\\"]|\\.)*"'
+    try:
+        t.value = bytes(t.value[1:-1], "utf-8").decode("unicode_escape")
+    except Exception as e:
+        print(f"Error al procesar cadena: {t.value} → {e}")
+        t.value = ""
     return t
 
+# manejo de asignacion de variables
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z0-9_]*'
+    t.type = reserved.get(t.value, 'ID')
+    return t
+    
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
 def t_error(t):
     print(f"Error léxico: caracter inesperado '{t.value[0]}'")
+    t.lexer.skip(1)
 
 lexer = lex.lex()
