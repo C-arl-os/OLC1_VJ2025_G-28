@@ -1,7 +1,11 @@
 from parser import parser
 
 def main():
-    texto = "//comentario prueba\n//comentario prueba 2\n/*salto\nlinea*/"
+    texto = '''
+
+    int x= 2; float b= 4.5; bool c = true; str x = "manzana"; char d = '%';
+    
+    '''
 
     # 1) Parsear y obtener el AST
     raiz = parser.parse(texto)

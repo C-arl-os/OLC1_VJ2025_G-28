@@ -1,5 +1,10 @@
 Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
+Unused terminals:
+
+    COMILLAS
+    PORCENTAJE
+
 Grammar
 
 Rule 0     S' -> instrucciones
@@ -7,29 +12,54 @@ Rule 1     instrucciones -> instruccion instrucciones
 Rule 2     instrucciones -> instruccion
 Rule 3     instruccion -> comentario_una_linea
 Rule 4     instruccion -> comentario_multi_linea
-Rule 5     comentario_una_linea -> C_UNA_LINEA COMENTARIO
-Rule 6     comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE
-Rule 7     expresion -> NUMERO
-Rule 8     expresion -> expresion MAS expresion
-Rule 9     expresion -> expresion MENOS expresion
+Rule 5     instruccion -> declaracion_variable
+Rule 6     comentario_una_linea -> C_UNA_LINEA COMENTARIO
+Rule 7     comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE
+Rule 8     declaracion_variable -> INT ID IGUAL NUMERO PUNTO_Y_COMA
+Rule 9     declaracion_variable -> FLOAT ID IGUAL DECIMAL PUNTO_Y_COMA
+Rule 10    declaracion_variable -> STR ID IGUAL STRING PUNTO_Y_COMA
+Rule 11    declaracion_variable -> BOOL ID IGUAL booleana PUNTO_Y_COMA
+Rule 12    declaracion_variable -> CHAR ID IGUAL CHAR_LITERAL PUNTO_Y_COMA
+Rule 13    booleana -> TRUE
+Rule 14    booleana -> FALSE
+Rule 15    expresion -> NUMERO
+Rule 16    expresion -> expresion MAS expresion
+Rule 17    expresion -> expresion MENOS expresion
 
 Terminals, with rules where they appear
 
-COMENTARIO           : 5
-COMENTARIO_MULTI     : 6
-C_MULTI_APERTURA     : 6
-C_MULTI_CIERRE       : 6
-C_UNA_LINEA          : 5
-MAS                  : 8
-MENOS                : 9
-NUMERO               : 7
+BOOL                 : 11
+CHAR                 : 12
+CHAR_LITERAL         : 12
+COMENTARIO           : 6
+COMENTARIO_MULTI     : 7
+COMILLAS             : 
+C_MULTI_APERTURA     : 7
+C_MULTI_CIERRE       : 7
+C_UNA_LINEA          : 6
+DECIMAL              : 9
+FALSE                : 14
+FLOAT                : 9
+ID                   : 8 9 10 11 12
+IGUAL                : 8 9 10 11 12
+INT                  : 8
+MAS                  : 16
+MENOS                : 17
+NUMERO               : 8 15
+PORCENTAJE           : 
+PUNTO_Y_COMA         : 8 9 10 11 12
+STR                  : 10
+STRING               : 10
+TRUE                 : 13
 error                : 
 
 Nonterminals, with rules where they appear
 
+booleana             : 11
 comentario_multi_linea : 4
 comentario_una_linea : 3
-expresion            : 8 8 9 9
+declaracion_variable : 5
+expresion            : 16 16 17 17
 instruccion          : 1 2
 instrucciones        : 1 0
 
@@ -42,16 +72,28 @@ state 0
     (2) instrucciones -> . instruccion
     (3) instruccion -> . comentario_una_linea
     (4) instruccion -> . comentario_multi_linea
-    (5) comentario_una_linea -> . C_UNA_LINEA COMENTARIO
-    (6) comentario_multi_linea -> . C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE
+    (5) instruccion -> . declaracion_variable
+    (6) comentario_una_linea -> . C_UNA_LINEA COMENTARIO
+    (7) comentario_multi_linea -> . C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE
+    (8) declaracion_variable -> . INT ID IGUAL NUMERO PUNTO_Y_COMA
+    (9) declaracion_variable -> . FLOAT ID IGUAL DECIMAL PUNTO_Y_COMA
+    (10) declaracion_variable -> . STR ID IGUAL STRING PUNTO_Y_COMA
+    (11) declaracion_variable -> . BOOL ID IGUAL booleana PUNTO_Y_COMA
+    (12) declaracion_variable -> . CHAR ID IGUAL CHAR_LITERAL PUNTO_Y_COMA
 
-    C_UNA_LINEA     shift and go to state 5
-    C_MULTI_APERTURA shift and go to state 6
+    C_UNA_LINEA     shift and go to state 6
+    C_MULTI_APERTURA shift and go to state 7
+    INT             shift and go to state 8
+    FLOAT           shift and go to state 9
+    STR             shift and go to state 10
+    BOOL            shift and go to state 11
+    CHAR            shift and go to state 12
 
     instrucciones                  shift and go to state 1
     instruccion                    shift and go to state 2
     comentario_una_linea           shift and go to state 3
     comentario_multi_linea         shift and go to state 4
+    declaracion_variable           shift and go to state 5
 
 state 1
 
@@ -67,17 +109,29 @@ state 2
     (2) instrucciones -> . instruccion
     (3) instruccion -> . comentario_una_linea
     (4) instruccion -> . comentario_multi_linea
-    (5) comentario_una_linea -> . C_UNA_LINEA COMENTARIO
-    (6) comentario_multi_linea -> . C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE
+    (5) instruccion -> . declaracion_variable
+    (6) comentario_una_linea -> . C_UNA_LINEA COMENTARIO
+    (7) comentario_multi_linea -> . C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE
+    (8) declaracion_variable -> . INT ID IGUAL NUMERO PUNTO_Y_COMA
+    (9) declaracion_variable -> . FLOAT ID IGUAL DECIMAL PUNTO_Y_COMA
+    (10) declaracion_variable -> . STR ID IGUAL STRING PUNTO_Y_COMA
+    (11) declaracion_variable -> . BOOL ID IGUAL booleana PUNTO_Y_COMA
+    (12) declaracion_variable -> . CHAR ID IGUAL CHAR_LITERAL PUNTO_Y_COMA
 
     $end            reduce using rule 2 (instrucciones -> instruccion .)
-    C_UNA_LINEA     shift and go to state 5
-    C_MULTI_APERTURA shift and go to state 6
+    C_UNA_LINEA     shift and go to state 6
+    C_MULTI_APERTURA shift and go to state 7
+    INT             shift and go to state 8
+    FLOAT           shift and go to state 9
+    STR             shift and go to state 10
+    BOOL            shift and go to state 11
+    CHAR            shift and go to state 12
 
     instruccion                    shift and go to state 2
-    instrucciones                  shift and go to state 7
+    instrucciones                  shift and go to state 13
     comentario_una_linea           shift and go to state 3
     comentario_multi_linea         shift and go to state 4
+    declaracion_variable           shift and go to state 5
 
 state 3
 
@@ -85,6 +139,11 @@ state 3
 
     C_UNA_LINEA     reduce using rule 3 (instruccion -> comentario_una_linea .)
     C_MULTI_APERTURA reduce using rule 3 (instruccion -> comentario_una_linea .)
+    INT             reduce using rule 3 (instruccion -> comentario_una_linea .)
+    FLOAT           reduce using rule 3 (instruccion -> comentario_una_linea .)
+    STR             reduce using rule 3 (instruccion -> comentario_una_linea .)
+    BOOL            reduce using rule 3 (instruccion -> comentario_una_linea .)
+    CHAR            reduce using rule 3 (instruccion -> comentario_una_linea .)
     $end            reduce using rule 3 (instruccion -> comentario_una_linea .)
 
 
@@ -94,51 +153,308 @@ state 4
 
     C_UNA_LINEA     reduce using rule 4 (instruccion -> comentario_multi_linea .)
     C_MULTI_APERTURA reduce using rule 4 (instruccion -> comentario_multi_linea .)
+    INT             reduce using rule 4 (instruccion -> comentario_multi_linea .)
+    FLOAT           reduce using rule 4 (instruccion -> comentario_multi_linea .)
+    STR             reduce using rule 4 (instruccion -> comentario_multi_linea .)
+    BOOL            reduce using rule 4 (instruccion -> comentario_multi_linea .)
+    CHAR            reduce using rule 4 (instruccion -> comentario_multi_linea .)
     $end            reduce using rule 4 (instruccion -> comentario_multi_linea .)
 
 
 state 5
 
-    (5) comentario_una_linea -> C_UNA_LINEA . COMENTARIO
+    (5) instruccion -> declaracion_variable .
 
-    COMENTARIO      shift and go to state 8
+    C_UNA_LINEA     reduce using rule 5 (instruccion -> declaracion_variable .)
+    C_MULTI_APERTURA reduce using rule 5 (instruccion -> declaracion_variable .)
+    INT             reduce using rule 5 (instruccion -> declaracion_variable .)
+    FLOAT           reduce using rule 5 (instruccion -> declaracion_variable .)
+    STR             reduce using rule 5 (instruccion -> declaracion_variable .)
+    BOOL            reduce using rule 5 (instruccion -> declaracion_variable .)
+    CHAR            reduce using rule 5 (instruccion -> declaracion_variable .)
+    $end            reduce using rule 5 (instruccion -> declaracion_variable .)
 
 
 state 6
 
-    (6) comentario_multi_linea -> C_MULTI_APERTURA . COMENTARIO_MULTI C_MULTI_CIERRE
+    (6) comentario_una_linea -> C_UNA_LINEA . COMENTARIO
 
-    COMENTARIO_MULTI shift and go to state 9
+    COMENTARIO      shift and go to state 14
 
 
 state 7
+
+    (7) comentario_multi_linea -> C_MULTI_APERTURA . COMENTARIO_MULTI C_MULTI_CIERRE
+
+    COMENTARIO_MULTI shift and go to state 15
+
+
+state 8
+
+    (8) declaracion_variable -> INT . ID IGUAL NUMERO PUNTO_Y_COMA
+
+    ID              shift and go to state 16
+
+
+state 9
+
+    (9) declaracion_variable -> FLOAT . ID IGUAL DECIMAL PUNTO_Y_COMA
+
+    ID              shift and go to state 17
+
+
+state 10
+
+    (10) declaracion_variable -> STR . ID IGUAL STRING PUNTO_Y_COMA
+
+    ID              shift and go to state 18
+
+
+state 11
+
+    (11) declaracion_variable -> BOOL . ID IGUAL booleana PUNTO_Y_COMA
+
+    ID              shift and go to state 19
+
+
+state 12
+
+    (12) declaracion_variable -> CHAR . ID IGUAL CHAR_LITERAL PUNTO_Y_COMA
+
+    ID              shift and go to state 20
+
+
+state 13
 
     (1) instrucciones -> instruccion instrucciones .
 
     $end            reduce using rule 1 (instrucciones -> instruccion instrucciones .)
 
 
-state 8
+state 14
 
-    (5) comentario_una_linea -> C_UNA_LINEA COMENTARIO .
+    (6) comentario_una_linea -> C_UNA_LINEA COMENTARIO .
 
-    C_UNA_LINEA     reduce using rule 5 (comentario_una_linea -> C_UNA_LINEA COMENTARIO .)
-    C_MULTI_APERTURA reduce using rule 5 (comentario_una_linea -> C_UNA_LINEA COMENTARIO .)
-    $end            reduce using rule 5 (comentario_una_linea -> C_UNA_LINEA COMENTARIO .)
-
-
-state 9
-
-    (6) comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI . C_MULTI_CIERRE
-
-    C_MULTI_CIERRE  shift and go to state 10
+    C_UNA_LINEA     reduce using rule 6 (comentario_una_linea -> C_UNA_LINEA COMENTARIO .)
+    C_MULTI_APERTURA reduce using rule 6 (comentario_una_linea -> C_UNA_LINEA COMENTARIO .)
+    INT             reduce using rule 6 (comentario_una_linea -> C_UNA_LINEA COMENTARIO .)
+    FLOAT           reduce using rule 6 (comentario_una_linea -> C_UNA_LINEA COMENTARIO .)
+    STR             reduce using rule 6 (comentario_una_linea -> C_UNA_LINEA COMENTARIO .)
+    BOOL            reduce using rule 6 (comentario_una_linea -> C_UNA_LINEA COMENTARIO .)
+    CHAR            reduce using rule 6 (comentario_una_linea -> C_UNA_LINEA COMENTARIO .)
+    $end            reduce using rule 6 (comentario_una_linea -> C_UNA_LINEA COMENTARIO .)
 
 
-state 10
+state 15
 
-    (6) comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE .
+    (7) comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI . C_MULTI_CIERRE
 
-    C_UNA_LINEA     reduce using rule 6 (comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE .)
-    C_MULTI_APERTURA reduce using rule 6 (comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE .)
-    $end            reduce using rule 6 (comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE .)
+    C_MULTI_CIERRE  shift and go to state 21
+
+
+state 16
+
+    (8) declaracion_variable -> INT ID . IGUAL NUMERO PUNTO_Y_COMA
+
+    IGUAL           shift and go to state 22
+
+
+state 17
+
+    (9) declaracion_variable -> FLOAT ID . IGUAL DECIMAL PUNTO_Y_COMA
+
+    IGUAL           shift and go to state 23
+
+
+state 18
+
+    (10) declaracion_variable -> STR ID . IGUAL STRING PUNTO_Y_COMA
+
+    IGUAL           shift and go to state 24
+
+
+state 19
+
+    (11) declaracion_variable -> BOOL ID . IGUAL booleana PUNTO_Y_COMA
+
+    IGUAL           shift and go to state 25
+
+
+state 20
+
+    (12) declaracion_variable -> CHAR ID . IGUAL CHAR_LITERAL PUNTO_Y_COMA
+
+    IGUAL           shift and go to state 26
+
+
+state 21
+
+    (7) comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE .
+
+    C_UNA_LINEA     reduce using rule 7 (comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE .)
+    C_MULTI_APERTURA reduce using rule 7 (comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE .)
+    INT             reduce using rule 7 (comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE .)
+    FLOAT           reduce using rule 7 (comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE .)
+    STR             reduce using rule 7 (comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE .)
+    BOOL            reduce using rule 7 (comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE .)
+    CHAR            reduce using rule 7 (comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE .)
+    $end            reduce using rule 7 (comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE .)
+
+
+state 22
+
+    (8) declaracion_variable -> INT ID IGUAL . NUMERO PUNTO_Y_COMA
+
+    NUMERO          shift and go to state 27
+
+
+state 23
+
+    (9) declaracion_variable -> FLOAT ID IGUAL . DECIMAL PUNTO_Y_COMA
+
+    DECIMAL         shift and go to state 28
+
+
+state 24
+
+    (10) declaracion_variable -> STR ID IGUAL . STRING PUNTO_Y_COMA
+
+    STRING          shift and go to state 29
+
+
+state 25
+
+    (11) declaracion_variable -> BOOL ID IGUAL . booleana PUNTO_Y_COMA
+    (13) booleana -> . TRUE
+    (14) booleana -> . FALSE
+
+    TRUE            shift and go to state 31
+    FALSE           shift and go to state 32
+
+    booleana                       shift and go to state 30
+
+state 26
+
+    (12) declaracion_variable -> CHAR ID IGUAL . CHAR_LITERAL PUNTO_Y_COMA
+
+    CHAR_LITERAL    shift and go to state 33
+
+
+state 27
+
+    (8) declaracion_variable -> INT ID IGUAL NUMERO . PUNTO_Y_COMA
+
+    PUNTO_Y_COMA    shift and go to state 34
+
+
+state 28
+
+    (9) declaracion_variable -> FLOAT ID IGUAL DECIMAL . PUNTO_Y_COMA
+
+    PUNTO_Y_COMA    shift and go to state 35
+
+
+state 29
+
+    (10) declaracion_variable -> STR ID IGUAL STRING . PUNTO_Y_COMA
+
+    PUNTO_Y_COMA    shift and go to state 36
+
+
+state 30
+
+    (11) declaracion_variable -> BOOL ID IGUAL booleana . PUNTO_Y_COMA
+
+    PUNTO_Y_COMA    shift and go to state 37
+
+
+state 31
+
+    (13) booleana -> TRUE .
+
+    PUNTO_Y_COMA    reduce using rule 13 (booleana -> TRUE .)
+
+
+state 32
+
+    (14) booleana -> FALSE .
+
+    PUNTO_Y_COMA    reduce using rule 14 (booleana -> FALSE .)
+
+
+state 33
+
+    (12) declaracion_variable -> CHAR ID IGUAL CHAR_LITERAL . PUNTO_Y_COMA
+
+    PUNTO_Y_COMA    shift and go to state 38
+
+
+state 34
+
+    (8) declaracion_variable -> INT ID IGUAL NUMERO PUNTO_Y_COMA .
+
+    C_UNA_LINEA     reduce using rule 8 (declaracion_variable -> INT ID IGUAL NUMERO PUNTO_Y_COMA .)
+    C_MULTI_APERTURA reduce using rule 8 (declaracion_variable -> INT ID IGUAL NUMERO PUNTO_Y_COMA .)
+    INT             reduce using rule 8 (declaracion_variable -> INT ID IGUAL NUMERO PUNTO_Y_COMA .)
+    FLOAT           reduce using rule 8 (declaracion_variable -> INT ID IGUAL NUMERO PUNTO_Y_COMA .)
+    STR             reduce using rule 8 (declaracion_variable -> INT ID IGUAL NUMERO PUNTO_Y_COMA .)
+    BOOL            reduce using rule 8 (declaracion_variable -> INT ID IGUAL NUMERO PUNTO_Y_COMA .)
+    CHAR            reduce using rule 8 (declaracion_variable -> INT ID IGUAL NUMERO PUNTO_Y_COMA .)
+    $end            reduce using rule 8 (declaracion_variable -> INT ID IGUAL NUMERO PUNTO_Y_COMA .)
+
+
+state 35
+
+    (9) declaracion_variable -> FLOAT ID IGUAL DECIMAL PUNTO_Y_COMA .
+
+    C_UNA_LINEA     reduce using rule 9 (declaracion_variable -> FLOAT ID IGUAL DECIMAL PUNTO_Y_COMA .)
+    C_MULTI_APERTURA reduce using rule 9 (declaracion_variable -> FLOAT ID IGUAL DECIMAL PUNTO_Y_COMA .)
+    INT             reduce using rule 9 (declaracion_variable -> FLOAT ID IGUAL DECIMAL PUNTO_Y_COMA .)
+    FLOAT           reduce using rule 9 (declaracion_variable -> FLOAT ID IGUAL DECIMAL PUNTO_Y_COMA .)
+    STR             reduce using rule 9 (declaracion_variable -> FLOAT ID IGUAL DECIMAL PUNTO_Y_COMA .)
+    BOOL            reduce using rule 9 (declaracion_variable -> FLOAT ID IGUAL DECIMAL PUNTO_Y_COMA .)
+    CHAR            reduce using rule 9 (declaracion_variable -> FLOAT ID IGUAL DECIMAL PUNTO_Y_COMA .)
+    $end            reduce using rule 9 (declaracion_variable -> FLOAT ID IGUAL DECIMAL PUNTO_Y_COMA .)
+
+
+state 36
+
+    (10) declaracion_variable -> STR ID IGUAL STRING PUNTO_Y_COMA .
+
+    C_UNA_LINEA     reduce using rule 10 (declaracion_variable -> STR ID IGUAL STRING PUNTO_Y_COMA .)
+    C_MULTI_APERTURA reduce using rule 10 (declaracion_variable -> STR ID IGUAL STRING PUNTO_Y_COMA .)
+    INT             reduce using rule 10 (declaracion_variable -> STR ID IGUAL STRING PUNTO_Y_COMA .)
+    FLOAT           reduce using rule 10 (declaracion_variable -> STR ID IGUAL STRING PUNTO_Y_COMA .)
+    STR             reduce using rule 10 (declaracion_variable -> STR ID IGUAL STRING PUNTO_Y_COMA .)
+    BOOL            reduce using rule 10 (declaracion_variable -> STR ID IGUAL STRING PUNTO_Y_COMA .)
+    CHAR            reduce using rule 10 (declaracion_variable -> STR ID IGUAL STRING PUNTO_Y_COMA .)
+    $end            reduce using rule 10 (declaracion_variable -> STR ID IGUAL STRING PUNTO_Y_COMA .)
+
+
+state 37
+
+    (11) declaracion_variable -> BOOL ID IGUAL booleana PUNTO_Y_COMA .
+
+    C_UNA_LINEA     reduce using rule 11 (declaracion_variable -> BOOL ID IGUAL booleana PUNTO_Y_COMA .)
+    C_MULTI_APERTURA reduce using rule 11 (declaracion_variable -> BOOL ID IGUAL booleana PUNTO_Y_COMA .)
+    INT             reduce using rule 11 (declaracion_variable -> BOOL ID IGUAL booleana PUNTO_Y_COMA .)
+    FLOAT           reduce using rule 11 (declaracion_variable -> BOOL ID IGUAL booleana PUNTO_Y_COMA .)
+    STR             reduce using rule 11 (declaracion_variable -> BOOL ID IGUAL booleana PUNTO_Y_COMA .)
+    BOOL            reduce using rule 11 (declaracion_variable -> BOOL ID IGUAL booleana PUNTO_Y_COMA .)
+    CHAR            reduce using rule 11 (declaracion_variable -> BOOL ID IGUAL booleana PUNTO_Y_COMA .)
+    $end            reduce using rule 11 (declaracion_variable -> BOOL ID IGUAL booleana PUNTO_Y_COMA .)
+
+
+state 38
+
+    (12) declaracion_variable -> CHAR ID IGUAL CHAR_LITERAL PUNTO_Y_COMA .
+
+    C_UNA_LINEA     reduce using rule 12 (declaracion_variable -> CHAR ID IGUAL CHAR_LITERAL PUNTO_Y_COMA .)
+    C_MULTI_APERTURA reduce using rule 12 (declaracion_variable -> CHAR ID IGUAL CHAR_LITERAL PUNTO_Y_COMA .)
+    INT             reduce using rule 12 (declaracion_variable -> CHAR ID IGUAL CHAR_LITERAL PUNTO_Y_COMA .)
+    FLOAT           reduce using rule 12 (declaracion_variable -> CHAR ID IGUAL CHAR_LITERAL PUNTO_Y_COMA .)
+    STR             reduce using rule 12 (declaracion_variable -> CHAR ID IGUAL CHAR_LITERAL PUNTO_Y_COMA .)
+    BOOL            reduce using rule 12 (declaracion_variable -> CHAR ID IGUAL CHAR_LITERAL PUNTO_Y_COMA .)
+    CHAR            reduce using rule 12 (declaracion_variable -> CHAR ID IGUAL CHAR_LITERAL PUNTO_Y_COMA .)
+    $end            reduce using rule 12 (declaracion_variable -> CHAR ID IGUAL CHAR_LITERAL PUNTO_Y_COMA .)
 

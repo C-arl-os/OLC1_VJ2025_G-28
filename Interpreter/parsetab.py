@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'instruccionesleftMASMENOSCOMENTARIO COMENTARIO_MULTI C_MULTI_APERTURA C_MULTI_CIERRE C_UNA_LINEA MAS MENOS NUMEROinstrucciones : instruccion instrucciones\n                     | instruccioninstruccion : comentario_una_linea\n                   | comentario_multi_lineacomentario_una_linea : C_UNA_LINEA COMENTARIOcomentario_multi_linea : C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERREexpresion : NUMEROexpresion : expresion MAS expresionexpresion : expresion MENOS expresion'
+_lr_signature = 'instruccionesleftMASMENOSBOOL CHAR CHAR_LITERAL COMENTARIO COMENTARIO_MULTI COMILLAS C_MULTI_APERTURA C_MULTI_CIERRE C_UNA_LINEA DECIMAL FALSE FLOAT ID IGUAL INT MAS MENOS NUMERO PORCENTAJE PUNTO_Y_COMA STR STRING TRUEinstrucciones : instruccion instrucciones\n| instruccioninstruccion : comentario_una_linea\n| comentario_multi_linea\n| declaracion_variablecomentario_una_linea : C_UNA_LINEA COMENTARIOcomentario_multi_linea : C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERREdeclaracion_variable : INT ID IGUAL NUMERO PUNTO_Y_COMA\n| FLOAT ID IGUAL DECIMAL PUNTO_Y_COMA\n| STR ID IGUAL STRING PUNTO_Y_COMA\n| BOOL ID IGUAL booleana PUNTO_Y_COMA\n| CHAR ID IGUAL CHAR_LITERAL PUNTO_Y_COMAbooleana : TRUE\n| FALSEexpresion : NUMEROexpresion : expresion MAS expresionexpresion : expresion MENOS expresion'
     
-_lr_action_items = {'C_UNA_LINEA':([0,2,3,4,8,10,],[5,5,-3,-4,-5,-6,]),'C_MULTI_APERTURA':([0,2,3,4,8,10,],[6,6,-3,-4,-5,-6,]),'$end':([1,2,3,4,7,8,10,],[0,-2,-3,-4,-1,-5,-6,]),'COMENTARIO':([5,],[8,]),'COMENTARIO_MULTI':([6,],[9,]),'C_MULTI_CIERRE':([9,],[10,]),}
+_lr_action_items = {'C_UNA_LINEA':([0,2,3,4,5,14,21,34,35,36,37,38,],[6,6,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,]),'C_MULTI_APERTURA':([0,2,3,4,5,14,21,34,35,36,37,38,],[7,7,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,]),'INT':([0,2,3,4,5,14,21,34,35,36,37,38,],[8,8,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,]),'FLOAT':([0,2,3,4,5,14,21,34,35,36,37,38,],[9,9,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,]),'STR':([0,2,3,4,5,14,21,34,35,36,37,38,],[10,10,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,]),'BOOL':([0,2,3,4,5,14,21,34,35,36,37,38,],[11,11,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,]),'CHAR':([0,2,3,4,5,14,21,34,35,36,37,38,],[12,12,-3,-4,-5,-6,-7,-8,-9,-10,-11,-12,]),'$end':([1,2,3,4,5,13,14,21,34,35,36,37,38,],[0,-2,-3,-4,-5,-1,-6,-7,-8,-9,-10,-11,-12,]),'COMENTARIO':([6,],[14,]),'COMENTARIO_MULTI':([7,],[15,]),'ID':([8,9,10,11,12,],[16,17,18,19,20,]),'C_MULTI_CIERRE':([15,],[21,]),'IGUAL':([16,17,18,19,20,],[22,23,24,25,26,]),'NUMERO':([22,],[27,]),'DECIMAL':([23,],[28,]),'STRING':([24,],[29,]),'TRUE':([25,],[31,]),'FALSE':([25,],[32,]),'CHAR_LITERAL':([26,],[33,]),'PUNTO_Y_COMA':([27,28,29,30,31,32,33,],[34,35,36,37,-13,-14,38,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'instrucciones':([0,2,],[1,7,]),'instruccion':([0,2,],[2,2,]),'comentario_una_linea':([0,2,],[3,3,]),'comentario_multi_linea':([0,2,],[4,4,]),}
+_lr_goto_items = {'instrucciones':([0,2,],[1,13,]),'instruccion':([0,2,],[2,2,]),'comentario_una_linea':([0,2,],[3,3,]),'comentario_multi_linea':([0,2,],[4,4,]),'declaracion_variable':([0,2,],[5,5,]),'booleana':([25,],[30,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -31,9 +31,17 @@ _lr_productions = [
   ('instrucciones -> instruccion','instrucciones',1,'p_instrucciones','parser.py',12),
   ('instruccion -> comentario_una_linea','instruccion',1,'p_instruccion','parser.py',16),
   ('instruccion -> comentario_multi_linea','instruccion',1,'p_instruccion','parser.py',17),
-  ('comentario_una_linea -> C_UNA_LINEA COMENTARIO','comentario_una_linea',2,'p_comentario_una_linea','parser.py',22),
-  ('comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE','comentario_multi_linea',3,'p_comentario_multi_linea','parser.py',27),
-  ('expresion -> NUMERO','expresion',1,'p_expresion_numero','parser.py',35),
-  ('expresion -> expresion MAS expresion','expresion',3,'p_expresion_suma','parser.py',40),
-  ('expresion -> expresion MENOS expresion','expresion',3,'p_expresion_resta','parser.py',45),
+  ('instruccion -> declaracion_variable','instruccion',1,'p_instruccion','parser.py',18),
+  ('comentario_una_linea -> C_UNA_LINEA COMENTARIO','comentario_una_linea',2,'p_comentario_una_linea','parser.py',23),
+  ('comentario_multi_linea -> C_MULTI_APERTURA COMENTARIO_MULTI C_MULTI_CIERRE','comentario_multi_linea',3,'p_comentario_multi_linea','parser.py',28),
+  ('declaracion_variable -> INT ID IGUAL NUMERO PUNTO_Y_COMA','declaracion_variable',5,'p_declaracion_variable','parser.py',34),
+  ('declaracion_variable -> FLOAT ID IGUAL DECIMAL PUNTO_Y_COMA','declaracion_variable',5,'p_declaracion_variable','parser.py',35),
+  ('declaracion_variable -> STR ID IGUAL STRING PUNTO_Y_COMA','declaracion_variable',5,'p_declaracion_variable','parser.py',36),
+  ('declaracion_variable -> BOOL ID IGUAL booleana PUNTO_Y_COMA','declaracion_variable',5,'p_declaracion_variable','parser.py',37),
+  ('declaracion_variable -> CHAR ID IGUAL CHAR_LITERAL PUNTO_Y_COMA','declaracion_variable',5,'p_declaracion_variable','parser.py',38),
+  ('booleana -> TRUE','booleana',1,'p_booleana','parser.py',63),
+  ('booleana -> FALSE','booleana',1,'p_booleana','parser.py',64),
+  ('expresion -> NUMERO','expresion',1,'p_expresion_numero','parser.py',72),
+  ('expresion -> expresion MAS expresion','expresion',3,'p_expresion_suma','parser.py',77),
+  ('expresion -> expresion MENOS expresion','expresion',3,'p_expresion_resta','parser.py',82),
 ]

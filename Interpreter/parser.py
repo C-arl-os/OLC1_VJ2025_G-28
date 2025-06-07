@@ -14,7 +14,8 @@ def p_instrucciones(t):
 
 def p_instruccion(t):
     '''instruccion : comentario_una_linea
-                   | comentario_multi_linea'''
+                   | comentario_multi_linea
+                   | declaracion_variable'''
     pass
 
 
@@ -28,6 +29,42 @@ def p_comentario_multi_linea(t):
     print(f'Apertura Comentario: {t[1]}')
     print(f'Comentario: {t[2]}')
     print(f'Cierre Comentario: {t[3]}')
+
+def p_declaracion_variable(t):
+    '''declaracion_variable : INT ID IGUAL NUMERO PUNTO_Y_COMA
+                            | FLOAT ID IGUAL DECIMAL PUNTO_Y_COMA
+                            | STR ID IGUAL STRING PUNTO_Y_COMA
+                            | BOOL ID IGUAL booleana PUNTO_Y_COMA
+                            | CHAR ID IGUAL CHAR_LITERAL PUNTO_Y_COMA'''
+
+    tipo = t[1]
+    nombre = t[2]
+    valor = t[4].interpret() if hasattr(t[4], 'interpret') else t[4]  # Evaluar si es nodo
+
+    error = False
+
+    if tipo == 'int' and not isinstance(valor, int):
+        error = True
+    elif tipo == 'float' and not isinstance(valor, float):
+        error = True
+    elif tipo == 'bool' and not isinstance(valor, bool):
+        error = True
+    elif tipo == 'str' and not isinstance(valor, str):
+        error = True
+    elif tipo == 'char' and not (isinstance(valor, str) and len(valor) == 1):
+        error = True
+
+    if error:
+        print(f"Error de tipo: No se puede asignar '{valor}' a una variable de tipo '{tipo}'")
+    else:
+        print(f" Declaración válida: variable '{nombre}' de tipo '{tipo}' con valor '{valor}'")
+
+def p_booleana(p):
+    '''booleana : TRUE
+                 | FALSE'''
+    p[0] = True if p[1] == 'true' else False
+
+
 
 start = 'instrucciones'
 

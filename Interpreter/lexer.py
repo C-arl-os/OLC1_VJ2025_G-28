@@ -5,16 +5,34 @@ states = (
     ('comentmulti', 'exclusive'),
 )
 
+reserved = {
+    'true': 'TRUE',
+    'false': 'FALSE',
+    'int' : 'INT',
+    'float' : 'FLOAT',
+    'bool' : 'BOOL',
+    'char' : 'CHAR',
+    'str' : 'STR'
+}
+
 tokens = (
     'NUMERO',
+    'DECIMAL',
     'MAS',
     'MENOS',
+    'ID', #Declaracion de variable
+    'IGUAL',
+    'PUNTO_Y_COMA',
+    'COMILLAS',
+    'PORCENTAJE',
     'C_UNA_LINEA',
     'COMENTARIO',
     'C_MULTI_APERTURA',
     'C_MULTI_CIERRE',
-    'COMENTARIO_MULTI'
-)
+    'COMENTARIO_MULTI',
+    'STRING', 
+    'CHAR_LITERAL'
+)+ tuple(reserved.values())
 
 # Reglas para tokens de un solo carácter
 t_MAS   = r'\+'
@@ -23,10 +41,33 @@ t_MENOS = r'-'
 # Ignorar espacios y tabulaciones
 t_ignore = ' \t'
 
+#Reglas para declaracion de variables
+t_IGUAL = r'='
+t_PUNTO_Y_COMA = r';'
+t_PORCENTAJE = r'%'
+
+def t_STRING(t):
+    r'"[^"\n]*"'
+    t.value = t.value.strip('"')
+    return t
+
+def t_CHAR_LITERAL(t):
+    r"'[^\\]'|'\\.'"
+    t.value = t.value.strip("'")
+    return t
+
+
+def t_DECIMAL(t):
+    r'\d+\.\d+'
+    t.value = float(t.value)
+    return t
+
 def t_NUMERO(t):
     r'\d+'
     t.value = int(t.value)   #Casteo a int
     return t
+
+
 
 def t_C_UNA_LINEA(t):
     r'//'
@@ -74,5 +115,10 @@ def t_comentmulti_newline(t):
 
 def t_comentmulti_error(t):
     t.lexer.skip(1)
+
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z0-9_]*'
+    t.type = reserved.get(t.value, 'ID')  # Si es palabra reservada, lo cambia
+    return t
 
 lexer = lex.lex()
