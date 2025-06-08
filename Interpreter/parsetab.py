@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'inicioleftMASMENOSleftPORDIVIDIDOCOMENTARIO_MULTILINEA COMENTARIO_UNA_LINEA DIVIDIDO ENTERO FLOTANTE ID IGUAL INT MAS MENOS PARDER PARIZQ POR PTCOMAexpresion : INT ID IGUAL expresion PTCOMAexpresion : ENTEROexpresion : FLOTANTEexpresion : expresion MAS expresionexpresion : expresion MENOS expresionexpresion : expresion POR expresionexpresion : INT PARIZQ expresion PARDER PTCOMAinicio : expresion\n              | comentario_una_linea\n              | comentario_multi_lineaexpresion : expresion DIVIDIDO expresioncomentario_multi_linea : COMENTARIO_MULTILINEAcomentario_una_linea : COMENTARIO_UNA_LINEA'
+_lr_signature = 'inicioleftMASMENOSleftPORDIVIDIDOMODULOrightPOTENCIArightUMINUSASIGNACION BOLEANO BOLEANO BOOL CADENA CARACTER CHAR DECIMAL DIVIDIDO ENTERO FLOAT ID INT MAS MENOS MODULO PARDER PARIZQ POR POTENCIA PTCOMA STRINGinicio : lista_expresioneslista_expresiones : lista_expresiones expresion PTCOMA\n| expresion PTCOMAexpresion : ENTEROexpresion : DECIMALexpresion : BOLEANOexpresion : CARACTERexpresion : CADENAexpresion : IDexpresion : MENOS expresion %prec UMINUSexpresion : expresion MAS expresionexpresion : expresion MENOS expresionexpresion : expresion POR expresionexpresion : expresion DIVIDIDO expresionexpresion : expresion POTENCIA expresionexpresion : expresion MODULO expresionexpresion : ID ASIGNACION expresiontipo : INT\n| FLOAT\n| CHAR\n| STRING\n| BOOLexpresion : tipo ID ASIGNACION expresion'
     
-_lr_action_items = {'INT':([0,10,11,12,13,15,20,],[5,5,5,5,5,5,5,]),'ENTERO':([0,10,11,12,13,15,20,],[6,6,6,6,6,6,6,]),'FLOTANTE':([0,10,11,12,13,15,20,],[7,7,7,7,7,7,7,]),'COMENTARIO_UNA_LINEA':([0,],[8,]),'COMENTARIO_MULTILINEA':([0,],[9,]),'$end':([1,2,3,4,6,7,8,9,16,17,18,19,24,25,],[0,-8,-9,-10,-2,-3,-13,-12,-4,-5,-6,-11,-1,-7,]),'MAS':([2,6,7,16,17,18,19,21,22,24,25,],[10,-2,-3,-4,-5,-6,-11,10,10,-1,-7,]),'MENOS':([2,6,7,16,17,18,19,21,22,24,25,],[11,-2,-3,-4,-5,-6,-11,11,11,-1,-7,]),'POR':([2,6,7,16,17,18,19,21,22,24,25,],[12,-2,-3,12,12,-6,-11,12,12,-1,-7,]),'DIVIDIDO':([2,6,7,16,17,18,19,21,22,24,25,],[13,-2,-3,13,13,-6,-11,13,13,-1,-7,]),'ID':([5,],[14,]),'PARIZQ':([5,],[15,]),'PARDER':([6,7,16,17,18,19,21,24,25,],[-2,-3,-4,-5,-6,-11,23,-1,-7,]),'PTCOMA':([6,7,16,17,18,19,22,23,24,25,],[-2,-3,-4,-5,-6,-11,24,25,-1,-7,]),'IGUAL':([14,],[20,]),}
+_lr_action_items = {'ENTERO':([0,2,10,18,19,20,21,22,23,24,25,28,36,],[4,4,4,-3,4,4,4,4,4,4,4,-2,4,]),'DECIMAL':([0,2,10,18,19,20,21,22,23,24,25,28,36,],[5,5,5,-3,5,5,5,5,5,5,5,-2,5,]),'BOLEANO':([0,2,10,18,19,20,21,22,23,24,25,28,36,],[6,6,6,-3,6,6,6,6,6,6,6,-2,6,]),'CARACTER':([0,2,10,18,19,20,21,22,23,24,25,28,36,],[7,7,7,-3,7,7,7,7,7,7,7,-2,7,]),'CADENA':([0,2,10,18,19,20,21,22,23,24,25,28,36,],[8,8,8,-3,8,8,8,8,8,8,8,-2,8,]),'ID':([0,2,10,11,12,13,14,15,16,18,19,20,21,22,23,24,25,28,36,],[9,9,9,27,-18,-19,-20,-21,-22,-3,9,9,9,9,9,9,9,-2,9,]),'MENOS':([0,2,3,4,5,6,7,8,9,10,17,18,19,20,21,22,23,24,25,26,28,29,30,31,32,33,34,35,36,37,],[10,10,20,-4,-5,-6,-7,-8,-9,10,20,-3,10,10,10,10,10,10,10,-10,-2,-11,-12,-13,-14,-15,-16,20,10,20,]),'INT':([0,2,10,18,19,20,21,22,23,24,25,28,36,],[12,12,12,-3,12,12,12,12,12,12,12,-2,12,]),'FLOAT':([0,2,10,18,19,20,21,22,23,24,25,28,36,],[13,13,13,-3,13,13,13,13,13,13,13,-2,13,]),'CHAR':([0,2,10,18,19,20,21,22,23,24,25,28,36,],[14,14,14,-3,14,14,14,14,14,14,14,-2,14,]),'STRING':([0,2,10,18,19,20,21,22,23,24,25,28,36,],[15,15,15,-3,15,15,15,15,15,15,15,-2,15,]),'BOOL':([0,2,10,18,19,20,21,22,23,24,25,28,36,],[16,16,16,-3,16,16,16,16,16,16,16,-2,16,]),'$end':([1,2,18,28,],[0,-1,-3,-2,]),'PTCOMA':([3,4,5,6,7,8,9,17,26,29,30,31,32,33,34,35,37,],[18,-4,-5,-6,-7,-8,-9,28,-10,-11,-12,-13,-14,-15,-16,-17,-23,]),'MAS':([3,4,5,6,7,8,9,17,26,29,30,31,32,33,34,35,37,],[19,-4,-5,-6,-7,-8,-9,19,-10,-11,-12,-13,-14,-15,-16,19,19,]),'POR':([3,4,5,6,7,8,9,17,26,29,30,31,32,33,34,35,37,],[21,-4,-5,-6,-7,-8,-9,21,-10,21,21,-13,-14,-15,-16,21,21,]),'DIVIDIDO':([3,4,5,6,7,8,9,17,26,29,30,31,32,33,34,35,37,],[22,-4,-5,-6,-7,-8,-9,22,-10,22,22,-13,-14,-15,-16,22,22,]),'POTENCIA':([3,4,5,6,7,8,9,17,26,29,30,31,32,33,34,35,37,],[23,-4,-5,-6,-7,-8,-9,23,-10,23,23,23,23,23,23,23,23,]),'MODULO':([3,4,5,6,7,8,9,17,26,29,30,31,32,33,34,35,37,],[24,-4,-5,-6,-7,-8,-9,24,-10,24,24,-13,-14,-15,-16,24,24,]),'ASIGNACION':([9,27,],[25,36,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'inicio':([0,],[1,]),'expresion':([0,10,11,12,13,15,20,],[2,16,17,18,19,21,22,]),'comentario_una_linea':([0,],[3,]),'comentario_multi_linea':([0,],[4,]),}
+_lr_goto_items = {'inicio':([0,],[1,]),'lista_expresiones':([0,],[2,]),'expresion':([0,2,10,19,20,21,22,23,24,25,36,],[3,17,26,29,30,31,32,33,34,35,37,]),'tipo':([0,2,10,19,20,21,22,23,24,25,36,],[11,11,11,11,11,11,11,11,11,11,11,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,17 +27,27 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> inicio","S'",1,None,None,None),
-  ('expresion -> INT ID IGUAL expresion PTCOMA','expresion',5,'p_declaracion_asignacion','parser.py',20),
-  ('expresion -> ENTERO','expresion',1,'p_expresion_entero','parser.py',24),
-  ('expresion -> FLOTANTE','expresion',1,'p_expresion_decimal','parser.py',28),
-  ('expresion -> expresion MAS expresion','expresion',3,'p_expresion_suma','parser.py',32),
-  ('expresion -> expresion MENOS expresion','expresion',3,'p_expresion_resta','parser.py',36),
-  ('expresion -> expresion POR expresion','expresion',3,'p_expresion_multi','parser.py',40),
-  ('expresion -> INT PARIZQ expresion PARDER PTCOMA','expresion',5,'p_asignacion','parser.py',44),
-  ('inicio -> expresion','inicio',1,'p_inicio','parser.py',48),
-  ('inicio -> comentario_una_linea','inicio',1,'p_inicio','parser.py',49),
-  ('inicio -> comentario_multi_linea','inicio',1,'p_inicio','parser.py',50),
-  ('expresion -> expresion DIVIDIDO expresion','expresion',3,'p_expresion_div','parser.py',55),
-  ('comentario_multi_linea -> COMENTARIO_MULTILINEA','comentario_multi_linea',1,'p_comentario_multi_linea','parser.py',59),
-  ('comentario_una_linea -> COMENTARIO_UNA_LINEA','comentario_una_linea',1,'p_comentario_una_linea','parser.py',63),
+  ('inicio -> lista_expresiones','inicio',1,'p_inicio','parser.py',15),
+  ('lista_expresiones -> lista_expresiones expresion PTCOMA','lista_expresiones',3,'p_lista_expresiones','parser.py',19),
+  ('lista_expresiones -> expresion PTCOMA','lista_expresiones',2,'p_lista_expresiones','parser.py',20),
+  ('expresion -> ENTERO','expresion',1,'p_expresion_entero','parser.py',28),
+  ('expresion -> DECIMAL','expresion',1,'p_expresion_decimal','parser.py',32),
+  ('expresion -> BOLEANO','expresion',1,'p_expresion_boleano','parser.py',36),
+  ('expresion -> CARACTER','expresion',1,'p_expresion_caracter','parser.py',40),
+  ('expresion -> CADENA','expresion',1,'p_expresion_cadena','parser.py',44),
+  ('expresion -> ID','expresion',1,'p_expresion_id','parser.py',48),
+  ('expresion -> MENOS expresion','expresion',2,'p_expresion_negativa','parser.py',53),
+  ('expresion -> expresion MAS expresion','expresion',3,'p_expresion_suma','parser.py',57),
+  ('expresion -> expresion MENOS expresion','expresion',3,'p_expresion_resta','parser.py',61),
+  ('expresion -> expresion POR expresion','expresion',3,'p_expresion_multiplicacion','parser.py',65),
+  ('expresion -> expresion DIVIDIDO expresion','expresion',3,'p_expresion_division','parser.py',69),
+  ('expresion -> expresion POTENCIA expresion','expresion',3,'p_expresion_potencia','parser.py',73),
+  ('expresion -> expresion MODULO expresion','expresion',3,'p_expresion_modulo','parser.py',77),
+  ('expresion -> ID ASIGNACION expresion','expresion',3,'p_asignacion','parser.py',81),
+  ('tipo -> INT','tipo',1,'p_tipo','parser.py',85),
+  ('tipo -> FLOAT','tipo',1,'p_tipo','parser.py',86),
+  ('tipo -> CHAR','tipo',1,'p_tipo','parser.py',87),
+  ('tipo -> STRING','tipo',1,'p_tipo','parser.py',88),
+  ('tipo -> BOOL','tipo',1,'p_tipo','parser.py',89),
+  ('expresion -> tipo ID ASIGNACION expresion','expresion',4,'p_declaracion_asignacion','parser.py',93),
 ]
