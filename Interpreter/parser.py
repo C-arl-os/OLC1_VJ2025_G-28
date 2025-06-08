@@ -8,6 +8,8 @@ from nodes.Multi import Multi
 from nodes.Asignacion import Asignacion
 from nodes.Div import Div
 
+comentarios = []
+
 # Precedencia
 precedence = (
     ('left', 'MAS', 'MENOS'),
@@ -57,10 +59,12 @@ def p_expresion_div(p):
 
 def p_comentario_multi_linea(t):
     'comentario_multi_linea : COMENTARIO_MULTILINEA'
+    comentarios.append(f'Comentario Multilínea: {t[1]}')
     print(f'Comentario Multilínea: {t[1]}')
 
 def p_comentario_una_linea(t):
     'comentario_una_linea : COMENTARIO_UNA_LINEA'
+    comentarios.append(f'Comentario de una línea: {t[1]}')
     print(f'Comentario de una línea: {t[1]}')
 
 def p_error(p):

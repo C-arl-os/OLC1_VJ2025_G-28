@@ -1,19 +1,24 @@
-from parser import parser
+from parser import parser, comentarios  # importa la lista también
 
-def main():
-    texto = """//Hola soy Jose
-"""
+def analizar_texto(texto):
+    resultado = []
+    comentarios.clear()  # Limpiar comentarios anteriores
 
     for linea in texto.splitlines():
         if not linea.strip():
             continue
         raiz = parser.parse(linea)
         if raiz is None:
-            print("Hubo un error al parsear la expresión.")
+            #por alguna razón da error, lo comentaré mientras aprendemos el porque
+            #resultado.append("Hubo un error al parsear la expresión.")
             continue
-        print("Representación infija (con paréntesis):", raiz)
-        valor = raiz.interpret()
-        print("Resultado numérico:", valor)
+        if hasattr(raiz, 'interpret'):
+            resultado.append(f"Expresión: {raiz}")
+            resultado.append(f"Resultado: {raiz.interpret()}")
 
-if __name__ == "__main__":
-    main()
+    resultado.extend(comentarios)  # Añadir los comentarios al final
+    return '\n'.join(resultado)
+
+#LEER POR FAVOR
+# PARA HACERLO FUNCIONAR
+# ESCRIBIR PYTHON APP.PY HUBICADOS EN LA CARPETA "INTERPRETER"
