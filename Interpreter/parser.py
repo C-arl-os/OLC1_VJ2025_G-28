@@ -1,6 +1,7 @@
 import ply.yacc as yacc
 from lexer import tokens
 from nodes.ast_nodes import Numero, Decimal, Boleano, Caracter, Cadena, Identificador, Asignacion, Suma, Resta, Multiplicacion, Division,Potencia,Modulo,Negativo, Println
+from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento
 comentarios = []
 
 # Precedencia
@@ -8,6 +9,7 @@ precedence = (
     ('left', 'MAS', 'MENOS'),
     ('left', 'POR', 'DIVIDIDO', 'MODULO'),
     ('right', 'POTENCIA'),
+    ('left', 'GE', 'LE', 'LT', 'GT', 'EQ'),  # Comparaciones
     ('right', 'UMINUS'),
 )
 
@@ -107,6 +109,33 @@ def p_error(p):
     else:
         print("Error de sintaxis: fin de entrada inesperado")
 
+#operadores
+
+def p_expresion_comparacion(p):
+    '''expresion : expresion GE expresion
+                 | expresion LE expresion
+                 | expresion LT expresion
+                 | expresion GT expresion
+                 | expresion EQ expresion'''
+    if p[2] == '>=':
+        p[0] = MayorIgual(p[1], p[3])
+    elif p[2] == '<=':
+        p[0] = MenorIgual(p[1], p[3])
+    elif p[2] == '<':
+        p[0] = MenorQue(p[1], p[3])
+    elif p[2] == '>':
+        p[0] = MayorQue(p[1], p[3])
+    elif p[2] == '==':
+        p[0] = Igual(p[1], p[3])
+        
+#INCREMENTO Y DEREMENTO 
+def p_expresion_incremento(p):
+    'expresion : ID INCREMENTO'
+    p[0] = Incremento(Identificador(p[1]))
+
+def p_expresion_decremento(p):
+    'expresion : ID DECREMENTO'
+    p[0] = Decremento(Identificador(p[1]))
 #comentarios
 def p_comentario_multi_linea(t):
     'comentario_multi_linea : COMENTARIO_MULTILINEA'

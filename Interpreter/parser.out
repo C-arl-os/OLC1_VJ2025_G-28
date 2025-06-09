@@ -30,8 +30,15 @@ Rule 24    tipo -> STRING
 Rule 25    tipo -> BOOL
 Rule 26    expresion -> PRINTLN PARIZQ expresion PARDER
 Rule 27    expresion -> tipo ID ASIGNACION expresion
-Rule 28    comentario_multi_linea -> COMENTARIO_MULTILINEA
-Rule 29    comentario_una_linea -> COMENTARIO_UNA_LINEA
+Rule 28    expresion -> expresion GE expresion
+Rule 29    expresion -> expresion LE expresion
+Rule 30    expresion -> expresion LT expresion
+Rule 31    expresion -> expresion GT expresion
+Rule 32    expresion -> expresion EQ expresion
+Rule 33    expresion -> ID INCREMENTO
+Rule 34    expresion -> ID DECREMENTO
+Rule 35    comentario_multi_linea -> COMENTARIO_MULTILINEA
+Rule 36    comentario_una_linea -> COMENTARIO_UNA_LINEA
 
 Terminals, with rules where they appear
 
@@ -41,14 +48,21 @@ BOOL                 : 25
 CADENA               : 11
 CARACTER             : 10
 CHAR                 : 23
-COMENTARIO_MULTILINEA : 28
-COMENTARIO_UNA_LINEA : 29
+COMENTARIO_MULTILINEA : 35
+COMENTARIO_UNA_LINEA : 36
 DECIMAL              : 8
+DECREMENTO           : 34
 DIVIDIDO             : 17
 ENTERO               : 7
+EQ                   : 32
 FLOAT                : 22
-ID                   : 12 20 27
+GE                   : 28
+GT                   : 31
+ID                   : 12 20 27 33 34
+INCREMENTO           : 33
 INT                  : 21
+LE                   : 29
+LT                   : 30
 MAS                  : 14
 MENOS                : 13 15
 MODULO               : 19
@@ -65,7 +79,7 @@ Nonterminals, with rules where they appear
 
 comentario_multi_linea : 4
 comentario_una_linea : 3
-expresion            : 1 5 6 13 14 14 15 15 16 16 17 17 18 18 19 19 20 26 27
+expresion            : 1 5 6 13 14 14 15 15 16 16 17 17 18 18 19 19 20 26 27 28 28 29 29 30 30 31 31 32 32
 inicio               : 0
 lista_expresiones    : 2 5
 tipo                 : 27
@@ -95,10 +109,17 @@ state 0
     (20) expresion -> . ID ASIGNACION expresion
     (26) expresion -> . PRINTLN PARIZQ expresion PARDER
     (27) expresion -> . tipo ID ASIGNACION expresion
+    (28) expresion -> . expresion GE expresion
+    (29) expresion -> . expresion LE expresion
+    (30) expresion -> . expresion LT expresion
+    (31) expresion -> . expresion GT expresion
+    (32) expresion -> . expresion EQ expresion
+    (33) expresion -> . ID INCREMENTO
+    (34) expresion -> . ID DECREMENTO
     (5) lista_expresiones -> . lista_expresiones expresion PTCOMA
     (6) lista_expresiones -> . expresion PTCOMA
-    (29) comentario_una_linea -> . COMENTARIO_UNA_LINEA
-    (28) comentario_multi_linea -> . COMENTARIO_MULTILINEA
+    (36) comentario_una_linea -> . COMENTARIO_UNA_LINEA
+    (35) comentario_multi_linea -> . COMENTARIO_MULTILINEA
     (21) tipo -> . INT
     (22) tipo -> . FLOAT
     (23) tipo -> . CHAR
@@ -143,6 +164,11 @@ state 2
     (17) expresion -> expresion . DIVIDIDO expresion
     (18) expresion -> expresion . POTENCIA expresion
     (19) expresion -> expresion . MODULO expresion
+    (28) expresion -> expresion . GE expresion
+    (29) expresion -> expresion . LE expresion
+    (30) expresion -> expresion . LT expresion
+    (31) expresion -> expresion . GT expresion
+    (32) expresion -> expresion . EQ expresion
     (6) lista_expresiones -> expresion . PTCOMA
 
     $end            reduce using rule 1 (inicio -> expresion .)
@@ -152,7 +178,12 @@ state 2
     DIVIDIDO        shift and go to state 25
     POTENCIA        shift and go to state 26
     MODULO          shift and go to state 27
-    PTCOMA          shift and go to state 28
+    GE              shift and go to state 28
+    LE              shift and go to state 29
+    LT              shift and go to state 30
+    GT              shift and go to state 31
+    EQ              shift and go to state 32
+    PTCOMA          shift and go to state 33
 
 
 state 3
@@ -175,6 +206,13 @@ state 3
     (20) expresion -> . ID ASIGNACION expresion
     (26) expresion -> . PRINTLN PARIZQ expresion PARDER
     (27) expresion -> . tipo ID ASIGNACION expresion
+    (28) expresion -> . expresion GE expresion
+    (29) expresion -> . expresion LE expresion
+    (30) expresion -> . expresion LT expresion
+    (31) expresion -> . expresion GT expresion
+    (32) expresion -> . expresion EQ expresion
+    (33) expresion -> . ID INCREMENTO
+    (34) expresion -> . ID DECREMENTO
     (21) tipo -> . INT
     (22) tipo -> . FLOAT
     (23) tipo -> . CHAR
@@ -196,7 +234,7 @@ state 3
     STRING          shift and go to state 20
     BOOL            shift and go to state 21
 
-    expresion                      shift and go to state 29
+    expresion                      shift and go to state 34
     tipo                           shift and go to state 14
 
 state 4
@@ -223,6 +261,11 @@ state 6
     DIVIDIDO        reduce using rule 7 (expresion -> ENTERO .)
     POTENCIA        reduce using rule 7 (expresion -> ENTERO .)
     MODULO          reduce using rule 7 (expresion -> ENTERO .)
+    GE              reduce using rule 7 (expresion -> ENTERO .)
+    LE              reduce using rule 7 (expresion -> ENTERO .)
+    LT              reduce using rule 7 (expresion -> ENTERO .)
+    GT              reduce using rule 7 (expresion -> ENTERO .)
+    EQ              reduce using rule 7 (expresion -> ENTERO .)
     PTCOMA          reduce using rule 7 (expresion -> ENTERO .)
     $end            reduce using rule 7 (expresion -> ENTERO .)
     PARDER          reduce using rule 7 (expresion -> ENTERO .)
@@ -238,6 +281,11 @@ state 7
     DIVIDIDO        reduce using rule 8 (expresion -> DECIMAL .)
     POTENCIA        reduce using rule 8 (expresion -> DECIMAL .)
     MODULO          reduce using rule 8 (expresion -> DECIMAL .)
+    GE              reduce using rule 8 (expresion -> DECIMAL .)
+    LE              reduce using rule 8 (expresion -> DECIMAL .)
+    LT              reduce using rule 8 (expresion -> DECIMAL .)
+    GT              reduce using rule 8 (expresion -> DECIMAL .)
+    EQ              reduce using rule 8 (expresion -> DECIMAL .)
     PTCOMA          reduce using rule 8 (expresion -> DECIMAL .)
     $end            reduce using rule 8 (expresion -> DECIMAL .)
     PARDER          reduce using rule 8 (expresion -> DECIMAL .)
@@ -253,6 +301,11 @@ state 8
     DIVIDIDO        reduce using rule 9 (expresion -> BOLEANO .)
     POTENCIA        reduce using rule 9 (expresion -> BOLEANO .)
     MODULO          reduce using rule 9 (expresion -> BOLEANO .)
+    GE              reduce using rule 9 (expresion -> BOLEANO .)
+    LE              reduce using rule 9 (expresion -> BOLEANO .)
+    LT              reduce using rule 9 (expresion -> BOLEANO .)
+    GT              reduce using rule 9 (expresion -> BOLEANO .)
+    EQ              reduce using rule 9 (expresion -> BOLEANO .)
     PTCOMA          reduce using rule 9 (expresion -> BOLEANO .)
     $end            reduce using rule 9 (expresion -> BOLEANO .)
     PARDER          reduce using rule 9 (expresion -> BOLEANO .)
@@ -268,6 +321,11 @@ state 9
     DIVIDIDO        reduce using rule 10 (expresion -> CARACTER .)
     POTENCIA        reduce using rule 10 (expresion -> CARACTER .)
     MODULO          reduce using rule 10 (expresion -> CARACTER .)
+    GE              reduce using rule 10 (expresion -> CARACTER .)
+    LE              reduce using rule 10 (expresion -> CARACTER .)
+    LT              reduce using rule 10 (expresion -> CARACTER .)
+    GT              reduce using rule 10 (expresion -> CARACTER .)
+    EQ              reduce using rule 10 (expresion -> CARACTER .)
     PTCOMA          reduce using rule 10 (expresion -> CARACTER .)
     $end            reduce using rule 10 (expresion -> CARACTER .)
     PARDER          reduce using rule 10 (expresion -> CARACTER .)
@@ -283,6 +341,11 @@ state 10
     DIVIDIDO        reduce using rule 11 (expresion -> CADENA .)
     POTENCIA        reduce using rule 11 (expresion -> CADENA .)
     MODULO          reduce using rule 11 (expresion -> CADENA .)
+    GE              reduce using rule 11 (expresion -> CADENA .)
+    LE              reduce using rule 11 (expresion -> CADENA .)
+    LT              reduce using rule 11 (expresion -> CADENA .)
+    GT              reduce using rule 11 (expresion -> CADENA .)
+    EQ              reduce using rule 11 (expresion -> CADENA .)
     PTCOMA          reduce using rule 11 (expresion -> CADENA .)
     $end            reduce using rule 11 (expresion -> CADENA .)
     PARDER          reduce using rule 11 (expresion -> CADENA .)
@@ -292,6 +355,8 @@ state 11
 
     (12) expresion -> ID .
     (20) expresion -> ID . ASIGNACION expresion
+    (33) expresion -> ID . INCREMENTO
+    (34) expresion -> ID . DECREMENTO
 
     MAS             reduce using rule 12 (expresion -> ID .)
     MENOS           reduce using rule 12 (expresion -> ID .)
@@ -299,10 +364,17 @@ state 11
     DIVIDIDO        reduce using rule 12 (expresion -> ID .)
     POTENCIA        reduce using rule 12 (expresion -> ID .)
     MODULO          reduce using rule 12 (expresion -> ID .)
+    GE              reduce using rule 12 (expresion -> ID .)
+    LE              reduce using rule 12 (expresion -> ID .)
+    LT              reduce using rule 12 (expresion -> ID .)
+    GT              reduce using rule 12 (expresion -> ID .)
+    EQ              reduce using rule 12 (expresion -> ID .)
     PTCOMA          reduce using rule 12 (expresion -> ID .)
     $end            reduce using rule 12 (expresion -> ID .)
     PARDER          reduce using rule 12 (expresion -> ID .)
-    ASIGNACION      shift and go to state 30
+    ASIGNACION      shift and go to state 35
+    INCREMENTO      shift and go to state 36
+    DECREMENTO      shift and go to state 37
 
 
 state 12
@@ -324,6 +396,13 @@ state 12
     (20) expresion -> . ID ASIGNACION expresion
     (26) expresion -> . PRINTLN PARIZQ expresion PARDER
     (27) expresion -> . tipo ID ASIGNACION expresion
+    (28) expresion -> . expresion GE expresion
+    (29) expresion -> . expresion LE expresion
+    (30) expresion -> . expresion LT expresion
+    (31) expresion -> . expresion GT expresion
+    (32) expresion -> . expresion EQ expresion
+    (33) expresion -> . ID INCREMENTO
+    (34) expresion -> . ID DECREMENTO
     (21) tipo -> . INT
     (22) tipo -> . FLOAT
     (23) tipo -> . CHAR
@@ -344,35 +423,35 @@ state 12
     STRING          shift and go to state 20
     BOOL            shift and go to state 21
 
-    expresion                      shift and go to state 31
+    expresion                      shift and go to state 38
     tipo                           shift and go to state 14
 
 state 13
 
     (26) expresion -> PRINTLN . PARIZQ expresion PARDER
 
-    PARIZQ          shift and go to state 32
+    PARIZQ          shift and go to state 39
 
 
 state 14
 
     (27) expresion -> tipo . ID ASIGNACION expresion
 
-    ID              shift and go to state 33
+    ID              shift and go to state 40
 
 
 state 15
 
-    (29) comentario_una_linea -> COMENTARIO_UNA_LINEA .
+    (36) comentario_una_linea -> COMENTARIO_UNA_LINEA .
 
-    $end            reduce using rule 29 (comentario_una_linea -> COMENTARIO_UNA_LINEA .)
+    $end            reduce using rule 36 (comentario_una_linea -> COMENTARIO_UNA_LINEA .)
 
 
 state 16
 
-    (28) comentario_multi_linea -> COMENTARIO_MULTILINEA .
+    (35) comentario_multi_linea -> COMENTARIO_MULTILINEA .
 
-    $end            reduce using rule 28 (comentario_multi_linea -> COMENTARIO_MULTILINEA .)
+    $end            reduce using rule 35 (comentario_multi_linea -> COMENTARIO_MULTILINEA .)
 
 
 state 17
@@ -429,297 +508,13 @@ state 22
     (20) expresion -> . ID ASIGNACION expresion
     (26) expresion -> . PRINTLN PARIZQ expresion PARDER
     (27) expresion -> . tipo ID ASIGNACION expresion
-    (21) tipo -> . INT
-    (22) tipo -> . FLOAT
-    (23) tipo -> . CHAR
-    (24) tipo -> . STRING
-    (25) tipo -> . BOOL
-
-    ENTERO          shift and go to state 6
-    DECIMAL         shift and go to state 7
-    BOLEANO         shift and go to state 8
-    CARACTER        shift and go to state 9
-    CADENA          shift and go to state 10
-    ID              shift and go to state 11
-    MENOS           shift and go to state 12
-    PRINTLN         shift and go to state 13
-    INT             shift and go to state 17
-    FLOAT           shift and go to state 18
-    CHAR            shift and go to state 19
-    STRING          shift and go to state 20
-    BOOL            shift and go to state 21
-
-    expresion                      shift and go to state 34
-    tipo                           shift and go to state 14
-
-state 23
-
-    (15) expresion -> expresion MENOS . expresion
-    (7) expresion -> . ENTERO
-    (8) expresion -> . DECIMAL
-    (9) expresion -> . BOLEANO
-    (10) expresion -> . CARACTER
-    (11) expresion -> . CADENA
-    (12) expresion -> . ID
-    (13) expresion -> . MENOS expresion
-    (14) expresion -> . expresion MAS expresion
-    (15) expresion -> . expresion MENOS expresion
-    (16) expresion -> . expresion POR expresion
-    (17) expresion -> . expresion DIVIDIDO expresion
-    (18) expresion -> . expresion POTENCIA expresion
-    (19) expresion -> . expresion MODULO expresion
-    (20) expresion -> . ID ASIGNACION expresion
-    (26) expresion -> . PRINTLN PARIZQ expresion PARDER
-    (27) expresion -> . tipo ID ASIGNACION expresion
-    (21) tipo -> . INT
-    (22) tipo -> . FLOAT
-    (23) tipo -> . CHAR
-    (24) tipo -> . STRING
-    (25) tipo -> . BOOL
-
-    ENTERO          shift and go to state 6
-    DECIMAL         shift and go to state 7
-    BOLEANO         shift and go to state 8
-    CARACTER        shift and go to state 9
-    CADENA          shift and go to state 10
-    ID              shift and go to state 11
-    MENOS           shift and go to state 12
-    PRINTLN         shift and go to state 13
-    INT             shift and go to state 17
-    FLOAT           shift and go to state 18
-    CHAR            shift and go to state 19
-    STRING          shift and go to state 20
-    BOOL            shift and go to state 21
-
-    expresion                      shift and go to state 35
-    tipo                           shift and go to state 14
-
-state 24
-
-    (16) expresion -> expresion POR . expresion
-    (7) expresion -> . ENTERO
-    (8) expresion -> . DECIMAL
-    (9) expresion -> . BOLEANO
-    (10) expresion -> . CARACTER
-    (11) expresion -> . CADENA
-    (12) expresion -> . ID
-    (13) expresion -> . MENOS expresion
-    (14) expresion -> . expresion MAS expresion
-    (15) expresion -> . expresion MENOS expresion
-    (16) expresion -> . expresion POR expresion
-    (17) expresion -> . expresion DIVIDIDO expresion
-    (18) expresion -> . expresion POTENCIA expresion
-    (19) expresion -> . expresion MODULO expresion
-    (20) expresion -> . ID ASIGNACION expresion
-    (26) expresion -> . PRINTLN PARIZQ expresion PARDER
-    (27) expresion -> . tipo ID ASIGNACION expresion
-    (21) tipo -> . INT
-    (22) tipo -> . FLOAT
-    (23) tipo -> . CHAR
-    (24) tipo -> . STRING
-    (25) tipo -> . BOOL
-
-    ENTERO          shift and go to state 6
-    DECIMAL         shift and go to state 7
-    BOLEANO         shift and go to state 8
-    CARACTER        shift and go to state 9
-    CADENA          shift and go to state 10
-    ID              shift and go to state 11
-    MENOS           shift and go to state 12
-    PRINTLN         shift and go to state 13
-    INT             shift and go to state 17
-    FLOAT           shift and go to state 18
-    CHAR            shift and go to state 19
-    STRING          shift and go to state 20
-    BOOL            shift and go to state 21
-
-    expresion                      shift and go to state 36
-    tipo                           shift and go to state 14
-
-state 25
-
-    (17) expresion -> expresion DIVIDIDO . expresion
-    (7) expresion -> . ENTERO
-    (8) expresion -> . DECIMAL
-    (9) expresion -> . BOLEANO
-    (10) expresion -> . CARACTER
-    (11) expresion -> . CADENA
-    (12) expresion -> . ID
-    (13) expresion -> . MENOS expresion
-    (14) expresion -> . expresion MAS expresion
-    (15) expresion -> . expresion MENOS expresion
-    (16) expresion -> . expresion POR expresion
-    (17) expresion -> . expresion DIVIDIDO expresion
-    (18) expresion -> . expresion POTENCIA expresion
-    (19) expresion -> . expresion MODULO expresion
-    (20) expresion -> . ID ASIGNACION expresion
-    (26) expresion -> . PRINTLN PARIZQ expresion PARDER
-    (27) expresion -> . tipo ID ASIGNACION expresion
-    (21) tipo -> . INT
-    (22) tipo -> . FLOAT
-    (23) tipo -> . CHAR
-    (24) tipo -> . STRING
-    (25) tipo -> . BOOL
-
-    ENTERO          shift and go to state 6
-    DECIMAL         shift and go to state 7
-    BOLEANO         shift and go to state 8
-    CARACTER        shift and go to state 9
-    CADENA          shift and go to state 10
-    ID              shift and go to state 11
-    MENOS           shift and go to state 12
-    PRINTLN         shift and go to state 13
-    INT             shift and go to state 17
-    FLOAT           shift and go to state 18
-    CHAR            shift and go to state 19
-    STRING          shift and go to state 20
-    BOOL            shift and go to state 21
-
-    expresion                      shift and go to state 37
-    tipo                           shift and go to state 14
-
-state 26
-
-    (18) expresion -> expresion POTENCIA . expresion
-    (7) expresion -> . ENTERO
-    (8) expresion -> . DECIMAL
-    (9) expresion -> . BOLEANO
-    (10) expresion -> . CARACTER
-    (11) expresion -> . CADENA
-    (12) expresion -> . ID
-    (13) expresion -> . MENOS expresion
-    (14) expresion -> . expresion MAS expresion
-    (15) expresion -> . expresion MENOS expresion
-    (16) expresion -> . expresion POR expresion
-    (17) expresion -> . expresion DIVIDIDO expresion
-    (18) expresion -> . expresion POTENCIA expresion
-    (19) expresion -> . expresion MODULO expresion
-    (20) expresion -> . ID ASIGNACION expresion
-    (26) expresion -> . PRINTLN PARIZQ expresion PARDER
-    (27) expresion -> . tipo ID ASIGNACION expresion
-    (21) tipo -> . INT
-    (22) tipo -> . FLOAT
-    (23) tipo -> . CHAR
-    (24) tipo -> . STRING
-    (25) tipo -> . BOOL
-
-    ENTERO          shift and go to state 6
-    DECIMAL         shift and go to state 7
-    BOLEANO         shift and go to state 8
-    CARACTER        shift and go to state 9
-    CADENA          shift and go to state 10
-    ID              shift and go to state 11
-    MENOS           shift and go to state 12
-    PRINTLN         shift and go to state 13
-    INT             shift and go to state 17
-    FLOAT           shift and go to state 18
-    CHAR            shift and go to state 19
-    STRING          shift and go to state 20
-    BOOL            shift and go to state 21
-
-    expresion                      shift and go to state 38
-    tipo                           shift and go to state 14
-
-state 27
-
-    (19) expresion -> expresion MODULO . expresion
-    (7) expresion -> . ENTERO
-    (8) expresion -> . DECIMAL
-    (9) expresion -> . BOLEANO
-    (10) expresion -> . CARACTER
-    (11) expresion -> . CADENA
-    (12) expresion -> . ID
-    (13) expresion -> . MENOS expresion
-    (14) expresion -> . expresion MAS expresion
-    (15) expresion -> . expresion MENOS expresion
-    (16) expresion -> . expresion POR expresion
-    (17) expresion -> . expresion DIVIDIDO expresion
-    (18) expresion -> . expresion POTENCIA expresion
-    (19) expresion -> . expresion MODULO expresion
-    (20) expresion -> . ID ASIGNACION expresion
-    (26) expresion -> . PRINTLN PARIZQ expresion PARDER
-    (27) expresion -> . tipo ID ASIGNACION expresion
-    (21) tipo -> . INT
-    (22) tipo -> . FLOAT
-    (23) tipo -> . CHAR
-    (24) tipo -> . STRING
-    (25) tipo -> . BOOL
-
-    ENTERO          shift and go to state 6
-    DECIMAL         shift and go to state 7
-    BOLEANO         shift and go to state 8
-    CARACTER        shift and go to state 9
-    CADENA          shift and go to state 10
-    ID              shift and go to state 11
-    MENOS           shift and go to state 12
-    PRINTLN         shift and go to state 13
-    INT             shift and go to state 17
-    FLOAT           shift and go to state 18
-    CHAR            shift and go to state 19
-    STRING          shift and go to state 20
-    BOOL            shift and go to state 21
-
-    expresion                      shift and go to state 39
-    tipo                           shift and go to state 14
-
-state 28
-
-    (6) lista_expresiones -> expresion PTCOMA .
-
-    ENTERO          reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
-    DECIMAL         reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
-    BOLEANO         reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
-    CARACTER        reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
-    CADENA          reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
-    ID              reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
-    MENOS           reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
-    PRINTLN         reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
-    INT             reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
-    FLOAT           reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
-    CHAR            reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
-    STRING          reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
-    BOOL            reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
-    $end            reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
-
-
-state 29
-
-    (5) lista_expresiones -> lista_expresiones expresion . PTCOMA
-    (14) expresion -> expresion . MAS expresion
-    (15) expresion -> expresion . MENOS expresion
-    (16) expresion -> expresion . POR expresion
-    (17) expresion -> expresion . DIVIDIDO expresion
-    (18) expresion -> expresion . POTENCIA expresion
-    (19) expresion -> expresion . MODULO expresion
-
-    PTCOMA          shift and go to state 40
-    MAS             shift and go to state 22
-    MENOS           shift and go to state 23
-    POR             shift and go to state 24
-    DIVIDIDO        shift and go to state 25
-    POTENCIA        shift and go to state 26
-    MODULO          shift and go to state 27
-
-
-state 30
-
-    (20) expresion -> ID ASIGNACION . expresion
-    (7) expresion -> . ENTERO
-    (8) expresion -> . DECIMAL
-    (9) expresion -> . BOLEANO
-    (10) expresion -> . CARACTER
-    (11) expresion -> . CADENA
-    (12) expresion -> . ID
-    (13) expresion -> . MENOS expresion
-    (14) expresion -> . expresion MAS expresion
-    (15) expresion -> . expresion MENOS expresion
-    (16) expresion -> . expresion POR expresion
-    (17) expresion -> . expresion DIVIDIDO expresion
-    (18) expresion -> . expresion POTENCIA expresion
-    (19) expresion -> . expresion MODULO expresion
-    (20) expresion -> . ID ASIGNACION expresion
-    (26) expresion -> . PRINTLN PARIZQ expresion PARDER
-    (27) expresion -> . tipo ID ASIGNACION expresion
+    (28) expresion -> . expresion GE expresion
+    (29) expresion -> . expresion LE expresion
+    (30) expresion -> . expresion LT expresion
+    (31) expresion -> . expresion GT expresion
+    (32) expresion -> . expresion EQ expresion
+    (33) expresion -> . ID INCREMENTO
+    (34) expresion -> . ID DECREMENTO
     (21) tipo -> . INT
     (22) tipo -> . FLOAT
     (23) tipo -> . CHAR
@@ -743,37 +538,9 @@ state 30
     expresion                      shift and go to state 41
     tipo                           shift and go to state 14
 
-state 31
+state 23
 
-    (13) expresion -> MENOS expresion .
-    (14) expresion -> expresion . MAS expresion
-    (15) expresion -> expresion . MENOS expresion
-    (16) expresion -> expresion . POR expresion
-    (17) expresion -> expresion . DIVIDIDO expresion
-    (18) expresion -> expresion . POTENCIA expresion
-    (19) expresion -> expresion . MODULO expresion
-
-    MAS             reduce using rule 13 (expresion -> MENOS expresion .)
-    MENOS           reduce using rule 13 (expresion -> MENOS expresion .)
-    POR             reduce using rule 13 (expresion -> MENOS expresion .)
-    DIVIDIDO        reduce using rule 13 (expresion -> MENOS expresion .)
-    POTENCIA        reduce using rule 13 (expresion -> MENOS expresion .)
-    MODULO          reduce using rule 13 (expresion -> MENOS expresion .)
-    PTCOMA          reduce using rule 13 (expresion -> MENOS expresion .)
-    $end            reduce using rule 13 (expresion -> MENOS expresion .)
-    PARDER          reduce using rule 13 (expresion -> MENOS expresion .)
-
-  ! MAS             [ shift and go to state 22 ]
-  ! MENOS           [ shift and go to state 23 ]
-  ! POR             [ shift and go to state 24 ]
-  ! DIVIDIDO        [ shift and go to state 25 ]
-  ! POTENCIA        [ shift and go to state 26 ]
-  ! MODULO          [ shift and go to state 27 ]
-
-
-state 32
-
-    (26) expresion -> PRINTLN PARIZQ . expresion PARDER
+    (15) expresion -> expresion MENOS . expresion
     (7) expresion -> . ENTERO
     (8) expresion -> . DECIMAL
     (9) expresion -> . BOLEANO
@@ -790,6 +557,13 @@ state 32
     (20) expresion -> . ID ASIGNACION expresion
     (26) expresion -> . PRINTLN PARIZQ expresion PARDER
     (27) expresion -> . tipo ID ASIGNACION expresion
+    (28) expresion -> . expresion GE expresion
+    (29) expresion -> . expresion LE expresion
+    (30) expresion -> . expresion LT expresion
+    (31) expresion -> . expresion GT expresion
+    (32) expresion -> . expresion EQ expresion
+    (33) expresion -> . ID INCREMENTO
+    (34) expresion -> . ID DECREMENTO
     (21) tipo -> . INT
     (22) tipo -> . FLOAT
     (23) tipo -> . CHAR
@@ -813,14 +587,685 @@ state 32
     expresion                      shift and go to state 42
     tipo                           shift and go to state 14
 
+state 24
+
+    (16) expresion -> expresion POR . expresion
+    (7) expresion -> . ENTERO
+    (8) expresion -> . DECIMAL
+    (9) expresion -> . BOLEANO
+    (10) expresion -> . CARACTER
+    (11) expresion -> . CADENA
+    (12) expresion -> . ID
+    (13) expresion -> . MENOS expresion
+    (14) expresion -> . expresion MAS expresion
+    (15) expresion -> . expresion MENOS expresion
+    (16) expresion -> . expresion POR expresion
+    (17) expresion -> . expresion DIVIDIDO expresion
+    (18) expresion -> . expresion POTENCIA expresion
+    (19) expresion -> . expresion MODULO expresion
+    (20) expresion -> . ID ASIGNACION expresion
+    (26) expresion -> . PRINTLN PARIZQ expresion PARDER
+    (27) expresion -> . tipo ID ASIGNACION expresion
+    (28) expresion -> . expresion GE expresion
+    (29) expresion -> . expresion LE expresion
+    (30) expresion -> . expresion LT expresion
+    (31) expresion -> . expresion GT expresion
+    (32) expresion -> . expresion EQ expresion
+    (33) expresion -> . ID INCREMENTO
+    (34) expresion -> . ID DECREMENTO
+    (21) tipo -> . INT
+    (22) tipo -> . FLOAT
+    (23) tipo -> . CHAR
+    (24) tipo -> . STRING
+    (25) tipo -> . BOOL
+
+    ENTERO          shift and go to state 6
+    DECIMAL         shift and go to state 7
+    BOLEANO         shift and go to state 8
+    CARACTER        shift and go to state 9
+    CADENA          shift and go to state 10
+    ID              shift and go to state 11
+    MENOS           shift and go to state 12
+    PRINTLN         shift and go to state 13
+    INT             shift and go to state 17
+    FLOAT           shift and go to state 18
+    CHAR            shift and go to state 19
+    STRING          shift and go to state 20
+    BOOL            shift and go to state 21
+
+    expresion                      shift and go to state 43
+    tipo                           shift and go to state 14
+
+state 25
+
+    (17) expresion -> expresion DIVIDIDO . expresion
+    (7) expresion -> . ENTERO
+    (8) expresion -> . DECIMAL
+    (9) expresion -> . BOLEANO
+    (10) expresion -> . CARACTER
+    (11) expresion -> . CADENA
+    (12) expresion -> . ID
+    (13) expresion -> . MENOS expresion
+    (14) expresion -> . expresion MAS expresion
+    (15) expresion -> . expresion MENOS expresion
+    (16) expresion -> . expresion POR expresion
+    (17) expresion -> . expresion DIVIDIDO expresion
+    (18) expresion -> . expresion POTENCIA expresion
+    (19) expresion -> . expresion MODULO expresion
+    (20) expresion -> . ID ASIGNACION expresion
+    (26) expresion -> . PRINTLN PARIZQ expresion PARDER
+    (27) expresion -> . tipo ID ASIGNACION expresion
+    (28) expresion -> . expresion GE expresion
+    (29) expresion -> . expresion LE expresion
+    (30) expresion -> . expresion LT expresion
+    (31) expresion -> . expresion GT expresion
+    (32) expresion -> . expresion EQ expresion
+    (33) expresion -> . ID INCREMENTO
+    (34) expresion -> . ID DECREMENTO
+    (21) tipo -> . INT
+    (22) tipo -> . FLOAT
+    (23) tipo -> . CHAR
+    (24) tipo -> . STRING
+    (25) tipo -> . BOOL
+
+    ENTERO          shift and go to state 6
+    DECIMAL         shift and go to state 7
+    BOLEANO         shift and go to state 8
+    CARACTER        shift and go to state 9
+    CADENA          shift and go to state 10
+    ID              shift and go to state 11
+    MENOS           shift and go to state 12
+    PRINTLN         shift and go to state 13
+    INT             shift and go to state 17
+    FLOAT           shift and go to state 18
+    CHAR            shift and go to state 19
+    STRING          shift and go to state 20
+    BOOL            shift and go to state 21
+
+    expresion                      shift and go to state 44
+    tipo                           shift and go to state 14
+
+state 26
+
+    (18) expresion -> expresion POTENCIA . expresion
+    (7) expresion -> . ENTERO
+    (8) expresion -> . DECIMAL
+    (9) expresion -> . BOLEANO
+    (10) expresion -> . CARACTER
+    (11) expresion -> . CADENA
+    (12) expresion -> . ID
+    (13) expresion -> . MENOS expresion
+    (14) expresion -> . expresion MAS expresion
+    (15) expresion -> . expresion MENOS expresion
+    (16) expresion -> . expresion POR expresion
+    (17) expresion -> . expresion DIVIDIDO expresion
+    (18) expresion -> . expresion POTENCIA expresion
+    (19) expresion -> . expresion MODULO expresion
+    (20) expresion -> . ID ASIGNACION expresion
+    (26) expresion -> . PRINTLN PARIZQ expresion PARDER
+    (27) expresion -> . tipo ID ASIGNACION expresion
+    (28) expresion -> . expresion GE expresion
+    (29) expresion -> . expresion LE expresion
+    (30) expresion -> . expresion LT expresion
+    (31) expresion -> . expresion GT expresion
+    (32) expresion -> . expresion EQ expresion
+    (33) expresion -> . ID INCREMENTO
+    (34) expresion -> . ID DECREMENTO
+    (21) tipo -> . INT
+    (22) tipo -> . FLOAT
+    (23) tipo -> . CHAR
+    (24) tipo -> . STRING
+    (25) tipo -> . BOOL
+
+    ENTERO          shift and go to state 6
+    DECIMAL         shift and go to state 7
+    BOLEANO         shift and go to state 8
+    CARACTER        shift and go to state 9
+    CADENA          shift and go to state 10
+    ID              shift and go to state 11
+    MENOS           shift and go to state 12
+    PRINTLN         shift and go to state 13
+    INT             shift and go to state 17
+    FLOAT           shift and go to state 18
+    CHAR            shift and go to state 19
+    STRING          shift and go to state 20
+    BOOL            shift and go to state 21
+
+    expresion                      shift and go to state 45
+    tipo                           shift and go to state 14
+
+state 27
+
+    (19) expresion -> expresion MODULO . expresion
+    (7) expresion -> . ENTERO
+    (8) expresion -> . DECIMAL
+    (9) expresion -> . BOLEANO
+    (10) expresion -> . CARACTER
+    (11) expresion -> . CADENA
+    (12) expresion -> . ID
+    (13) expresion -> . MENOS expresion
+    (14) expresion -> . expresion MAS expresion
+    (15) expresion -> . expresion MENOS expresion
+    (16) expresion -> . expresion POR expresion
+    (17) expresion -> . expresion DIVIDIDO expresion
+    (18) expresion -> . expresion POTENCIA expresion
+    (19) expresion -> . expresion MODULO expresion
+    (20) expresion -> . ID ASIGNACION expresion
+    (26) expresion -> . PRINTLN PARIZQ expresion PARDER
+    (27) expresion -> . tipo ID ASIGNACION expresion
+    (28) expresion -> . expresion GE expresion
+    (29) expresion -> . expresion LE expresion
+    (30) expresion -> . expresion LT expresion
+    (31) expresion -> . expresion GT expresion
+    (32) expresion -> . expresion EQ expresion
+    (33) expresion -> . ID INCREMENTO
+    (34) expresion -> . ID DECREMENTO
+    (21) tipo -> . INT
+    (22) tipo -> . FLOAT
+    (23) tipo -> . CHAR
+    (24) tipo -> . STRING
+    (25) tipo -> . BOOL
+
+    ENTERO          shift and go to state 6
+    DECIMAL         shift and go to state 7
+    BOLEANO         shift and go to state 8
+    CARACTER        shift and go to state 9
+    CADENA          shift and go to state 10
+    ID              shift and go to state 11
+    MENOS           shift and go to state 12
+    PRINTLN         shift and go to state 13
+    INT             shift and go to state 17
+    FLOAT           shift and go to state 18
+    CHAR            shift and go to state 19
+    STRING          shift and go to state 20
+    BOOL            shift and go to state 21
+
+    expresion                      shift and go to state 46
+    tipo                           shift and go to state 14
+
+state 28
+
+    (28) expresion -> expresion GE . expresion
+    (7) expresion -> . ENTERO
+    (8) expresion -> . DECIMAL
+    (9) expresion -> . BOLEANO
+    (10) expresion -> . CARACTER
+    (11) expresion -> . CADENA
+    (12) expresion -> . ID
+    (13) expresion -> . MENOS expresion
+    (14) expresion -> . expresion MAS expresion
+    (15) expresion -> . expresion MENOS expresion
+    (16) expresion -> . expresion POR expresion
+    (17) expresion -> . expresion DIVIDIDO expresion
+    (18) expresion -> . expresion POTENCIA expresion
+    (19) expresion -> . expresion MODULO expresion
+    (20) expresion -> . ID ASIGNACION expresion
+    (26) expresion -> . PRINTLN PARIZQ expresion PARDER
+    (27) expresion -> . tipo ID ASIGNACION expresion
+    (28) expresion -> . expresion GE expresion
+    (29) expresion -> . expresion LE expresion
+    (30) expresion -> . expresion LT expresion
+    (31) expresion -> . expresion GT expresion
+    (32) expresion -> . expresion EQ expresion
+    (33) expresion -> . ID INCREMENTO
+    (34) expresion -> . ID DECREMENTO
+    (21) tipo -> . INT
+    (22) tipo -> . FLOAT
+    (23) tipo -> . CHAR
+    (24) tipo -> . STRING
+    (25) tipo -> . BOOL
+
+    ENTERO          shift and go to state 6
+    DECIMAL         shift and go to state 7
+    BOLEANO         shift and go to state 8
+    CARACTER        shift and go to state 9
+    CADENA          shift and go to state 10
+    ID              shift and go to state 11
+    MENOS           shift and go to state 12
+    PRINTLN         shift and go to state 13
+    INT             shift and go to state 17
+    FLOAT           shift and go to state 18
+    CHAR            shift and go to state 19
+    STRING          shift and go to state 20
+    BOOL            shift and go to state 21
+
+    expresion                      shift and go to state 47
+    tipo                           shift and go to state 14
+
+state 29
+
+    (29) expresion -> expresion LE . expresion
+    (7) expresion -> . ENTERO
+    (8) expresion -> . DECIMAL
+    (9) expresion -> . BOLEANO
+    (10) expresion -> . CARACTER
+    (11) expresion -> . CADENA
+    (12) expresion -> . ID
+    (13) expresion -> . MENOS expresion
+    (14) expresion -> . expresion MAS expresion
+    (15) expresion -> . expresion MENOS expresion
+    (16) expresion -> . expresion POR expresion
+    (17) expresion -> . expresion DIVIDIDO expresion
+    (18) expresion -> . expresion POTENCIA expresion
+    (19) expresion -> . expresion MODULO expresion
+    (20) expresion -> . ID ASIGNACION expresion
+    (26) expresion -> . PRINTLN PARIZQ expresion PARDER
+    (27) expresion -> . tipo ID ASIGNACION expresion
+    (28) expresion -> . expresion GE expresion
+    (29) expresion -> . expresion LE expresion
+    (30) expresion -> . expresion LT expresion
+    (31) expresion -> . expresion GT expresion
+    (32) expresion -> . expresion EQ expresion
+    (33) expresion -> . ID INCREMENTO
+    (34) expresion -> . ID DECREMENTO
+    (21) tipo -> . INT
+    (22) tipo -> . FLOAT
+    (23) tipo -> . CHAR
+    (24) tipo -> . STRING
+    (25) tipo -> . BOOL
+
+    ENTERO          shift and go to state 6
+    DECIMAL         shift and go to state 7
+    BOLEANO         shift and go to state 8
+    CARACTER        shift and go to state 9
+    CADENA          shift and go to state 10
+    ID              shift and go to state 11
+    MENOS           shift and go to state 12
+    PRINTLN         shift and go to state 13
+    INT             shift and go to state 17
+    FLOAT           shift and go to state 18
+    CHAR            shift and go to state 19
+    STRING          shift and go to state 20
+    BOOL            shift and go to state 21
+
+    expresion                      shift and go to state 48
+    tipo                           shift and go to state 14
+
+state 30
+
+    (30) expresion -> expresion LT . expresion
+    (7) expresion -> . ENTERO
+    (8) expresion -> . DECIMAL
+    (9) expresion -> . BOLEANO
+    (10) expresion -> . CARACTER
+    (11) expresion -> . CADENA
+    (12) expresion -> . ID
+    (13) expresion -> . MENOS expresion
+    (14) expresion -> . expresion MAS expresion
+    (15) expresion -> . expresion MENOS expresion
+    (16) expresion -> . expresion POR expresion
+    (17) expresion -> . expresion DIVIDIDO expresion
+    (18) expresion -> . expresion POTENCIA expresion
+    (19) expresion -> . expresion MODULO expresion
+    (20) expresion -> . ID ASIGNACION expresion
+    (26) expresion -> . PRINTLN PARIZQ expresion PARDER
+    (27) expresion -> . tipo ID ASIGNACION expresion
+    (28) expresion -> . expresion GE expresion
+    (29) expresion -> . expresion LE expresion
+    (30) expresion -> . expresion LT expresion
+    (31) expresion -> . expresion GT expresion
+    (32) expresion -> . expresion EQ expresion
+    (33) expresion -> . ID INCREMENTO
+    (34) expresion -> . ID DECREMENTO
+    (21) tipo -> . INT
+    (22) tipo -> . FLOAT
+    (23) tipo -> . CHAR
+    (24) tipo -> . STRING
+    (25) tipo -> . BOOL
+
+    ENTERO          shift and go to state 6
+    DECIMAL         shift and go to state 7
+    BOLEANO         shift and go to state 8
+    CARACTER        shift and go to state 9
+    CADENA          shift and go to state 10
+    ID              shift and go to state 11
+    MENOS           shift and go to state 12
+    PRINTLN         shift and go to state 13
+    INT             shift and go to state 17
+    FLOAT           shift and go to state 18
+    CHAR            shift and go to state 19
+    STRING          shift and go to state 20
+    BOOL            shift and go to state 21
+
+    expresion                      shift and go to state 49
+    tipo                           shift and go to state 14
+
+state 31
+
+    (31) expresion -> expresion GT . expresion
+    (7) expresion -> . ENTERO
+    (8) expresion -> . DECIMAL
+    (9) expresion -> . BOLEANO
+    (10) expresion -> . CARACTER
+    (11) expresion -> . CADENA
+    (12) expresion -> . ID
+    (13) expresion -> . MENOS expresion
+    (14) expresion -> . expresion MAS expresion
+    (15) expresion -> . expresion MENOS expresion
+    (16) expresion -> . expresion POR expresion
+    (17) expresion -> . expresion DIVIDIDO expresion
+    (18) expresion -> . expresion POTENCIA expresion
+    (19) expresion -> . expresion MODULO expresion
+    (20) expresion -> . ID ASIGNACION expresion
+    (26) expresion -> . PRINTLN PARIZQ expresion PARDER
+    (27) expresion -> . tipo ID ASIGNACION expresion
+    (28) expresion -> . expresion GE expresion
+    (29) expresion -> . expresion LE expresion
+    (30) expresion -> . expresion LT expresion
+    (31) expresion -> . expresion GT expresion
+    (32) expresion -> . expresion EQ expresion
+    (33) expresion -> . ID INCREMENTO
+    (34) expresion -> . ID DECREMENTO
+    (21) tipo -> . INT
+    (22) tipo -> . FLOAT
+    (23) tipo -> . CHAR
+    (24) tipo -> . STRING
+    (25) tipo -> . BOOL
+
+    ENTERO          shift and go to state 6
+    DECIMAL         shift and go to state 7
+    BOLEANO         shift and go to state 8
+    CARACTER        shift and go to state 9
+    CADENA          shift and go to state 10
+    ID              shift and go to state 11
+    MENOS           shift and go to state 12
+    PRINTLN         shift and go to state 13
+    INT             shift and go to state 17
+    FLOAT           shift and go to state 18
+    CHAR            shift and go to state 19
+    STRING          shift and go to state 20
+    BOOL            shift and go to state 21
+
+    expresion                      shift and go to state 50
+    tipo                           shift and go to state 14
+
+state 32
+
+    (32) expresion -> expresion EQ . expresion
+    (7) expresion -> . ENTERO
+    (8) expresion -> . DECIMAL
+    (9) expresion -> . BOLEANO
+    (10) expresion -> . CARACTER
+    (11) expresion -> . CADENA
+    (12) expresion -> . ID
+    (13) expresion -> . MENOS expresion
+    (14) expresion -> . expresion MAS expresion
+    (15) expresion -> . expresion MENOS expresion
+    (16) expresion -> . expresion POR expresion
+    (17) expresion -> . expresion DIVIDIDO expresion
+    (18) expresion -> . expresion POTENCIA expresion
+    (19) expresion -> . expresion MODULO expresion
+    (20) expresion -> . ID ASIGNACION expresion
+    (26) expresion -> . PRINTLN PARIZQ expresion PARDER
+    (27) expresion -> . tipo ID ASIGNACION expresion
+    (28) expresion -> . expresion GE expresion
+    (29) expresion -> . expresion LE expresion
+    (30) expresion -> . expresion LT expresion
+    (31) expresion -> . expresion GT expresion
+    (32) expresion -> . expresion EQ expresion
+    (33) expresion -> . ID INCREMENTO
+    (34) expresion -> . ID DECREMENTO
+    (21) tipo -> . INT
+    (22) tipo -> . FLOAT
+    (23) tipo -> . CHAR
+    (24) tipo -> . STRING
+    (25) tipo -> . BOOL
+
+    ENTERO          shift and go to state 6
+    DECIMAL         shift and go to state 7
+    BOLEANO         shift and go to state 8
+    CARACTER        shift and go to state 9
+    CADENA          shift and go to state 10
+    ID              shift and go to state 11
+    MENOS           shift and go to state 12
+    PRINTLN         shift and go to state 13
+    INT             shift and go to state 17
+    FLOAT           shift and go to state 18
+    CHAR            shift and go to state 19
+    STRING          shift and go to state 20
+    BOOL            shift and go to state 21
+
+    expresion                      shift and go to state 51
+    tipo                           shift and go to state 14
+
 state 33
 
-    (27) expresion -> tipo ID . ASIGNACION expresion
+    (6) lista_expresiones -> expresion PTCOMA .
 
-    ASIGNACION      shift and go to state 43
+    ENTERO          reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
+    DECIMAL         reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
+    BOLEANO         reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
+    CARACTER        reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
+    CADENA          reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
+    ID              reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
+    MENOS           reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
+    PRINTLN         reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
+    INT             reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
+    FLOAT           reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
+    CHAR            reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
+    STRING          reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
+    BOOL            reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
+    $end            reduce using rule 6 (lista_expresiones -> expresion PTCOMA .)
 
 
 state 34
+
+    (5) lista_expresiones -> lista_expresiones expresion . PTCOMA
+    (14) expresion -> expresion . MAS expresion
+    (15) expresion -> expresion . MENOS expresion
+    (16) expresion -> expresion . POR expresion
+    (17) expresion -> expresion . DIVIDIDO expresion
+    (18) expresion -> expresion . POTENCIA expresion
+    (19) expresion -> expresion . MODULO expresion
+    (28) expresion -> expresion . GE expresion
+    (29) expresion -> expresion . LE expresion
+    (30) expresion -> expresion . LT expresion
+    (31) expresion -> expresion . GT expresion
+    (32) expresion -> expresion . EQ expresion
+
+    PTCOMA          shift and go to state 52
+    MAS             shift and go to state 22
+    MENOS           shift and go to state 23
+    POR             shift and go to state 24
+    DIVIDIDO        shift and go to state 25
+    POTENCIA        shift and go to state 26
+    MODULO          shift and go to state 27
+    GE              shift and go to state 28
+    LE              shift and go to state 29
+    LT              shift and go to state 30
+    GT              shift and go to state 31
+    EQ              shift and go to state 32
+
+
+state 35
+
+    (20) expresion -> ID ASIGNACION . expresion
+    (7) expresion -> . ENTERO
+    (8) expresion -> . DECIMAL
+    (9) expresion -> . BOLEANO
+    (10) expresion -> . CARACTER
+    (11) expresion -> . CADENA
+    (12) expresion -> . ID
+    (13) expresion -> . MENOS expresion
+    (14) expresion -> . expresion MAS expresion
+    (15) expresion -> . expresion MENOS expresion
+    (16) expresion -> . expresion POR expresion
+    (17) expresion -> . expresion DIVIDIDO expresion
+    (18) expresion -> . expresion POTENCIA expresion
+    (19) expresion -> . expresion MODULO expresion
+    (20) expresion -> . ID ASIGNACION expresion
+    (26) expresion -> . PRINTLN PARIZQ expresion PARDER
+    (27) expresion -> . tipo ID ASIGNACION expresion
+    (28) expresion -> . expresion GE expresion
+    (29) expresion -> . expresion LE expresion
+    (30) expresion -> . expresion LT expresion
+    (31) expresion -> . expresion GT expresion
+    (32) expresion -> . expresion EQ expresion
+    (33) expresion -> . ID INCREMENTO
+    (34) expresion -> . ID DECREMENTO
+    (21) tipo -> . INT
+    (22) tipo -> . FLOAT
+    (23) tipo -> . CHAR
+    (24) tipo -> . STRING
+    (25) tipo -> . BOOL
+
+    ENTERO          shift and go to state 6
+    DECIMAL         shift and go to state 7
+    BOLEANO         shift and go to state 8
+    CARACTER        shift and go to state 9
+    CADENA          shift and go to state 10
+    ID              shift and go to state 11
+    MENOS           shift and go to state 12
+    PRINTLN         shift and go to state 13
+    INT             shift and go to state 17
+    FLOAT           shift and go to state 18
+    CHAR            shift and go to state 19
+    STRING          shift and go to state 20
+    BOOL            shift and go to state 21
+
+    expresion                      shift and go to state 53
+    tipo                           shift and go to state 14
+
+state 36
+
+    (33) expresion -> ID INCREMENTO .
+
+    MAS             reduce using rule 33 (expresion -> ID INCREMENTO .)
+    MENOS           reduce using rule 33 (expresion -> ID INCREMENTO .)
+    POR             reduce using rule 33 (expresion -> ID INCREMENTO .)
+    DIVIDIDO        reduce using rule 33 (expresion -> ID INCREMENTO .)
+    POTENCIA        reduce using rule 33 (expresion -> ID INCREMENTO .)
+    MODULO          reduce using rule 33 (expresion -> ID INCREMENTO .)
+    GE              reduce using rule 33 (expresion -> ID INCREMENTO .)
+    LE              reduce using rule 33 (expresion -> ID INCREMENTO .)
+    LT              reduce using rule 33 (expresion -> ID INCREMENTO .)
+    GT              reduce using rule 33 (expresion -> ID INCREMENTO .)
+    EQ              reduce using rule 33 (expresion -> ID INCREMENTO .)
+    PTCOMA          reduce using rule 33 (expresion -> ID INCREMENTO .)
+    $end            reduce using rule 33 (expresion -> ID INCREMENTO .)
+    PARDER          reduce using rule 33 (expresion -> ID INCREMENTO .)
+
+
+state 37
+
+    (34) expresion -> ID DECREMENTO .
+
+    MAS             reduce using rule 34 (expresion -> ID DECREMENTO .)
+    MENOS           reduce using rule 34 (expresion -> ID DECREMENTO .)
+    POR             reduce using rule 34 (expresion -> ID DECREMENTO .)
+    DIVIDIDO        reduce using rule 34 (expresion -> ID DECREMENTO .)
+    POTENCIA        reduce using rule 34 (expresion -> ID DECREMENTO .)
+    MODULO          reduce using rule 34 (expresion -> ID DECREMENTO .)
+    GE              reduce using rule 34 (expresion -> ID DECREMENTO .)
+    LE              reduce using rule 34 (expresion -> ID DECREMENTO .)
+    LT              reduce using rule 34 (expresion -> ID DECREMENTO .)
+    GT              reduce using rule 34 (expresion -> ID DECREMENTO .)
+    EQ              reduce using rule 34 (expresion -> ID DECREMENTO .)
+    PTCOMA          reduce using rule 34 (expresion -> ID DECREMENTO .)
+    $end            reduce using rule 34 (expresion -> ID DECREMENTO .)
+    PARDER          reduce using rule 34 (expresion -> ID DECREMENTO .)
+
+
+state 38
+
+    (13) expresion -> MENOS expresion .
+    (14) expresion -> expresion . MAS expresion
+    (15) expresion -> expresion . MENOS expresion
+    (16) expresion -> expresion . POR expresion
+    (17) expresion -> expresion . DIVIDIDO expresion
+    (18) expresion -> expresion . POTENCIA expresion
+    (19) expresion -> expresion . MODULO expresion
+    (28) expresion -> expresion . GE expresion
+    (29) expresion -> expresion . LE expresion
+    (30) expresion -> expresion . LT expresion
+    (31) expresion -> expresion . GT expresion
+    (32) expresion -> expresion . EQ expresion
+
+    MAS             reduce using rule 13 (expresion -> MENOS expresion .)
+    MENOS           reduce using rule 13 (expresion -> MENOS expresion .)
+    POR             reduce using rule 13 (expresion -> MENOS expresion .)
+    DIVIDIDO        reduce using rule 13 (expresion -> MENOS expresion .)
+    POTENCIA        reduce using rule 13 (expresion -> MENOS expresion .)
+    MODULO          reduce using rule 13 (expresion -> MENOS expresion .)
+    GE              reduce using rule 13 (expresion -> MENOS expresion .)
+    LE              reduce using rule 13 (expresion -> MENOS expresion .)
+    LT              reduce using rule 13 (expresion -> MENOS expresion .)
+    GT              reduce using rule 13 (expresion -> MENOS expresion .)
+    EQ              reduce using rule 13 (expresion -> MENOS expresion .)
+    PTCOMA          reduce using rule 13 (expresion -> MENOS expresion .)
+    $end            reduce using rule 13 (expresion -> MENOS expresion .)
+    PARDER          reduce using rule 13 (expresion -> MENOS expresion .)
+
+  ! MAS             [ shift and go to state 22 ]
+  ! MENOS           [ shift and go to state 23 ]
+  ! POR             [ shift and go to state 24 ]
+  ! DIVIDIDO        [ shift and go to state 25 ]
+  ! POTENCIA        [ shift and go to state 26 ]
+  ! MODULO          [ shift and go to state 27 ]
+  ! GE              [ shift and go to state 28 ]
+  ! LE              [ shift and go to state 29 ]
+  ! LT              [ shift and go to state 30 ]
+  ! GT              [ shift and go to state 31 ]
+  ! EQ              [ shift and go to state 32 ]
+
+
+state 39
+
+    (26) expresion -> PRINTLN PARIZQ . expresion PARDER
+    (7) expresion -> . ENTERO
+    (8) expresion -> . DECIMAL
+    (9) expresion -> . BOLEANO
+    (10) expresion -> . CARACTER
+    (11) expresion -> . CADENA
+    (12) expresion -> . ID
+    (13) expresion -> . MENOS expresion
+    (14) expresion -> . expresion MAS expresion
+    (15) expresion -> . expresion MENOS expresion
+    (16) expresion -> . expresion POR expresion
+    (17) expresion -> . expresion DIVIDIDO expresion
+    (18) expresion -> . expresion POTENCIA expresion
+    (19) expresion -> . expresion MODULO expresion
+    (20) expresion -> . ID ASIGNACION expresion
+    (26) expresion -> . PRINTLN PARIZQ expresion PARDER
+    (27) expresion -> . tipo ID ASIGNACION expresion
+    (28) expresion -> . expresion GE expresion
+    (29) expresion -> . expresion LE expresion
+    (30) expresion -> . expresion LT expresion
+    (31) expresion -> . expresion GT expresion
+    (32) expresion -> . expresion EQ expresion
+    (33) expresion -> . ID INCREMENTO
+    (34) expresion -> . ID DECREMENTO
+    (21) tipo -> . INT
+    (22) tipo -> . FLOAT
+    (23) tipo -> . CHAR
+    (24) tipo -> . STRING
+    (25) tipo -> . BOOL
+
+    ENTERO          shift and go to state 6
+    DECIMAL         shift and go to state 7
+    BOLEANO         shift and go to state 8
+    CARACTER        shift and go to state 9
+    CADENA          shift and go to state 10
+    ID              shift and go to state 11
+    MENOS           shift and go to state 12
+    PRINTLN         shift and go to state 13
+    INT             shift and go to state 17
+    FLOAT           shift and go to state 18
+    CHAR            shift and go to state 19
+    STRING          shift and go to state 20
+    BOOL            shift and go to state 21
+
+    expresion                      shift and go to state 54
+    tipo                           shift and go to state 14
+
+state 40
+
+    (27) expresion -> tipo ID . ASIGNACION expresion
+
+    ASIGNACION      shift and go to state 55
+
+
+state 41
 
     (14) expresion -> expresion MAS expresion .
     (14) expresion -> expresion . MAS expresion
@@ -829,6 +1274,11 @@ state 34
     (17) expresion -> expresion . DIVIDIDO expresion
     (18) expresion -> expresion . POTENCIA expresion
     (19) expresion -> expresion . MODULO expresion
+    (28) expresion -> expresion . GE expresion
+    (29) expresion -> expresion . LE expresion
+    (30) expresion -> expresion . LT expresion
+    (31) expresion -> expresion . GT expresion
+    (32) expresion -> expresion . EQ expresion
 
     MAS             reduce using rule 14 (expresion -> expresion MAS expresion .)
     MENOS           reduce using rule 14 (expresion -> expresion MAS expresion .)
@@ -839,16 +1289,26 @@ state 34
     DIVIDIDO        shift and go to state 25
     POTENCIA        shift and go to state 26
     MODULO          shift and go to state 27
+    GE              shift and go to state 28
+    LE              shift and go to state 29
+    LT              shift and go to state 30
+    GT              shift and go to state 31
+    EQ              shift and go to state 32
 
   ! POR             [ reduce using rule 14 (expresion -> expresion MAS expresion .) ]
   ! DIVIDIDO        [ reduce using rule 14 (expresion -> expresion MAS expresion .) ]
   ! POTENCIA        [ reduce using rule 14 (expresion -> expresion MAS expresion .) ]
   ! MODULO          [ reduce using rule 14 (expresion -> expresion MAS expresion .) ]
+  ! GE              [ reduce using rule 14 (expresion -> expresion MAS expresion .) ]
+  ! LE              [ reduce using rule 14 (expresion -> expresion MAS expresion .) ]
+  ! LT              [ reduce using rule 14 (expresion -> expresion MAS expresion .) ]
+  ! GT              [ reduce using rule 14 (expresion -> expresion MAS expresion .) ]
+  ! EQ              [ reduce using rule 14 (expresion -> expresion MAS expresion .) ]
   ! MAS             [ shift and go to state 22 ]
   ! MENOS           [ shift and go to state 23 ]
 
 
-state 35
+state 42
 
     (15) expresion -> expresion MENOS expresion .
     (14) expresion -> expresion . MAS expresion
@@ -857,6 +1317,11 @@ state 35
     (17) expresion -> expresion . DIVIDIDO expresion
     (18) expresion -> expresion . POTENCIA expresion
     (19) expresion -> expresion . MODULO expresion
+    (28) expresion -> expresion . GE expresion
+    (29) expresion -> expresion . LE expresion
+    (30) expresion -> expresion . LT expresion
+    (31) expresion -> expresion . GT expresion
+    (32) expresion -> expresion . EQ expresion
 
     MAS             reduce using rule 15 (expresion -> expresion MENOS expresion .)
     MENOS           reduce using rule 15 (expresion -> expresion MENOS expresion .)
@@ -867,16 +1332,26 @@ state 35
     DIVIDIDO        shift and go to state 25
     POTENCIA        shift and go to state 26
     MODULO          shift and go to state 27
+    GE              shift and go to state 28
+    LE              shift and go to state 29
+    LT              shift and go to state 30
+    GT              shift and go to state 31
+    EQ              shift and go to state 32
 
   ! POR             [ reduce using rule 15 (expresion -> expresion MENOS expresion .) ]
   ! DIVIDIDO        [ reduce using rule 15 (expresion -> expresion MENOS expresion .) ]
   ! POTENCIA        [ reduce using rule 15 (expresion -> expresion MENOS expresion .) ]
   ! MODULO          [ reduce using rule 15 (expresion -> expresion MENOS expresion .) ]
+  ! GE              [ reduce using rule 15 (expresion -> expresion MENOS expresion .) ]
+  ! LE              [ reduce using rule 15 (expresion -> expresion MENOS expresion .) ]
+  ! LT              [ reduce using rule 15 (expresion -> expresion MENOS expresion .) ]
+  ! GT              [ reduce using rule 15 (expresion -> expresion MENOS expresion .) ]
+  ! EQ              [ reduce using rule 15 (expresion -> expresion MENOS expresion .) ]
   ! MAS             [ shift and go to state 22 ]
   ! MENOS           [ shift and go to state 23 ]
 
 
-state 36
+state 43
 
     (16) expresion -> expresion POR expresion .
     (14) expresion -> expresion . MAS expresion
@@ -885,6 +1360,11 @@ state 36
     (17) expresion -> expresion . DIVIDIDO expresion
     (18) expresion -> expresion . POTENCIA expresion
     (19) expresion -> expresion . MODULO expresion
+    (28) expresion -> expresion . GE expresion
+    (29) expresion -> expresion . LE expresion
+    (30) expresion -> expresion . LT expresion
+    (31) expresion -> expresion . GT expresion
+    (32) expresion -> expresion . EQ expresion
 
     MAS             reduce using rule 16 (expresion -> expresion POR expresion .)
     MENOS           reduce using rule 16 (expresion -> expresion POR expresion .)
@@ -895,8 +1375,18 @@ state 36
     $end            reduce using rule 16 (expresion -> expresion POR expresion .)
     PARDER          reduce using rule 16 (expresion -> expresion POR expresion .)
     POTENCIA        shift and go to state 26
+    GE              shift and go to state 28
+    LE              shift and go to state 29
+    LT              shift and go to state 30
+    GT              shift and go to state 31
+    EQ              shift and go to state 32
 
   ! POTENCIA        [ reduce using rule 16 (expresion -> expresion POR expresion .) ]
+  ! GE              [ reduce using rule 16 (expresion -> expresion POR expresion .) ]
+  ! LE              [ reduce using rule 16 (expresion -> expresion POR expresion .) ]
+  ! LT              [ reduce using rule 16 (expresion -> expresion POR expresion .) ]
+  ! GT              [ reduce using rule 16 (expresion -> expresion POR expresion .) ]
+  ! EQ              [ reduce using rule 16 (expresion -> expresion POR expresion .) ]
   ! MAS             [ shift and go to state 22 ]
   ! MENOS           [ shift and go to state 23 ]
   ! POR             [ shift and go to state 24 ]
@@ -904,7 +1394,7 @@ state 36
   ! MODULO          [ shift and go to state 27 ]
 
 
-state 37
+state 44
 
     (17) expresion -> expresion DIVIDIDO expresion .
     (14) expresion -> expresion . MAS expresion
@@ -913,6 +1403,11 @@ state 37
     (17) expresion -> expresion . DIVIDIDO expresion
     (18) expresion -> expresion . POTENCIA expresion
     (19) expresion -> expresion . MODULO expresion
+    (28) expresion -> expresion . GE expresion
+    (29) expresion -> expresion . LE expresion
+    (30) expresion -> expresion . LT expresion
+    (31) expresion -> expresion . GT expresion
+    (32) expresion -> expresion . EQ expresion
 
     MAS             reduce using rule 17 (expresion -> expresion DIVIDIDO expresion .)
     MENOS           reduce using rule 17 (expresion -> expresion DIVIDIDO expresion .)
@@ -923,8 +1418,18 @@ state 37
     $end            reduce using rule 17 (expresion -> expresion DIVIDIDO expresion .)
     PARDER          reduce using rule 17 (expresion -> expresion DIVIDIDO expresion .)
     POTENCIA        shift and go to state 26
+    GE              shift and go to state 28
+    LE              shift and go to state 29
+    LT              shift and go to state 30
+    GT              shift and go to state 31
+    EQ              shift and go to state 32
 
   ! POTENCIA        [ reduce using rule 17 (expresion -> expresion DIVIDIDO expresion .) ]
+  ! GE              [ reduce using rule 17 (expresion -> expresion DIVIDIDO expresion .) ]
+  ! LE              [ reduce using rule 17 (expresion -> expresion DIVIDIDO expresion .) ]
+  ! LT              [ reduce using rule 17 (expresion -> expresion DIVIDIDO expresion .) ]
+  ! GT              [ reduce using rule 17 (expresion -> expresion DIVIDIDO expresion .) ]
+  ! EQ              [ reduce using rule 17 (expresion -> expresion DIVIDIDO expresion .) ]
   ! MAS             [ shift and go to state 22 ]
   ! MENOS           [ shift and go to state 23 ]
   ! POR             [ shift and go to state 24 ]
@@ -932,7 +1437,7 @@ state 37
   ! MODULO          [ shift and go to state 27 ]
 
 
-state 38
+state 45
 
     (18) expresion -> expresion POTENCIA expresion .
     (14) expresion -> expresion . MAS expresion
@@ -941,6 +1446,11 @@ state 38
     (17) expresion -> expresion . DIVIDIDO expresion
     (18) expresion -> expresion . POTENCIA expresion
     (19) expresion -> expresion . MODULO expresion
+    (28) expresion -> expresion . GE expresion
+    (29) expresion -> expresion . LE expresion
+    (30) expresion -> expresion . LT expresion
+    (31) expresion -> expresion . GT expresion
+    (32) expresion -> expresion . EQ expresion
 
     MAS             reduce using rule 18 (expresion -> expresion POTENCIA expresion .)
     MENOS           reduce using rule 18 (expresion -> expresion POTENCIA expresion .)
@@ -951,8 +1461,18 @@ state 38
     $end            reduce using rule 18 (expresion -> expresion POTENCIA expresion .)
     PARDER          reduce using rule 18 (expresion -> expresion POTENCIA expresion .)
     POTENCIA        shift and go to state 26
+    GE              shift and go to state 28
+    LE              shift and go to state 29
+    LT              shift and go to state 30
+    GT              shift and go to state 31
+    EQ              shift and go to state 32
 
   ! POTENCIA        [ reduce using rule 18 (expresion -> expresion POTENCIA expresion .) ]
+  ! GE              [ reduce using rule 18 (expresion -> expresion POTENCIA expresion .) ]
+  ! LE              [ reduce using rule 18 (expresion -> expresion POTENCIA expresion .) ]
+  ! LT              [ reduce using rule 18 (expresion -> expresion POTENCIA expresion .) ]
+  ! GT              [ reduce using rule 18 (expresion -> expresion POTENCIA expresion .) ]
+  ! EQ              [ reduce using rule 18 (expresion -> expresion POTENCIA expresion .) ]
   ! MAS             [ shift and go to state 22 ]
   ! MENOS           [ shift and go to state 23 ]
   ! POR             [ shift and go to state 24 ]
@@ -960,7 +1480,7 @@ state 38
   ! MODULO          [ shift and go to state 27 ]
 
 
-state 39
+state 46
 
     (19) expresion -> expresion MODULO expresion .
     (14) expresion -> expresion . MAS expresion
@@ -969,6 +1489,11 @@ state 39
     (17) expresion -> expresion . DIVIDIDO expresion
     (18) expresion -> expresion . POTENCIA expresion
     (19) expresion -> expresion . MODULO expresion
+    (28) expresion -> expresion . GE expresion
+    (29) expresion -> expresion . LE expresion
+    (30) expresion -> expresion . LT expresion
+    (31) expresion -> expresion . GT expresion
+    (32) expresion -> expresion . EQ expresion
 
     MAS             reduce using rule 19 (expresion -> expresion MODULO expresion .)
     MENOS           reduce using rule 19 (expresion -> expresion MODULO expresion .)
@@ -979,8 +1504,18 @@ state 39
     $end            reduce using rule 19 (expresion -> expresion MODULO expresion .)
     PARDER          reduce using rule 19 (expresion -> expresion MODULO expresion .)
     POTENCIA        shift and go to state 26
+    GE              shift and go to state 28
+    LE              shift and go to state 29
+    LT              shift and go to state 30
+    GT              shift and go to state 31
+    EQ              shift and go to state 32
 
   ! POTENCIA        [ reduce using rule 19 (expresion -> expresion MODULO expresion .) ]
+  ! GE              [ reduce using rule 19 (expresion -> expresion MODULO expresion .) ]
+  ! LE              [ reduce using rule 19 (expresion -> expresion MODULO expresion .) ]
+  ! LT              [ reduce using rule 19 (expresion -> expresion MODULO expresion .) ]
+  ! GT              [ reduce using rule 19 (expresion -> expresion MODULO expresion .) ]
+  ! EQ              [ reduce using rule 19 (expresion -> expresion MODULO expresion .) ]
   ! MAS             [ shift and go to state 22 ]
   ! MENOS           [ shift and go to state 23 ]
   ! POR             [ shift and go to state 24 ]
@@ -988,7 +1523,222 @@ state 39
   ! MODULO          [ shift and go to state 27 ]
 
 
-state 40
+state 47
+
+    (28) expresion -> expresion GE expresion .
+    (14) expresion -> expresion . MAS expresion
+    (15) expresion -> expresion . MENOS expresion
+    (16) expresion -> expresion . POR expresion
+    (17) expresion -> expresion . DIVIDIDO expresion
+    (18) expresion -> expresion . POTENCIA expresion
+    (19) expresion -> expresion . MODULO expresion
+    (28) expresion -> expresion . GE expresion
+    (29) expresion -> expresion . LE expresion
+    (30) expresion -> expresion . LT expresion
+    (31) expresion -> expresion . GT expresion
+    (32) expresion -> expresion . EQ expresion
+
+    MAS             reduce using rule 28 (expresion -> expresion GE expresion .)
+    MENOS           reduce using rule 28 (expresion -> expresion GE expresion .)
+    POR             reduce using rule 28 (expresion -> expresion GE expresion .)
+    DIVIDIDO        reduce using rule 28 (expresion -> expresion GE expresion .)
+    POTENCIA        reduce using rule 28 (expresion -> expresion GE expresion .)
+    MODULO          reduce using rule 28 (expresion -> expresion GE expresion .)
+    GE              reduce using rule 28 (expresion -> expresion GE expresion .)
+    LE              reduce using rule 28 (expresion -> expresion GE expresion .)
+    LT              reduce using rule 28 (expresion -> expresion GE expresion .)
+    GT              reduce using rule 28 (expresion -> expresion GE expresion .)
+    EQ              reduce using rule 28 (expresion -> expresion GE expresion .)
+    PTCOMA          reduce using rule 28 (expresion -> expresion GE expresion .)
+    $end            reduce using rule 28 (expresion -> expresion GE expresion .)
+    PARDER          reduce using rule 28 (expresion -> expresion GE expresion .)
+
+  ! MAS             [ shift and go to state 22 ]
+  ! MENOS           [ shift and go to state 23 ]
+  ! POR             [ shift and go to state 24 ]
+  ! DIVIDIDO        [ shift and go to state 25 ]
+  ! POTENCIA        [ shift and go to state 26 ]
+  ! MODULO          [ shift and go to state 27 ]
+  ! GE              [ shift and go to state 28 ]
+  ! LE              [ shift and go to state 29 ]
+  ! LT              [ shift and go to state 30 ]
+  ! GT              [ shift and go to state 31 ]
+  ! EQ              [ shift and go to state 32 ]
+
+
+state 48
+
+    (29) expresion -> expresion LE expresion .
+    (14) expresion -> expresion . MAS expresion
+    (15) expresion -> expresion . MENOS expresion
+    (16) expresion -> expresion . POR expresion
+    (17) expresion -> expresion . DIVIDIDO expresion
+    (18) expresion -> expresion . POTENCIA expresion
+    (19) expresion -> expresion . MODULO expresion
+    (28) expresion -> expresion . GE expresion
+    (29) expresion -> expresion . LE expresion
+    (30) expresion -> expresion . LT expresion
+    (31) expresion -> expresion . GT expresion
+    (32) expresion -> expresion . EQ expresion
+
+    MAS             reduce using rule 29 (expresion -> expresion LE expresion .)
+    MENOS           reduce using rule 29 (expresion -> expresion LE expresion .)
+    POR             reduce using rule 29 (expresion -> expresion LE expresion .)
+    DIVIDIDO        reduce using rule 29 (expresion -> expresion LE expresion .)
+    POTENCIA        reduce using rule 29 (expresion -> expresion LE expresion .)
+    MODULO          reduce using rule 29 (expresion -> expresion LE expresion .)
+    GE              reduce using rule 29 (expresion -> expresion LE expresion .)
+    LE              reduce using rule 29 (expresion -> expresion LE expresion .)
+    LT              reduce using rule 29 (expresion -> expresion LE expresion .)
+    GT              reduce using rule 29 (expresion -> expresion LE expresion .)
+    EQ              reduce using rule 29 (expresion -> expresion LE expresion .)
+    PTCOMA          reduce using rule 29 (expresion -> expresion LE expresion .)
+    $end            reduce using rule 29 (expresion -> expresion LE expresion .)
+    PARDER          reduce using rule 29 (expresion -> expresion LE expresion .)
+
+  ! MAS             [ shift and go to state 22 ]
+  ! MENOS           [ shift and go to state 23 ]
+  ! POR             [ shift and go to state 24 ]
+  ! DIVIDIDO        [ shift and go to state 25 ]
+  ! POTENCIA        [ shift and go to state 26 ]
+  ! MODULO          [ shift and go to state 27 ]
+  ! GE              [ shift and go to state 28 ]
+  ! LE              [ shift and go to state 29 ]
+  ! LT              [ shift and go to state 30 ]
+  ! GT              [ shift and go to state 31 ]
+  ! EQ              [ shift and go to state 32 ]
+
+
+state 49
+
+    (30) expresion -> expresion LT expresion .
+    (14) expresion -> expresion . MAS expresion
+    (15) expresion -> expresion . MENOS expresion
+    (16) expresion -> expresion . POR expresion
+    (17) expresion -> expresion . DIVIDIDO expresion
+    (18) expresion -> expresion . POTENCIA expresion
+    (19) expresion -> expresion . MODULO expresion
+    (28) expresion -> expresion . GE expresion
+    (29) expresion -> expresion . LE expresion
+    (30) expresion -> expresion . LT expresion
+    (31) expresion -> expresion . GT expresion
+    (32) expresion -> expresion . EQ expresion
+
+    MAS             reduce using rule 30 (expresion -> expresion LT expresion .)
+    MENOS           reduce using rule 30 (expresion -> expresion LT expresion .)
+    POR             reduce using rule 30 (expresion -> expresion LT expresion .)
+    DIVIDIDO        reduce using rule 30 (expresion -> expresion LT expresion .)
+    POTENCIA        reduce using rule 30 (expresion -> expresion LT expresion .)
+    MODULO          reduce using rule 30 (expresion -> expresion LT expresion .)
+    GE              reduce using rule 30 (expresion -> expresion LT expresion .)
+    LE              reduce using rule 30 (expresion -> expresion LT expresion .)
+    LT              reduce using rule 30 (expresion -> expresion LT expresion .)
+    GT              reduce using rule 30 (expresion -> expresion LT expresion .)
+    EQ              reduce using rule 30 (expresion -> expresion LT expresion .)
+    PTCOMA          reduce using rule 30 (expresion -> expresion LT expresion .)
+    $end            reduce using rule 30 (expresion -> expresion LT expresion .)
+    PARDER          reduce using rule 30 (expresion -> expresion LT expresion .)
+
+  ! MAS             [ shift and go to state 22 ]
+  ! MENOS           [ shift and go to state 23 ]
+  ! POR             [ shift and go to state 24 ]
+  ! DIVIDIDO        [ shift and go to state 25 ]
+  ! POTENCIA        [ shift and go to state 26 ]
+  ! MODULO          [ shift and go to state 27 ]
+  ! GE              [ shift and go to state 28 ]
+  ! LE              [ shift and go to state 29 ]
+  ! LT              [ shift and go to state 30 ]
+  ! GT              [ shift and go to state 31 ]
+  ! EQ              [ shift and go to state 32 ]
+
+
+state 50
+
+    (31) expresion -> expresion GT expresion .
+    (14) expresion -> expresion . MAS expresion
+    (15) expresion -> expresion . MENOS expresion
+    (16) expresion -> expresion . POR expresion
+    (17) expresion -> expresion . DIVIDIDO expresion
+    (18) expresion -> expresion . POTENCIA expresion
+    (19) expresion -> expresion . MODULO expresion
+    (28) expresion -> expresion . GE expresion
+    (29) expresion -> expresion . LE expresion
+    (30) expresion -> expresion . LT expresion
+    (31) expresion -> expresion . GT expresion
+    (32) expresion -> expresion . EQ expresion
+
+    MAS             reduce using rule 31 (expresion -> expresion GT expresion .)
+    MENOS           reduce using rule 31 (expresion -> expresion GT expresion .)
+    POR             reduce using rule 31 (expresion -> expresion GT expresion .)
+    DIVIDIDO        reduce using rule 31 (expresion -> expresion GT expresion .)
+    POTENCIA        reduce using rule 31 (expresion -> expresion GT expresion .)
+    MODULO          reduce using rule 31 (expresion -> expresion GT expresion .)
+    GE              reduce using rule 31 (expresion -> expresion GT expresion .)
+    LE              reduce using rule 31 (expresion -> expresion GT expresion .)
+    LT              reduce using rule 31 (expresion -> expresion GT expresion .)
+    GT              reduce using rule 31 (expresion -> expresion GT expresion .)
+    EQ              reduce using rule 31 (expresion -> expresion GT expresion .)
+    PTCOMA          reduce using rule 31 (expresion -> expresion GT expresion .)
+    $end            reduce using rule 31 (expresion -> expresion GT expresion .)
+    PARDER          reduce using rule 31 (expresion -> expresion GT expresion .)
+
+  ! MAS             [ shift and go to state 22 ]
+  ! MENOS           [ shift and go to state 23 ]
+  ! POR             [ shift and go to state 24 ]
+  ! DIVIDIDO        [ shift and go to state 25 ]
+  ! POTENCIA        [ shift and go to state 26 ]
+  ! MODULO          [ shift and go to state 27 ]
+  ! GE              [ shift and go to state 28 ]
+  ! LE              [ shift and go to state 29 ]
+  ! LT              [ shift and go to state 30 ]
+  ! GT              [ shift and go to state 31 ]
+  ! EQ              [ shift and go to state 32 ]
+
+
+state 51
+
+    (32) expresion -> expresion EQ expresion .
+    (14) expresion -> expresion . MAS expresion
+    (15) expresion -> expresion . MENOS expresion
+    (16) expresion -> expresion . POR expresion
+    (17) expresion -> expresion . DIVIDIDO expresion
+    (18) expresion -> expresion . POTENCIA expresion
+    (19) expresion -> expresion . MODULO expresion
+    (28) expresion -> expresion . GE expresion
+    (29) expresion -> expresion . LE expresion
+    (30) expresion -> expresion . LT expresion
+    (31) expresion -> expresion . GT expresion
+    (32) expresion -> expresion . EQ expresion
+
+    MAS             reduce using rule 32 (expresion -> expresion EQ expresion .)
+    MENOS           reduce using rule 32 (expresion -> expresion EQ expresion .)
+    POR             reduce using rule 32 (expresion -> expresion EQ expresion .)
+    DIVIDIDO        reduce using rule 32 (expresion -> expresion EQ expresion .)
+    POTENCIA        reduce using rule 32 (expresion -> expresion EQ expresion .)
+    MODULO          reduce using rule 32 (expresion -> expresion EQ expresion .)
+    GE              reduce using rule 32 (expresion -> expresion EQ expresion .)
+    LE              reduce using rule 32 (expresion -> expresion EQ expresion .)
+    LT              reduce using rule 32 (expresion -> expresion EQ expresion .)
+    GT              reduce using rule 32 (expresion -> expresion EQ expresion .)
+    EQ              reduce using rule 32 (expresion -> expresion EQ expresion .)
+    PTCOMA          reduce using rule 32 (expresion -> expresion EQ expresion .)
+    $end            reduce using rule 32 (expresion -> expresion EQ expresion .)
+    PARDER          reduce using rule 32 (expresion -> expresion EQ expresion .)
+
+  ! MAS             [ shift and go to state 22 ]
+  ! MENOS           [ shift and go to state 23 ]
+  ! POR             [ shift and go to state 24 ]
+  ! DIVIDIDO        [ shift and go to state 25 ]
+  ! POTENCIA        [ shift and go to state 26 ]
+  ! MODULO          [ shift and go to state 27 ]
+  ! GE              [ shift and go to state 28 ]
+  ! LE              [ shift and go to state 29 ]
+  ! LT              [ shift and go to state 30 ]
+  ! GT              [ shift and go to state 31 ]
+  ! EQ              [ shift and go to state 32 ]
+
+
+state 52
 
     (5) lista_expresiones -> lista_expresiones expresion PTCOMA .
 
@@ -1008,7 +1758,7 @@ state 40
     $end            reduce using rule 5 (lista_expresiones -> lista_expresiones expresion PTCOMA .)
 
 
-state 41
+state 53
 
     (20) expresion -> ID ASIGNACION expresion .
     (14) expresion -> expresion . MAS expresion
@@ -1017,6 +1767,11 @@ state 41
     (17) expresion -> expresion . DIVIDIDO expresion
     (18) expresion -> expresion . POTENCIA expresion
     (19) expresion -> expresion . MODULO expresion
+    (28) expresion -> expresion . GE expresion
+    (29) expresion -> expresion . LE expresion
+    (30) expresion -> expresion . LT expresion
+    (31) expresion -> expresion . GT expresion
+    (32) expresion -> expresion . EQ expresion
 
   ! shift/reduce conflict for MAS resolved as shift
   ! shift/reduce conflict for MENOS resolved as shift
@@ -1024,6 +1779,11 @@ state 41
   ! shift/reduce conflict for DIVIDIDO resolved as shift
   ! shift/reduce conflict for POTENCIA resolved as shift
   ! shift/reduce conflict for MODULO resolved as shift
+  ! shift/reduce conflict for GE resolved as shift
+  ! shift/reduce conflict for LE resolved as shift
+  ! shift/reduce conflict for LT resolved as shift
+  ! shift/reduce conflict for GT resolved as shift
+  ! shift/reduce conflict for EQ resolved as shift
     PTCOMA          reduce using rule 20 (expresion -> ID ASIGNACION expresion .)
     $end            reduce using rule 20 (expresion -> ID ASIGNACION expresion .)
     PARDER          reduce using rule 20 (expresion -> ID ASIGNACION expresion .)
@@ -1033,6 +1793,11 @@ state 41
     DIVIDIDO        shift and go to state 25
     POTENCIA        shift and go to state 26
     MODULO          shift and go to state 27
+    GE              shift and go to state 28
+    LE              shift and go to state 29
+    LT              shift and go to state 30
+    GT              shift and go to state 31
+    EQ              shift and go to state 32
 
   ! MAS             [ reduce using rule 20 (expresion -> ID ASIGNACION expresion .) ]
   ! MENOS           [ reduce using rule 20 (expresion -> ID ASIGNACION expresion .) ]
@@ -1040,9 +1805,14 @@ state 41
   ! DIVIDIDO        [ reduce using rule 20 (expresion -> ID ASIGNACION expresion .) ]
   ! POTENCIA        [ reduce using rule 20 (expresion -> ID ASIGNACION expresion .) ]
   ! MODULO          [ reduce using rule 20 (expresion -> ID ASIGNACION expresion .) ]
+  ! GE              [ reduce using rule 20 (expresion -> ID ASIGNACION expresion .) ]
+  ! LE              [ reduce using rule 20 (expresion -> ID ASIGNACION expresion .) ]
+  ! LT              [ reduce using rule 20 (expresion -> ID ASIGNACION expresion .) ]
+  ! GT              [ reduce using rule 20 (expresion -> ID ASIGNACION expresion .) ]
+  ! EQ              [ reduce using rule 20 (expresion -> ID ASIGNACION expresion .) ]
 
 
-state 42
+state 54
 
     (26) expresion -> PRINTLN PARIZQ expresion . PARDER
     (14) expresion -> expresion . MAS expresion
@@ -1051,17 +1821,27 @@ state 42
     (17) expresion -> expresion . DIVIDIDO expresion
     (18) expresion -> expresion . POTENCIA expresion
     (19) expresion -> expresion . MODULO expresion
+    (28) expresion -> expresion . GE expresion
+    (29) expresion -> expresion . LE expresion
+    (30) expresion -> expresion . LT expresion
+    (31) expresion -> expresion . GT expresion
+    (32) expresion -> expresion . EQ expresion
 
-    PARDER          shift and go to state 44
+    PARDER          shift and go to state 56
     MAS             shift and go to state 22
     MENOS           shift and go to state 23
     POR             shift and go to state 24
     DIVIDIDO        shift and go to state 25
     POTENCIA        shift and go to state 26
     MODULO          shift and go to state 27
+    GE              shift and go to state 28
+    LE              shift and go to state 29
+    LT              shift and go to state 30
+    GT              shift and go to state 31
+    EQ              shift and go to state 32
 
 
-state 43
+state 55
 
     (27) expresion -> tipo ID ASIGNACION . expresion
     (7) expresion -> . ENTERO
@@ -1080,6 +1860,13 @@ state 43
     (20) expresion -> . ID ASIGNACION expresion
     (26) expresion -> . PRINTLN PARIZQ expresion PARDER
     (27) expresion -> . tipo ID ASIGNACION expresion
+    (28) expresion -> . expresion GE expresion
+    (29) expresion -> . expresion LE expresion
+    (30) expresion -> . expresion LT expresion
+    (31) expresion -> . expresion GT expresion
+    (32) expresion -> . expresion EQ expresion
+    (33) expresion -> . ID INCREMENTO
+    (34) expresion -> . ID DECREMENTO
     (21) tipo -> . INT
     (22) tipo -> . FLOAT
     (23) tipo -> . CHAR
@@ -1101,9 +1888,9 @@ state 43
     BOOL            shift and go to state 21
 
     tipo                           shift and go to state 14
-    expresion                      shift and go to state 45
+    expresion                      shift and go to state 57
 
-state 44
+state 56
 
     (26) expresion -> PRINTLN PARIZQ expresion PARDER .
 
@@ -1113,12 +1900,17 @@ state 44
     DIVIDIDO        reduce using rule 26 (expresion -> PRINTLN PARIZQ expresion PARDER .)
     POTENCIA        reduce using rule 26 (expresion -> PRINTLN PARIZQ expresion PARDER .)
     MODULO          reduce using rule 26 (expresion -> PRINTLN PARIZQ expresion PARDER .)
+    GE              reduce using rule 26 (expresion -> PRINTLN PARIZQ expresion PARDER .)
+    LE              reduce using rule 26 (expresion -> PRINTLN PARIZQ expresion PARDER .)
+    LT              reduce using rule 26 (expresion -> PRINTLN PARIZQ expresion PARDER .)
+    GT              reduce using rule 26 (expresion -> PRINTLN PARIZQ expresion PARDER .)
+    EQ              reduce using rule 26 (expresion -> PRINTLN PARIZQ expresion PARDER .)
     PTCOMA          reduce using rule 26 (expresion -> PRINTLN PARIZQ expresion PARDER .)
     $end            reduce using rule 26 (expresion -> PRINTLN PARIZQ expresion PARDER .)
     PARDER          reduce using rule 26 (expresion -> PRINTLN PARIZQ expresion PARDER .)
 
 
-state 45
+state 57
 
     (27) expresion -> tipo ID ASIGNACION expresion .
     (14) expresion -> expresion . MAS expresion
@@ -1127,6 +1919,11 @@ state 45
     (17) expresion -> expresion . DIVIDIDO expresion
     (18) expresion -> expresion . POTENCIA expresion
     (19) expresion -> expresion . MODULO expresion
+    (28) expresion -> expresion . GE expresion
+    (29) expresion -> expresion . LE expresion
+    (30) expresion -> expresion . LT expresion
+    (31) expresion -> expresion . GT expresion
+    (32) expresion -> expresion . EQ expresion
 
   ! shift/reduce conflict for MAS resolved as shift
   ! shift/reduce conflict for MENOS resolved as shift
@@ -1134,6 +1931,11 @@ state 45
   ! shift/reduce conflict for DIVIDIDO resolved as shift
   ! shift/reduce conflict for POTENCIA resolved as shift
   ! shift/reduce conflict for MODULO resolved as shift
+  ! shift/reduce conflict for GE resolved as shift
+  ! shift/reduce conflict for LE resolved as shift
+  ! shift/reduce conflict for LT resolved as shift
+  ! shift/reduce conflict for GT resolved as shift
+  ! shift/reduce conflict for EQ resolved as shift
     PTCOMA          reduce using rule 27 (expresion -> tipo ID ASIGNACION expresion .)
     $end            reduce using rule 27 (expresion -> tipo ID ASIGNACION expresion .)
     PARDER          reduce using rule 27 (expresion -> tipo ID ASIGNACION expresion .)
@@ -1143,6 +1945,11 @@ state 45
     DIVIDIDO        shift and go to state 25
     POTENCIA        shift and go to state 26
     MODULO          shift and go to state 27
+    GE              shift and go to state 28
+    LE              shift and go to state 29
+    LT              shift and go to state 30
+    GT              shift and go to state 31
+    EQ              shift and go to state 32
 
   ! MAS             [ reduce using rule 27 (expresion -> tipo ID ASIGNACION expresion .) ]
   ! MENOS           [ reduce using rule 27 (expresion -> tipo ID ASIGNACION expresion .) ]
@@ -1150,19 +1957,34 @@ state 45
   ! DIVIDIDO        [ reduce using rule 27 (expresion -> tipo ID ASIGNACION expresion .) ]
   ! POTENCIA        [ reduce using rule 27 (expresion -> tipo ID ASIGNACION expresion .) ]
   ! MODULO          [ reduce using rule 27 (expresion -> tipo ID ASIGNACION expresion .) ]
+  ! GE              [ reduce using rule 27 (expresion -> tipo ID ASIGNACION expresion .) ]
+  ! LE              [ reduce using rule 27 (expresion -> tipo ID ASIGNACION expresion .) ]
+  ! LT              [ reduce using rule 27 (expresion -> tipo ID ASIGNACION expresion .) ]
+  ! GT              [ reduce using rule 27 (expresion -> tipo ID ASIGNACION expresion .) ]
+  ! EQ              [ reduce using rule 27 (expresion -> tipo ID ASIGNACION expresion .) ]
 
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
-WARNING: shift/reduce conflict for MAS in state 41 resolved as shift
-WARNING: shift/reduce conflict for MENOS in state 41 resolved as shift
-WARNING: shift/reduce conflict for POR in state 41 resolved as shift
-WARNING: shift/reduce conflict for DIVIDIDO in state 41 resolved as shift
-WARNING: shift/reduce conflict for POTENCIA in state 41 resolved as shift
-WARNING: shift/reduce conflict for MODULO in state 41 resolved as shift
-WARNING: shift/reduce conflict for MAS in state 45 resolved as shift
-WARNING: shift/reduce conflict for MENOS in state 45 resolved as shift
-WARNING: shift/reduce conflict for POR in state 45 resolved as shift
-WARNING: shift/reduce conflict for DIVIDIDO in state 45 resolved as shift
-WARNING: shift/reduce conflict for POTENCIA in state 45 resolved as shift
-WARNING: shift/reduce conflict for MODULO in state 45 resolved as shift
+WARNING: shift/reduce conflict for MAS in state 53 resolved as shift
+WARNING: shift/reduce conflict for MENOS in state 53 resolved as shift
+WARNING: shift/reduce conflict for POR in state 53 resolved as shift
+WARNING: shift/reduce conflict for DIVIDIDO in state 53 resolved as shift
+WARNING: shift/reduce conflict for POTENCIA in state 53 resolved as shift
+WARNING: shift/reduce conflict for MODULO in state 53 resolved as shift
+WARNING: shift/reduce conflict for GE in state 53 resolved as shift
+WARNING: shift/reduce conflict for LE in state 53 resolved as shift
+WARNING: shift/reduce conflict for LT in state 53 resolved as shift
+WARNING: shift/reduce conflict for GT in state 53 resolved as shift
+WARNING: shift/reduce conflict for EQ in state 53 resolved as shift
+WARNING: shift/reduce conflict for MAS in state 57 resolved as shift
+WARNING: shift/reduce conflict for MENOS in state 57 resolved as shift
+WARNING: shift/reduce conflict for POR in state 57 resolved as shift
+WARNING: shift/reduce conflict for DIVIDIDO in state 57 resolved as shift
+WARNING: shift/reduce conflict for POTENCIA in state 57 resolved as shift
+WARNING: shift/reduce conflict for MODULO in state 57 resolved as shift
+WARNING: shift/reduce conflict for GE in state 57 resolved as shift
+WARNING: shift/reduce conflict for LE in state 57 resolved as shift
+WARNING: shift/reduce conflict for LT in state 57 resolved as shift
+WARNING: shift/reduce conflict for GT in state 57 resolved as shift
+WARNING: shift/reduce conflict for EQ in state 57 resolved as shift

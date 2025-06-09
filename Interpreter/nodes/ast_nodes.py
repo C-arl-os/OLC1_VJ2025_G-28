@@ -303,34 +303,138 @@ class Asignacion(Expresion):
         self.valor = valor
 
     def interpret(self):
-        valor_evaluado = self.valor.interpret()
-        tabla_variables[self.identificador] = valor_evaluado
-        return valor_evaluado
+        tabla_variables[self.identificador] = self.valor.interpret()  # Guardar el valor en la tabla de variables
+        return tabla_variables[self.identificador]
 
     def __str__(self):
-        return f"{self.tipo or ''} {self.identificador} = {self.valor};"
+        return f"{self.tipo} {self.identificador} = {self.valor}"
 
     def __repr__(self):
         return f"Asignacion(tipo={self.tipo!r}, identificador={self.identificador!r}, valor={self.valor!r})"
-    
 class Println(Expresion):
-    def __init__(self, valor):
-        self.valor = valor
+    def __init__(self, expresion):
+        self.expresion = expresion
 
     def interpret(self):
-        resultado = self.valor.interpret()
-
-        # Si ya es un string, imprímelo sin comillas
-        if isinstance(resultado, str):
-            print(resultado)
+        if isinstance(self.expresion, Identificador):
+            nombre = self.expresion.nombre
+            if nombre in tabla_variables:
+                return tabla_variables[nombre]  # Obtener el valor de la tabla de variables
+            else:
+                raise Exception(f"Variable '{nombre}' no ha sido definida")
         else:
-            print(resultado)  # int, float, bool, etc.
-
-        return "" # <- Para evitar que aparezca None en el main
+            return self.expresion.interpret()  # Interpretar directamente si no es un identificador
 
     def __str__(self):
-        return f"Println({self.valor})"
+        return f"Println({self.expresion})"
 
     def __repr__(self):
-        return f"Println({self.valor!r})"
+        return f"Println({self.expresion!r})"
+#operadores
+# ...existing code...
 
+class MayorIgual(Expresion):
+    def __init__(self, izquierda, derecha):
+        self.izquierda = izquierda
+        self.derecha = derecha
+
+    def interpret(self):
+        return self.izquierda.interpret() >= self.derecha.interpret()
+
+    def __str__(self):
+        return f"({self.izquierda} >= {self.derecha})"
+
+    def __repr__(self):
+        return f"MayorIgual({self.izquierda!r}, {self.derecha!r})"
+
+class MenorIgual(Expresion):
+    def __init__(self, izquierda, derecha):
+        self.izquierda = izquierda
+        self.derecha = derecha
+
+    def interpret(self):
+        return self.izquierda.interpret() <= self.derecha.interpret()
+
+    def __str__(self):
+        return f"({self.izquierda} <= {self.derecha})"
+
+    def __repr__(self):
+        return f"MenorIgual({self.izquierda!r}, {self.derecha!r})"
+
+class MenorQue(Expresion):
+    def __init__(self, izquierda, derecha):
+        self.izquierda = izquierda
+        self.derecha = derecha
+
+    def interpret(self):
+        return self.izquierda.interpret() < self.derecha.interpret()
+
+    def __str__(self):
+        return f"({self.izquierda} < {self.derecha})"
+
+    def __repr__(self):
+        return f"MenorQue({self.izquierda!r}, {self.derecha!r})"
+
+class MayorQue(Expresion):
+    def __init__(self, izquierda, derecha):
+        self.izquierda = izquierda
+        self.derecha = derecha
+
+    def interpret(self):
+        return self.izquierda.interpret() > self.derecha.interpret()
+
+    def __str__(self):
+        return f"({self.izquierda} > {self.derecha})"
+
+    def __repr__(self):
+        return f"MayorQue({self.izquierda!r}, {self.derecha!r})"
+
+class Igual(Expresion):
+    def __init__(self, izquierda, derecha):
+        self.izquierda = izquierda
+        self.derecha = derecha
+
+    def interpret(self):
+        return self.izquierda.interpret() == self.derecha.interpret()
+
+    def __str__(self):
+        return f"({self.izquierda} == {self.derecha})"
+
+    def __repr__(self):
+        return f"Igual({self.izquierda!r}, {self.derecha!r})"
+
+# ...DECREMENTO Y iNCREMENTO...
+
+class Incremento(Expresion):
+    def __init__(self, identificador):
+        self.identificador = identificador
+
+    def interpret(self):
+        if self.identificador.nombre in tabla_variables:
+            tabla_variables[self.identificador.nombre] += 1
+            return tabla_variables[self.identificador.nombre]
+        else:
+            raise Exception(f"Variable '{self.identificador.nombre}' no ha sido definida")
+
+    def __str__(self):
+        return f"{self.identificador}++"
+
+    def __repr__(self):
+        return f"Incremento({self.identificador!r})"
+
+class Decremento(Expresion):
+    def __init__(self, identificador):
+        self.identificador = identificador
+
+    def interpret(self):
+        if self.identificador.nombre in tabla_variables:
+            tabla_variables[self.identificador.nombre] -= 1
+            return tabla_variables[self.identificador.nombre]
+        else:
+            raise Exception(f"Variable '{self.identificador.nombre}' no ha sido definida")
+
+    def __str__(self):
+        return f"{self.identificador}--"
+
+    def __repr__(self):
+        return f"Decremento({self.identificador!r})"

@@ -66,18 +66,17 @@ from contexto import tabla_variables  # Asegúrate de tener esta variable accesi
 
 def analizar_texto(texto):
     salida = []
-    comentarios.clear()          # Limpiar comentarios anteriores
-    tabla_variables.clear()      # Limpiar variables anteriores (si es necesario)
+    comentarios.clear()
+    tabla_variables.clear()
 
     arboles = []
 
-    for linea in texto.splitlines():
-        if not linea.strip():
-            continue
-        raiz = parser.parse(linea)
-        if raiz is None:
-            # salida.append("Hubo un error al parsear la expresión.")
-            continue
+    raiz = parser.parse(texto)
+    if raiz is None:
+        return "Error de sintaxis"
+    elif isinstance(raiz, list):
+        arboles.extend(raiz)
+    else:
         arboles.append(raiz)
 
     # AST

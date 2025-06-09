@@ -31,6 +31,14 @@ tokens = (
     'MODULO',
     'COMENTARIO_MULTILINEA',
     'COMENTARIO_UNA_LINEA',
+    'GE',  # >=
+    'LE',  # <=
+    'LT',  # <
+    'GT',  # >
+    'EQ',  # ==
+    'INCREMENTO',  # ++
+    'DECREMENTO',  # --
+    
 ) + tuple(reserved.values())
 # Tokens
 
@@ -49,6 +57,15 @@ t_POTENCIA = r'\*\*'
 t_POR = r'\*'
 t_DIVIDIDO = r'/'
 t_MODULO = r'%'
+# Reglas para los operadores de comparación
+t_GE = r'>='
+t_LE = r'<='
+t_LT = r'<'
+t_GT = r'>'
+t_EQ = r'=='
+# Reglas para los operadores de incremento y decremento
+t_INCREMENTO = r'\+\+'
+t_DECREMENTO = r'--'
 
 # Ignorar espacios y tabulaciones
 t_ignore = ' \t'
