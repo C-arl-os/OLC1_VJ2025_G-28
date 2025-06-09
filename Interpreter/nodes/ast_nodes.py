@@ -1,5 +1,79 @@
+from contexto import tabla_variables
 from .Nodo import Expresion
 
+
+class Numero(Expresion):
+    def __init__(self, valor):
+        self.valor = valor
+
+    def interpret(self):
+        return self.valor
+
+    def __str__(self):
+        return str(self.valor)
+
+    def __repr__(self):
+        return f"Numero({self.valor})"
+    
+class Suma(Expresion):
+    def __init__(self, izquierda, derecha):
+        self.izquierda = izquierda
+        self.derecha = derecha
+
+    def interpret(self):
+        izq = self.izquierda.interpret()
+        der = self.derecha.interpret()
+
+        # Manejo de errores: combinaciones no válidas
+        if isinstance(izq, bool) or isinstance(der, bool):
+            # Solo se permite booleano + cadena
+            if isinstance(izq, str) or isinstance(der, str):
+                return str(izq) + str(der)
+            else:
+                print(f"Error: No se puede sumar tipos inválidos → {type(izq).__name__} + {type(der).__name__}")
+                return None
+
+        # Caracter a número (usa ord)
+        if isinstance(izq, str) and len(izq) == 1 and not izq.isnumeric():
+            izq_val = ord(izq)
+        else:
+            izq_val = izq
+
+        if isinstance(der, str) and len(der) == 1 and not der.isnumeric():
+            der_val = ord(der)
+        else:
+            der_val = der
+
+        # Reglas de suma
+        if isinstance(izq, int) and isinstance(der, int):
+            return izq + der
+        elif isinstance(izq, (int, float)) and isinstance(der, (int, float)):
+            return float(izq) + float(der)
+        elif isinstance(izq, (int, float)) and isinstance(der, str) and len(der) > 1:
+            return str(izq) + der
+        elif isinstance(izq, str) and isinstance(der, (int, float)):
+            return izq + str(der)
+        elif isinstance(izq, (int, float)) and isinstance(der, str) and len(der) == 1:
+            return izq + ord(der)
+        elif isinstance(izq, str) and len(izq) == 1 and isinstance(der, (int, float)):
+            return ord(izq) + der
+        elif isinstance(izq, str) and isinstance(der, str):
+            return izq + der
+        elif isinstance(izq, str) and isinstance(der, bool):
+            return izq + str(der)
+        elif isinstance(izq, bool) and isinstance(der, str):
+            return str(izq) + der
+        elif isinstance(izq, str) and len(izq) == 1 and isinstance(der, str) and len(der) == 1:
+            return izq + der  # caracter + caracter = cadena
+        else:
+            print(f"Error: No se puede sumar tipos inválidos → {type(izq).__name__} + {type(der).__name__}")
+            return None
+
+    def __str__(self):
+        return f"({self.izquierda} + {self.derecha})"
+
+    def __repr__(self):
+        return f"Suma({self.izquierda!r}, {self.derecha!r})"
 
 class Resta(Expresion):
     def __init__(self, izquierda, derecha):
@@ -7,12 +81,256 @@ class Resta(Expresion):
         self.derecha = derecha
 
     def interpret(self):
-        # Interpreta recursivamente ambos hijos y resta
-        return self.izquierda.interpret() - self.derecha.interpret()
+        izq = self.izquierda.interpret()
+        der = self.derecha.interpret()
+
+        # Caso caracter - caracter (no válido)
+        if isinstance(izq, str) and isinstance(der, str) and len(izq) == 1 and len(der) == 1:
+            print("Error: No se puede restar caracter - caracter")
+            return None
+
+        # Convertir caracteres a código ASCII si es necesario
+        if isinstance(izq, str) and len(izq) == 1:
+            izq = ord(izq)
+        if isinstance(der, str) and len(der) == 1:
+            der = ord(der)
+
+        # Realizar la resta con promoción de tipos
+        resultado = izq - der
+        return resultado
 
     def __str__(self):
-        # Representación infija con paréntesis
         return f"({self.izquierda} - {self.derecha})"
 
     def __repr__(self):
         return f"Resta({self.izquierda!r}, {self.derecha!r})"
+
+class Multiplicacion(Expresion):
+    def __init__(self, izquierda, derecha):
+        self.izquierda = izquierda
+        self.derecha = derecha
+
+    def interpret(self):
+        izq = self.izquierda.interpret()
+        der = self.derecha.interpret()
+
+        # Validar si ambos son caracteres (no válido)
+        if isinstance(izq, str) and isinstance(der, str) and len(izq) == 1 and len(der) == 1:
+            print("Error: No se puede multiplicar caracter * caracter")
+            return None
+
+        # Convertir caracteres a ASCII si es necesario
+        if isinstance(izq, str) and len(izq) == 1:
+            izq = ord(izq)
+        if isinstance(der, str) and len(der) == 1:
+            der = ord(der)
+
+        resultado = izq * der
+
+        # Promoción de tipo
+        if isinstance(izq, float) or isinstance(der, float):
+            return float(resultado)
+        else:
+            return int(resultado)
+
+    def __str__(self):
+        return f"({self.izquierda} * {self.derecha})"
+
+    def __repr__(self):
+        return f"Multiplicacion({self.izquierda!r}, {self.derecha!r})"
+
+class Division(Expresion):
+    def __init__(self, izquierda, derecha):
+        self.izquierda = izquierda
+        self.derecha = derecha
+
+    def interpret(self):
+        izquierda = self.izquierda.interpret()
+        derecha = self.derecha.interpret()
+
+        if isinstance(izquierda, str):
+            izquierda = ord(izquierda)
+        if isinstance(derecha, str):
+            derecha = ord(derecha)
+
+        try:
+            resultado = izquierda / derecha
+        except ZeroDivisionError:
+            print("Error: División por cero.")
+            return None
+
+        # Validaciones por tipo
+        if isinstance(self.izquierda, Caracter) and isinstance(self.derecha, Caracter):
+            print("Error: No se puede dividir caracter / caracter")
+            return None
+
+        return float(resultado)
+
+    def __str__(self):
+        return f"({self.izquierda} / {self.derecha})"
+
+    def __repr__(self):
+        return f"Division({self.izquierda!r}, {self.derecha!r})"
+
+class Potencia(Expresion):
+    def __init__(self, base, exponente):
+        self.base = base
+        self.exponente = exponente
+
+    def interpret(self):
+        base_val = self.base.interpret()
+        exponente_val = self.exponente.interpret()
+        
+        resultado = base_val ** exponente_val
+
+        if isinstance(base_val, int) and isinstance(exponente_val, int):
+            return int(resultado)
+        else:
+            return float(resultado)
+
+    def __str__(self):
+        return f"({self.base} ** {self.exponente})"
+
+    def __repr__(self):
+        return f"Potencia({self.base!r}, {self.exponente!r})"
+
+class Modulo(Expresion):
+    def __init__(self, izquierda, derecha):
+        self.izquierda = izquierda
+        self.derecha = derecha
+
+    def interpret(self):
+        izq_val = self.izquierda.interpret()
+        der_val = self.derecha.interpret()
+        try:
+            resultado = izq_val % der_val
+            return float(resultado)  # Siempre se convierte a decimal según la tabla
+        except ZeroDivisionError:
+            print("Error: módulo por cero.")
+            return None
+
+    def __str__(self):
+        return f"({self.izquierda} % {self.derecha})"
+
+    def __repr__(self):
+        return f"Modulo({self.izquierda!r}, {self.derecha!r})"
+
+class Negativo(Expresion):
+    def __init__(self, expresion):
+        self.expresion = expresion
+
+    def interpret(self):
+        return -self.expresion.interpret()
+
+    def __str__(self):
+        return f"-({self.expresion})"
+
+    def __repr__(self):
+        return f"Negativo({self.expresion!r})"
+
+class Decimal(Expresion):
+    def __init__(self, valor):
+        self.valor = valor
+
+    def interpret(self):
+        return self.valor
+
+    def __str__(self):
+        return str(self.valor)
+
+    def __repr__(self):
+        return f"Decimal({self.valor})"
+
+class Caracter(Expresion):
+    def __init__(self, valor):
+        self.valor = valor
+
+    def interpret(self):
+        return self.valor  
+
+    def __str__(self):
+        return f"'{self.valor}'"
+
+    def __repr__(self):
+        return f"Caracter('{self.valor}')"
+
+class Cadena(Expresion):
+    def __init__(self, valor):
+        self.valor = valor
+
+    def interpret(self):
+        return self.valor
+
+    def __str__(self):
+        return f'"{self.valor}"'
+
+    def __repr__(self):
+        return f"Cadena({self.valor!r})"
+
+class Boleano(Expresion):
+    def __init__(self, valor):
+        self.valor = valor 
+
+    def interpret(self):
+        return self.valor
+
+    def __str__(self):
+        return "true" if self.valor else "false"
+
+    def __repr__(self):
+        return f"Boleano({self.valor})"
+
+class Identificador(Expresion):
+    def __init__(self, nombre):
+        self.nombre = nombre
+
+    def interpret(self):
+        if self.nombre in tabla_variables:
+            return tabla_variables[self.nombre]
+        else:
+            raise Exception(f"Variable '{self.nombre}' no ha sido definida")
+
+    def __str__(self):
+        return self.nombre
+
+    def __repr__(self):
+        return f"Identificador('{self.nombre}')"
+
+class Asignacion(Expresion):
+    def __init__(self, tipo, identificador, valor):
+        self.tipo = tipo
+        self.identificador = identificador
+        self.valor = valor
+
+    def interpret(self):
+        valor_evaluado = self.valor.interpret()
+        tabla_variables[self.identificador] = valor_evaluado
+        return valor_evaluado
+
+    def __str__(self):
+        return f"{self.tipo or ''} {self.identificador} = {self.valor};"
+
+    def __repr__(self):
+        return f"Asignacion(tipo={self.tipo!r}, identificador={self.identificador!r}, valor={self.valor!r})"
+    
+class Println(Expresion):
+    def __init__(self, valor):
+        self.valor = valor
+
+    def interpret(self):
+        resultado = self.valor.interpret()
+
+        # Si ya es un string, imprímelo sin comillas
+        if isinstance(resultado, str):
+            print(resultado)
+        else:
+            print(resultado)  # int, float, bool, etc.
+
+        return "" # <- Para evitar que aparezca None en el main
+
+    def __str__(self):
+        return f"Println({self.valor})"
+
+    def __repr__(self):
+        return f"Println({self.valor!r})"
+

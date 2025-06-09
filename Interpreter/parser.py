@@ -1,6 +1,6 @@
 import ply.yacc as yacc
 from lexer import tokens
-from nodes.ast_nodes import Numero, Decimal, Boleano, Caracter, Cadena, Identificador, Asignacion, Suma, Resta, Multiplicacion, Division,Potencia,Modulo,Negativo
+from nodes.ast_nodes import Numero, Decimal, Boleano, Caracter, Cadena, Identificador, Asignacion, Suma, Resta, Multiplicacion, Division,Potencia,Modulo,Negativo, Println
 comentarios = []
 
 # Precedencia
@@ -14,6 +14,7 @@ precedence = (
 # Regla para expresiones simples
 def p_inicio(p):
     '''inicio : expresion
+              | lista_expresiones
               | comentario_una_linea
               | comentario_multi_linea'''
     p[0] = p[1]
@@ -91,6 +92,10 @@ def p_tipo(p):
             | STRING
             | BOOL'''
     p[0] = p[1]
+
+def p_expresion_println(p):
+    'expresion : PRINTLN PARIZQ expresion PARDER'
+    p[0] = Println(p[3])
 
 def p_declaracion_asignacion(p):
     'expresion : tipo ID ASIGNACION expresion'

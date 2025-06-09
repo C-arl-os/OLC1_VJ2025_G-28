@@ -9,6 +9,7 @@ reserved = {
     'bool': 'BOOL',
     'true': 'BOLEANO',
     'false': 'BOLEANO',
+    'Println': 'PRINTLN'
 }
 
 # Lista de nombres de tokens
@@ -162,5 +163,8 @@ def t_COMENTARIO_UNA_LINEA(t):
     r'//[^\n]*'
     return t
 
+def t_PRINTLN(t):
+    r'Println'
+    return t
 
 lexer = lex.lex()

@@ -54,6 +54,10 @@ int a = -5;
 float b = -3.14;
 int c = -a;
 float d = -b;
+
+Println("Hola");
+Println("mundo");
+Println(5561);
 '''
 
 # Parseamos la entrada
