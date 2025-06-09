@@ -1,5 +1,7 @@
 from contexto import tabla_variables
 from .Nodo import Expresion
+from contexto import tabla_variables, salidas_de_impresion
+
 
 
 class Numero(Expresion):
@@ -297,33 +299,39 @@ class Identificador(Expresion):
         return f"Identificador('{self.nombre}')"
 
 class Asignacion(Expresion):
-    def __init__(self, tipo, identificador, valor):
+    def __init__(self, tipo, identificador, valor): # Este es el __init__ correcto para Asignacion
         self.tipo = tipo
         self.identificador = identificador
         self.valor = valor
 
     def interpret(self):
-        tabla_variables[self.identificador] = self.valor.interpret()  # Guardar el valor en la tabla de variables
-        return tabla_variables[self.identificador]
+        valor_interpretado = self.valor.interpret()
+        tabla_variables[self.identificador] = valor_interpretado
+        return valor_interpretado
 
     def __str__(self):
         return f"{self.tipo} {self.identificador} = {self.valor}"
 
     def __repr__(self):
         return f"Asignacion(tipo={self.tipo!r}, identificador={self.identificador!r}, valor={self.valor!r})"
+
 class Println(Expresion):
     def __init__(self, expresion):
         self.expresion = expresion
 
     def interpret(self):
+        valor_a_imprimir = None
         if isinstance(self.expresion, Identificador):
             nombre = self.expresion.nombre
             if nombre in tabla_variables:
-                return tabla_variables[nombre]  # Obtener el valor de la tabla de variables
+                valor_a_imprimir = tabla_variables[nombre]
             else:
                 raise Exception(f"Variable '{nombre}' no ha sido definida")
         else:
-            return self.expresion.interpret()  # Interpretar directamente si no es un identificador
+            valor_a_imprimir = self.expresion.interpret()
+        
+        salidas_de_impresion.append(str(valor_a_imprimir))
+        return valor_a_imprimir 
 
     def __str__(self):
         return f"Println({self.expresion})"
@@ -438,3 +446,44 @@ class Decremento(Expresion):
 
     def __repr__(self):
         return f"Decremento({self.identificador!r})"
+    
+#Ciclo while 
+
+class While(Expresion):
+    def __init__(self, condicion, cuerpo):
+        self.condicion = condicion
+        # Asegurarse de que el cuerpo siempre sea una lista de nodos
+        self.cuerpo = cuerpo if isinstance(cuerpo, list) else [cuerpo]
+
+    def interpret(self):
+        try:
+            # Convertir el resultado de la condición a booleano explícitamente
+            while bool(self.condicion.interpret()): 
+                for instruccion in self.cuerpo:
+                    instruccion.interpret()
+        except Exception as e:
+            # print(f"Error en bucle while: {e}") # Opcional: log en consola del servidor
+            raise # Re-lanzar para que analizar_texto lo maneje
+
+    def __str__(self):
+        # Formatear el cuerpo del while para que sea multilínea e indentado
+        cuerpo_str = ""
+        if self.cuerpo: # Solo si hay instrucciones en el cuerpo
+            cuerpo_str = "\n" # Empezar con nueva línea para la primera instrucción del cuerpo
+            for instruccion in self.cuerpo:
+                # Indentar cada instrucción del cuerpo. str(instruccion) llamará al __str__ de ese nodo.
+                # Asegúrate de que el __str__ de Asignacion, Println, Decremento, etc., no añadan PTCOMA si no lo deseas en el AST.
+                # Si los nodos como Println(x) ya se representan como "Println(x)" y no "Println(x);", esto funcionará bien.
+                # Si quieres que el punto y coma aparezca en el AST, puedes añadirlo aquí o en el __str__ de cada nodo.
+                # Por ahora, asumimos que str(instruccion) da la representación base del nodo.
+                cuerpo_str += f"    {str(instruccion)}\n" # 4 espacios de indentación
+        
+        # Construir la representación del while
+        # La condición se representa como str(self.condicion)
+        # El punto y coma después de la llave de cierre es opcional en la representación del AST,
+        # pero si quieres reflejar la sintaxis de entrada que requiere un punto y coma después del while,
+        # podrías añadirlo aquí. Por ahora, lo omitimos para una representación más limpia del AST.
+        return f"while ({str(self.condicion)}) {{{cuerpo_str}}}"
+
+    def __repr__(self):
+        return f"While(condicion={self.condicion!r}, cuerpo={self.cuerpo!r})"

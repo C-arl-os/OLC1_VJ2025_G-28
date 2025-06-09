@@ -1,5 +1,6 @@
 from .Nodo import Expresion
 
+
 class Asignacion(Expresion):
     def __init__(self, nombre_variable, valor):
         self.nombre_variable = nombre_variable  # Es un string (ID)

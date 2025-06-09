@@ -1,4 +1,10 @@
 '''
+int x = 1;
+x--;
+Println(x);
+x++;
+Println(x);
+Println(4<5);
 int s1 = 5 + 5;
 float s2 = 5 + 2.5;
 int s3 = 5 + 'A';
@@ -62,12 +68,13 @@ Println(5561);
 
 # Parseamos la entrada
 from parser import parser, comentarios
-from contexto import tabla_variables  # Asegúrate de tener esta variable accesible
+from contexto import tabla_variables,salidas_de_impresion  # Asegúrate de tener esta variable accesible
 
 def analizar_texto(texto):
     salida = []
     comentarios.clear()
     tabla_variables.clear()
+    salidas_de_impresion.clear() #
 
     arboles = []
 
@@ -83,6 +90,8 @@ def analizar_texto(texto):
     salida.append("AST:")
     for nodo in arboles:
         salida.append(str(nodo))
+        
+    
 
     # Interpretación
     salida.append("\nInterpretación:")
@@ -101,6 +110,8 @@ def analizar_texto(texto):
         salida.extend(comentarios)
 
     return '\n'.join(salida)
+
+
 
 #LEER POR FAVOR
 # PARA HACERLO FUNCIONAR

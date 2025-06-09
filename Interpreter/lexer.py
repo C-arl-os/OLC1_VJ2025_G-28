@@ -9,7 +9,8 @@ reserved = {
     'bool': 'BOOL',
     'true': 'BOLEANO',
     'false': 'BOLEANO',
-    'Println': 'PRINTLN'
+    'Println': 'PRINTLN',
+    'while' : 'WHILE', #<-- Añadido para el bucle while
 }
 
 # Lista de nombres de tokens
@@ -38,7 +39,8 @@ tokens = (
     'EQ',  # ==
     'INCREMENTO',  # ++
     'DECREMENTO',  # --
-    
+    'LLAVE_IZQ',  # {
+    'LLAVE_DER',  # }
 ) + tuple(reserved.values())
 # Tokens
 
@@ -66,7 +68,8 @@ t_EQ = r'=='
 # Reglas para los operadores de incremento y decremento
 t_INCREMENTO = r'\+\+'
 t_DECREMENTO = r'--'
-
+t_LLAVE_IZQ = r'\{'
+t_LLAVE_DER = r'\}'
 # Ignorar espacios y tabulaciones
 t_ignore = ' \t'
 
@@ -97,8 +100,6 @@ def t_BOLEANO(t):
     r'true|false'
     t.value = True if t.value == 'true' else False
     return t
-
-
 def t_CARACTER(t):
     r"\'(\\[ntr'\"\\]|[^\\'])\'"
     try:

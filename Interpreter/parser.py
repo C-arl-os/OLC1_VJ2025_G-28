@@ -1,7 +1,7 @@
 import ply.yacc as yacc
 from lexer import tokens
 from nodes.ast_nodes import Numero, Decimal, Boleano, Caracter, Cadena, Identificador, Asignacion, Suma, Resta, Multiplicacion, Division,Potencia,Modulo,Negativo, Println
-from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento
+from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento, While
 comentarios = []
 
 # Precedencia
@@ -30,6 +30,11 @@ def p_lista_expresiones(p):
         p[0] = [p[1]]
 
 
+#ciclo while 
+def p_expresion_while(p):
+    '''expresion : WHILE PARIZQ expresion PARDER LLAVE_IZQ lista_expresiones LLAVE_DER'''
+    print(f"Debug: condición={p[3]}, cuerpo={p[6]}")  # Línea de depuración
+    p[0] = While(p[3], p[6] if isinstance(p[6], list) else [p[6]])
 def p_expresion_entero(p):
     'expresion : ENTERO'
     p[0] = Numero(p[1])
@@ -105,9 +110,10 @@ def p_declaracion_asignacion(p):
 
 def p_error(p):
     if p:
-        print(f"Error de sintaxis: token inesperado '{p.value}' en línea {p.lineno}")
+        print(f"Error de sintaxis en token '{p.type}', valor '{p.value}', línea {p.lineno}, posición {p.lexpos}")
+        # Puedes decidir si detener el análisis o intentar recuperarte (más complejo)
     else:
-        print("Error de sintaxis: fin de entrada inesperado")
+        print("Error de sintaxis al final del archivo (EOF inesperado)")
 
 #operadores
 
