@@ -2,3 +2,11 @@ Jose-API con frontend y backend
 Carlos-While
 Bryan- Ciclo For
 Katherin-Println
+while -> CARLOS
+Swith -> BRAYAN
+if -> JOSE
+do-while -> CARLOS
+FOR ->Katherin
+OPERADORES LOGICOS->AND , OR , NOT, XOR BRYAN
+Validad (5+5)* 4; CARLOS
+pip install flask Y FLASK CUK 

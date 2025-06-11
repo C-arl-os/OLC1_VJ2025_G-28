@@ -1,7 +1,7 @@
 import ply.yacc as yacc
 from lexer import tokens
 from nodes.ast_nodes import Numero, Decimal, Boleano, Caracter, Cadena, Identificador, Asignacion, Suma, Resta, Multiplicacion, Division,Potencia,Modulo,Negativo, Println
-from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento, While
+from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento
 comentarios = []
 
 # Precedencia
@@ -31,10 +31,7 @@ def p_lista_expresiones(p):
 
 
 #ciclo while 
-def p_expresion_while(p):
-    '''expresion : WHILE PARIZQ expresion PARDER LLAVE_IZQ lista_expresiones LLAVE_DER'''
-    print(f"Debug: condición={p[3]}, cuerpo={p[6]}")  # Línea de depuración
-    p[0] = While(p[3], p[6] if isinstance(p[6], list) else [p[6]])
+
 def p_expresion_entero(p):
     'expresion : ENTERO'
     p[0] = Numero(p[1])
@@ -43,9 +40,7 @@ def p_expresion_decimal(p):
     'expresion : DECIMAL'
     p[0] = Decimal(p[1])
 
-def p_expresion_boleano(p):
-    'expresion : BOLEANO'
-    p[0] = Boleano(p[1])
+#booleanos
 
 def p_expresion_caracter(p):
     'expresion : CARACTER'

@@ -7,10 +7,10 @@ reserved = {
     'char': 'CHAR',
     'string': 'STRING',
     'bool': 'BOOL',
-    'true': 'BOLEANO',
-    'false': 'BOLEANO',
-    'Println': 'PRINTLN',
-    'while' : 'WHILE', #<-- Añadido para el bucle while
+    'true': 'TRUE',
+    'false': 'FALSE',
+    'println': 'PRINTLN',
+
 }
 
 # Lista de nombres de tokens
@@ -96,10 +96,7 @@ def t_ENTERO(t):
         t.value = 0
     return t
 
-def t_BOLEANO(t):
-    r'true|false'
-    t.value = True if t.value == 'true' else False
-    return t
+
 def t_CARACTER(t):
     r"\'(\\[ntr'\"\\]|[^\\'])\'"
     try:
@@ -182,7 +179,7 @@ def t_COMENTARIO_UNA_LINEA(t):
     return t
 
 def t_PRINTLN(t):
-    r'Println'
+    r'println'
     return t
 
 lexer = lex.lex()
