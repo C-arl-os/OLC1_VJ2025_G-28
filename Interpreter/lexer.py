@@ -2,6 +2,7 @@ import ply.lex as lex
 
 # palabras reservadas
 reserved = {
+    'eval':'REVAL',
     'int': 'INT',
     'float': 'FLOAT',
     'char': 'CHAR',
@@ -10,11 +11,13 @@ reserved = {
     'true': 'TRUE',
     'false': 'FALSE',
     'println': 'PRINTLN',
+    'while':'WHILE',
 
 }
 
 # Lista de nombres de tokens
 tokens = (
+
     'PARIZQ',
     'PARDER',
     'MAS',
@@ -37,10 +40,17 @@ tokens = (
     'LT',  # <
     'GT',  # >
     'EQ',  # ==
+    'NE', # !=
     'INCREMENTO',  # ++
     'DECREMENTO',  # --
     'LLAVE_IZQ',  # {
     'LLAVE_DER',  # }
+    'CORDER',  # [ ciclo while
+    'CORIZQ',  # ] ciclo while
+    'IGUAL', #igual
+    'MAYORQ', #>
+    'PTC',
+    
 ) + tuple(reserved.values())
 # Tokens
 
@@ -65,6 +75,7 @@ t_LE = r'<='
 t_LT = r'<'
 t_GT = r'>'
 t_EQ = r'=='
+t_NE     = r'!='   # <- Nuevo
 # Reglas para los operadores de incremento y decremento
 t_INCREMENTO = r'\+\+'
 t_DECREMENTO = r'--'
@@ -72,6 +83,14 @@ t_LLAVE_IZQ = r'\{'
 t_LLAVE_DER = r'\}'
 # Ignorar espacios y tabulaciones
 t_ignore = ' \t'
+#ciclo while
+t_CORDER = r']'
+t_CORIZQ = r'\['
+t_IGUAL = r'='
+t_MAYORQ = r'>'
+t_PTC = r';'
+
+
 
 def t_DECIMAL(t):
     r'-?\d+\.\d+'
@@ -121,8 +140,9 @@ def t_CADENA(t):
 
 # manejo de asignacion de variables
 def t_ID(t):
-    r'[a-zA-Z_][a-zA-Z0-9_]*'
-    t.type = reserved.get(t.value, 'ID')
+    r'[a-zA-Z][a-zA-Z0-9_]*'
+    t.type = reserved.get(t.value.lower(), 'ID')
+    t.value = t.value.lower()
     return t
     
 def t_newline(t):

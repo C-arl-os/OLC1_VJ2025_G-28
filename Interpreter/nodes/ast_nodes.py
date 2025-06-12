@@ -1,7 +1,7 @@
 from contexto import tabla_variables
 from .Nodo import Expresion
 from contexto import tabla_variables, salidas_de_impresion
-
+from tabla_simbolos.instancia import symbol_table as st
 
 
 class Numero(Expresion):
@@ -450,3 +450,95 @@ class Decremento(Expresion):
     
 #Ciclo while 
 
+class Instruccion(Expresion):
+    def __init__(self, instruccion):
+        self.instruccion = instruccion
+
+    def interpret(self):
+        return self.instruccion.interpret()
+    
+    def __str__(self):
+        print(self.instruccion)
+        return f""
+    
+class Instrucciones(Expresion):
+    def __init__(self, instruccion, instrucciones=None):
+        if instrucciones is not None:
+            self.instrucciones = instrucciones.instrucciones.copy()
+        else:
+            self.instrucciones = []
+        self.instrucciones.append(instruccion)
+
+    def interpret(self):
+        results = []
+        for instr in self.instrucciones:
+            results.append(instr.interpret())
+        return results
+
+    def __str__(self):
+        return "\n".join(str(instr) for instr in self.instrucciones)
+
+class While(Expresion):
+    _contador = 0
+
+    def __init__(self, condicion, instrucciones):
+        self.condicion = condicion
+        self.instrucciones = instrucciones
+        While._contador += 1
+        self.id = While._contador
+
+    def interpret(self):
+        st.new_scope(f'while_{self.id}')
+        print(f"Ejecutando while ID #{self.id}")
+        while self.condicion.interpret():
+            self.instrucciones.interpret()
+        st.exit_scope()
+
+    def __str__(self):
+        # Representación legible del AST
+        return f"while_{self.id}: while ({self.condicion}) {{\n{self.instrucciones}\n}}"
+
+    def __repr__(self):
+        return f"While#{self.id}(condicion={self.condicion!r}, instrucciones={self.instrucciones!r})"
+        
+class Instruccion(Expresion):
+    def __init__(self, instruccion):
+        self.instruccion = instruccion
+
+    def interpret(self):
+        return self.instruccion.interpret()
+    
+    def __str__(self):
+        print(self.instruccion)
+        return f""
+    
+class Instrucciones(Expresion):
+    def __init__(self, instruccion, instrucciones=None):
+        if instrucciones is not None:
+            self.instrucciones = instrucciones.instrucciones.copy()
+        else:
+            self.instrucciones = []
+        self.instrucciones.append(instruccion)
+
+    def interpret(self):
+        results = []
+        for instr in self.instrucciones:
+            results.append(instr.interpret())
+        return results
+
+    def __str__(self):
+        return "\n".join(str(instr) for instr in self.instrucciones)
+
+class Distinto(Expresion):
+    def __init__(self, izquierda, derecha):
+        self.izquierda = izquierda
+        self.derecha = derecha
+
+    def interpret(self):
+        return self.izquierda.interpret() != self.derecha.interpret()
+
+    def __str__(self):
+        return f"({self.izquierda} != {self.derecha})"
+
+    def __repr__(self):
+        return f"Distinto({self.izquierda!r}, {self.derecha!r})"

@@ -1,10 +1,33 @@
 '''
 int x = 1;
+while (x <= 3) {
+    Println(x);
+    x++;
+}
+println("");
+int y = 5;
+while (y >= 3) {
+    Println(y);
+    y--;
+}
+println("");
+int z = 0;
+while (z == 0) {
+    Println(z);
+    z = 1;
+}
+println("");
+int w = 2;
+while (w != 0) {
+    Println(w);
+    w--;
+}
+int x = 1;
 x--;
-Println(x);
+println(x);
 x++;
-Println(x);
-Println(4<5);
+println(x);
+println(4<5);
 int s1 = 5 + 5;
 float s2 = 5 + 2.5;
 int s3 = 5 + 'A';
@@ -61,9 +84,9 @@ float b = -3.14;
 int c = -a;
 float d = -b;
 
-Println("Hola");
-Println("mundo");
-Println(5561);
+println("Hola");
+println("mundo");
+println(5561);
 '''
 
 # Parseamos la entrada
@@ -74,14 +97,13 @@ def analizar_texto(texto):
     salida = []
     comentarios.clear()
     tabla_variables.clear()
-    salidas_de_impresion.clear() #
+    salidas_de_impresion.clear()
 
     arboles = []
-
     raiz = parser.parse(texto)
     if raiz is None:
         return "Error de sintaxis"
-    elif isinstance(raiz, list):
+    if isinstance(raiz, list):
         arboles.extend(raiz)
     else:
         arboles.append(raiz)
@@ -90,14 +112,16 @@ def analizar_texto(texto):
     salida.append("AST:")
     for nodo in arboles:
         salida.append(str(nodo))
-        
-    
 
-    # Interpretación
-    salida.append("\nInterpretación:")
+    # Interpretación (ejecuta todos los nodos, llenando salidas_de_impresion)
     for nodo in arboles:
         if hasattr(nodo, 'interpret'):
-            salida.append(str(nodo.interpret()))
+            nodo.interpret()
+
+    # Mostrar lo que imprimieron los Println
+    if salidas_de_impresion:
+        salida.append("\nSalida de Println:")
+        salida.extend(salidas_de_impresion)
 
     # Tabla de variables
     salida.append("\nTabla de variables:")
@@ -109,10 +133,4 @@ def analizar_texto(texto):
         salida.append("\nComentarios:")
         salida.extend(comentarios)
 
-    return '\n'.join(salida)
-
-
-
-#LEER POR FAVOR
-# PARA HACERLO FUNCIONAR
-# ESCRIBIR PYTHON APP.PY HUBICADOS EN LA CARPETA "INTERPRETER"
+    return "\n".join(salida)

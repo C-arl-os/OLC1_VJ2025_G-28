@@ -1,7 +1,7 @@
 import ply.yacc as yacc
 from lexer import tokens
 from nodes.ast_nodes import Numero, Decimal, Boleano, Caracter, Cadena, Identificador, Asignacion, Suma, Resta, Multiplicacion, Division,Potencia,Modulo,Negativo, Println
-from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento
+from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento, Instruccion,Instrucciones,While, Distinto
 comentarios = []
 
 # Precedencia
@@ -21,22 +21,32 @@ def p_inicio(p):
               | comentario_multi_linea'''
     p[0] = p[1]
 
-def p_lista_expresiones(p):
-    '''lista_expresiones : lista_expresiones expresion PTCOMA
-                         | expresion PTCOMA'''
-    if len(p) == 4:
-        p[0] = p[1] + [p[2]]
-    else:
-        p[0] = [p[1]]
 
+def p_lista_expresiones_unica(p):
+    'lista_expresiones : expresion PTCOMA'
+    # sólo “expresion ;”
+    p[0] = Instrucciones(p[1])
 
+def p_lista_expresiones_append(p):
+    'lista_expresiones : lista_expresiones expresion PTCOMA'
+    # lista previa + expresión con ;
+    p[0] = Instrucciones(p[2], p[1])
+
+def p_lista_expresiones_sin_punto(p):
+    'lista_expresiones : lista_expresiones expresion'
+    # lista previa + expresión final SIN ;
+    p[0] = Instrucciones(p[2], p[1])
 #ciclo while 
+def p_expresion_while(p):
+    'expresion : WHILE PARIZQ expresion PARDER LLAVE_IZQ lista_expresiones LLAVE_DER'
+    p[0] = While(p[3], p[6])
 
 def p_expresion_entero(p):
     'expresion : ENTERO'
     p[0] = Numero(p[1])
 
 def p_expresion_decimal(p):
+    
     'expresion : DECIMAL'
     p[0] = Decimal(p[1])
 
@@ -84,8 +94,9 @@ def p_expresion_modulo(p):
     p[0] = Modulo(p[1], p[3])
 
 def p_asignacion(p):
-    '''expresion : ID ASIGNACION expresion'''
-    p[0] = Asignacion(None, p[1], p[3])  
+    'expresion : ID ASIGNACION expresion PTCOMA'
+    p[0] = Asignacion(None, p[1], p[3])
+
 
 def p_tipo(p):
     '''tipo : INT
@@ -100,7 +111,7 @@ def p_expresion_println(p):
     p[0] = Println(p[3])
 
 def p_declaracion_asignacion(p):
-    'expresion : tipo ID ASIGNACION expresion'
+    'expresion : tipo ID ASIGNACION expresion PTCOMA'
     p[0] = Asignacion(p[1], p[2], p[4])
 
 def p_error(p):
@@ -117,7 +128,8 @@ def p_expresion_comparacion(p):
                  | expresion LE expresion
                  | expresion LT expresion
                  | expresion GT expresion
-                 | expresion EQ expresion'''
+                 | expresion EQ expresion
+                 | expresion NE expresion'''
     if p[2] == '>=':
         p[0] = MayorIgual(p[1], p[3])
     elif p[2] == '<=':
@@ -128,6 +140,8 @@ def p_expresion_comparacion(p):
         p[0] = MayorQue(p[1], p[3])
     elif p[2] == '==':
         p[0] = Igual(p[1], p[3])
+    elif p[2] == '!=':
+        p[0] = Distinto(p[1], p[3])  #
         
 #INCREMENTO Y DEREMENTO 
 def p_expresion_incremento(p):
