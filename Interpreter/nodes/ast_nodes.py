@@ -447,7 +447,49 @@ class Decremento(Expresion):
     def __repr__(self):
         return f"Decremento({self.identificador!r})"
     
+class OrLogicoNode:
+    def __init__(self, izquierda, derecha):
+        self.izquierda = izquierda
+        self. derecha = derecha
+
+    def interpret(self):
+        return bool(self.izquierda.interpret()) or bool(self.derecha.interpret())
     
+    def __repr__(self):
+        return f'({self.izquierda} || {self.derecha})'   
+
+class AndLogicoNode:
+    def __init__(self, izquierda, derecha):
+        self. izquierda = izquierda
+        self.derecha = derecha
+
+    def interpret(self):
+        return bool(self.izquierda.interpret()) and bool(self.derecha.interpret())
+    
+    def __str__(self):
+        return f"({self.izquierda} && {self.derecha})"
+
+class NotLogicoNode:
+    def __init__(self, expr):
+        self.expr = expr
+
+    def interpret(self):
+        return not self.expr.interpret()
+    
+    def __str__(self):
+        return f"(!{self.expr})"
+
+class XorLogicoNode:
+    def __init__(self, izquierda, derecha):
+        self. izquierda = izquierda
+        self. derecha = derecha
+
+    def interpret(self):
+        return bool(self.izquierda.interpret()) ^ bool(self.derecha.interpret())
+    
+    def __str__(self):
+        return f"({self. izquierda} ^ {self.derecha})"
+
 #Ciclo while 
 
 class Instruccion(Expresion):

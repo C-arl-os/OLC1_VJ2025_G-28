@@ -2,14 +2,19 @@ import ply.yacc as yacc
 from lexer import tokens
 from nodes.ast_nodes import Numero, Decimal, Boleano, Caracter, Cadena, Identificador, Asignacion, Suma, Resta, Multiplicacion, Division,Potencia,Modulo,Negativo, Println
 from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento, Instruccion,Instrucciones,While, Distinto, If
+from nodes.ast_nodes import OrLogicoNode, AndLogicoNode, NotLogicoNode, XorLogicoNode
 comentarios = []
 
 # Precedencia
 precedence = (
+    ('right', 'NOT_LOGICO'),  
+    ('left', 'OR_LOGICO'),  
+    ('left', 'AND_LOGICO'),  
+    ('left', 'XOR_LOGICO'),  
+    ('left', 'GE', 'LE', 'LT', 'GT', 'EQ'),  # Comparaciones
     ('left', 'MAS', 'MENOS'),
     ('left', 'POR', 'DIVIDIDO', 'MODULO'),
     ('right', 'POTENCIA'),
-    ('left', 'GE', 'LE', 'LT', 'GT', 'EQ'),  # Comparaciones
     ('right', 'UMINUS'),
 )
 
@@ -68,6 +73,13 @@ def p_expresion_decimal(p):
     p[0] = Decimal(p[1])
 
 #booleanos
+def p_expresion_true(p):
+    'expresion : TRUE'
+    p[0] = Boleano(True)
+
+def p_expresion_false(p):
+    'expresion : FALSE'
+    p[0] = Boleano(False)
 
 def p_expresion_caracter(p):
     'expresion : CARACTER'
@@ -131,6 +143,23 @@ def p_declaracion_asignacion(p):
     'expresion : tipo ID ASIGNACION expresion PTCOMA'
     p[0] = Asignacion(p[1], p[2], p[4])
 
+# Operadores lógicos
+def p_expresion_or_logico(p):
+    'expresion : expresion OR_LOGICO expresion'
+    p[0] = OrLogicoNode(p[1], p[3])
+
+def p_expresion_and_logico(p):
+    'expresion : expresion AND_LOGICO expresion'
+    p[0] = AndLogicoNode(p[1], p[3])
+
+def p_expresion_not_logico(p):
+    'expresion : NOT_LOGICO expresion'
+    p[0] = NotLogicoNode(p[2])
+
+def p_expresion_xor_logico(p):
+    'expresion : expresion XOR_LOGICO expresion'
+    p[0] = XorLogicoNode(p[1], p[3])
+
 def p_error(p):
     if p:
         print(f"Error de sintaxis en token '{p.type}', valor '{p.value}', línea {p.lineno}, posición {p.lexpos}")
@@ -178,5 +207,10 @@ def p_comentario_una_linea(t):
     'comentario_una_linea : COMENTARIO_UNA_LINEA'
     comentarios.append(f'Comentario de una línea: {t[1]}')
     print(f'Comentario de una línea: {t[1]}')
+
+# Regla para expresiones entre paréntesis
+def p_expresion_parentesis(p):
+    'expresion : PARIZQ expresion PARDER'
+    p[0] = p[2]
 
 parser = yacc.yacc(start='inicio')

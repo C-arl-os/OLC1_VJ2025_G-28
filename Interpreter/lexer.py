@@ -51,7 +51,10 @@ tokens = (
     'IGUAL', #igual
     'MAYORQ', #>
     'PTC',
-    
+    'OR_LOGICO',  # ||
+    'AND_LOGICO',  # &&
+    'NOT_LOGICO',  # !
+    'XOR_LOGICO',  # ^
 ) + tuple(reserved.values())
 # Tokens
 
@@ -70,6 +73,11 @@ t_POTENCIA = r'\*\*'
 t_POR = r'\*'
 t_DIVIDIDO = r'/'
 t_MODULO = r'%'
+# Reglas para operadores lógicos
+t_OR_LOGICO = r'\|\|'
+t_AND_LOGICO = r'&&'
+t_NOT_LOGICO = r'!'
+t_XOR_LOGICO = r'\^'
 # Reglas para los operadores de comparación
 t_GE = r'>='
 t_LE = r'<='
@@ -83,7 +91,7 @@ t_DECREMENTO = r'--'
 t_LLAVE_IZQ = r'\{'
 t_LLAVE_DER = r'\}'
 # Ignorar espacios y tabulaciones
-t_ignore = ' \t'
+t_ignore = ' \t\r'
 #ciclo while
 t_CORDER = r']'
 t_CORIZQ = r'\['
@@ -151,8 +159,9 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 def t_error(t):
-    print(f"Error léxico: caracter inesperado '{t.value[0]}'")
+    print(f"Error léxico: caracter inesperado {repr(t.value[0])} (ord: {ord(t.value[0])}) en línea {t.lineno}")
     t.lexer.skip(1)
+
 
 #def t_comentmulti_newline(t):
 #    r'\n+'
