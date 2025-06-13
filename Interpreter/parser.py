@@ -1,7 +1,7 @@
 import ply.yacc as yacc
 from lexer import tokens
 from nodes.ast_nodes import Numero, Decimal, Boleano, Caracter, Cadena, Identificador, Asignacion, Suma, Resta, Multiplicacion, Division,Potencia,Modulo,Negativo, Println
-from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento, Instruccion,Instrucciones,While, Distinto
+from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento, Instruccion,Instrucciones,While, Distinto, If
 comentarios = []
 
 # Precedencia
@@ -23,8 +23,9 @@ def p_inicio(p):
 
 
 def p_lista_expresiones_unica(p):
-    'lista_expresiones : expresion PTCOMA'
-    # sólo “expresion ;”
+    '''lista_expresiones : expresion PTCOMA
+                         | expresion'''
+    # sólo “expresion ;” o expresión final SIN ;
     p[0] = Instrucciones(p[1])
 
 def p_lista_expresiones_append(p):
@@ -40,6 +41,22 @@ def p_lista_expresiones_sin_punto(p):
 def p_expresion_while(p):
     'expresion : WHILE PARIZQ expresion PARDER LLAVE_IZQ lista_expresiones LLAVE_DER'
     p[0] = While(p[3], p[6])
+
+#if
+# if sin else
+def p_expresion_if(p):
+    'expresion : IF PARIZQ expresion PARDER LLAVE_IZQ lista_expresiones LLAVE_DER'
+    p[0] = If(p[3], p[6])
+
+# if con else
+def p_expresion_if_else(p):
+    'expresion : IF PARIZQ expresion PARDER LLAVE_IZQ lista_expresiones LLAVE_DER ELSE LLAVE_IZQ lista_expresiones LLAVE_DER'
+    p[0] = If(p[3], p[6], p[10])
+
+# if con else if
+def p_expresion_if_elseif(p):
+    'expresion : IF PARIZQ expresion PARDER LLAVE_IZQ lista_expresiones LLAVE_DER ELSE expresion'
+    p[0] = If(p[3], p[6], p[9])  # p[9] es otra expresión if (recursiva)
 
 def p_expresion_entero(p):
     'expresion : ENTERO'

@@ -12,7 +12,8 @@ reserved = {
     'false': 'FALSE',
     'println': 'PRINTLN',
     'while':'WHILE',
-
+    'if':'IF',
+    'else':'ELSE',
 }
 
 # Lista de nombres de tokens

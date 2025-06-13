@@ -7,7 +7,7 @@ app = Flask(__name__)
 def inicio():
     resultado = ''
     if request.method == 'POST':
-        texto = request.form['codigo']
+        texto = request.form['codigo'].lower()
         resultado = analizar_texto(texto)
     return render_template('index.html', resultado=resultado)
 

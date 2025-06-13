@@ -500,6 +500,40 @@ class While(Expresion):
 
     def __repr__(self):
         return f"While#{self.id}(condicion={self.condicion!r}, instrucciones={self.instrucciones!r})"
+    
+class If(Expresion):
+    _contador = 0
+
+    def __init__(self, condicion, instrucciones_si, instrucciones_sino=None):
+        self.condicion = condicion
+        self.instrucciones_si = instrucciones_si
+        self.instrucciones_sino = instrucciones_sino
+        If._contador += 1
+        self.id = If._contador
+
+    def interpret(self):
+        print(f"Evaluando if ID #{self.id}")
+        if self.condicion.interpret():
+            st.new_scope(f'if_{self.id}_true')
+            print(f"Condición verdadera, ejecutando bloque SI")
+            self.instrucciones_si.interpret()
+            st.exit_scope()
+        elif self.instrucciones_sino:
+            st.new_scope(f'if_{self.id}_false')
+            print(f"Condición falsa, ejecutando bloque SINO")
+            self.instrucciones_sino.interpret()
+            st.exit_scope()
+
+    def __str__(self):
+        texto = f"if_{self.id}: if ({self.condicion}) {{\n{self.instrucciones_si}\n}}"
+        if self.instrucciones_sino:
+            texto += f" else {{\n{self.instrucciones_sino}\n}}"
+        return texto
+
+    def __repr__(self):
+        return f"If#{self.id}(condicion={self.condicion!r}, si={self.instrucciones_si!r}, sino={self.instrucciones_sino!r})"
+
+
         
 class Instruccion(Expresion):
     def __init__(self, instruccion):
