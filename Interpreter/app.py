@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from main import analizar_texto  # Aquí importas la función
-
+from parser import parser, comentarios, errores_sintacticos
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])

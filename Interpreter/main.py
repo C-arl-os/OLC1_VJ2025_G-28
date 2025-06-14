@@ -144,35 +144,46 @@ println(5561);
 '''
 
 # Parseamos la entrada
-from parser import parser, comentarios
+from parser import parser, comentarios,errores_sintacticos
 from contexto import tabla_variables,salidas_de_impresion  # Asegúrate de tener esta variable accesible
+from contexto import salidas_de_impresion, tabla_variables
+from lexer import errores_lexicos
 
 def analizar_texto(texto):
+    errores_semanticos = []
     salida = []
-    comentarios.clear()
-    tabla_variables.clear()
-    salidas_de_impresion.clear()
 
+    # Limpiar estados de ejecuciones previas
+    errores_lexicos.clear()
+    errores_sintacticos.clear()
+    salidas_de_impresion.clear()
+    tabla_variables.clear()
+
+    # Parseo y construcción de lista de AST
     arboles = []
     raiz = parser.parse(texto)
     if raiz is None:
         return "Error de sintaxis"
-    if isinstance(raiz, list):
-        arboles.extend(raiz)
-    else:
-        arboles.append(raiz)
+    arboles = raiz if isinstance(raiz, list) else [raiz]
 
-    # AST
+    # Imprimir AST
     salida.append("AST:")
     for nodo in arboles:
         salida.append(str(nodo))
 
-    # Interpretación (ejecuta todos los nodos, llenando salidas_de_impresion)
+    # Interpretar y capturar errores semánticos
     for nodo in arboles:
-        if hasattr(nodo, 'interpret'):
+        try:
             nodo.interpret()
+        except Exception as e:
+            errores_semanticos.append({
+                'tipo': 'Semántico',
+                'descripcion': str(e),
+                'linea': getattr(nodo, 'linea', -1),
+                'columna': getattr(nodo, 'columna', -1)
+            })
 
-    # Mostrar lo que imprimieron los Println
+    # Salida de Println
     if salidas_de_impresion:
         salida.append("\nSalida de Println:")
         salida.extend(salidas_de_impresion)
@@ -182,9 +193,10 @@ def analizar_texto(texto):
     for var, val in tabla_variables.items():
         salida.append(f"{var} = {val}")
 
-    # Comentarios
-    if comentarios:
-        salida.append("\nComentarios:")
-        salida.extend(comentarios)
+    # Tabla de errores
+    salida.append("\nTabla de errores:")
+    salida.append("Tipo\tDescripción\tLínea\tColumna")
+    for tbl in errores_lexicos + errores_sintacticos + errores_semanticos:
+        salida.append(f"{tbl['tipo']}\t{tbl['descripcion']}\t{tbl['linea']}\t{tbl['columna']}")
 
     return "\n".join(salida)

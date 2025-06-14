@@ -1,10 +1,11 @@
 import ply.yacc as yacc
-from lexer import tokens
+from lexer import tokens, errores_lexicos
 from nodes.ast_nodes import Numero, Decimal, Boleano, Caracter, Cadena, Identificador, Asignacion, Suma, Resta, Multiplicacion, Division,Potencia,Modulo,Negativo, Println
 from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento, Instruccion,Instrucciones,While, Distinto, If, For
 from nodes.ast_nodes import OrLogicoNode, AndLogicoNode, NotLogicoNode, XorLogicoNode, DoWhile
-comentarios = []
 
+comentarios = []
+errores_sintacticos = []
 # Precedencia
 precedence = (
     ('right', 'NOT_LOGICO'),  
@@ -186,12 +187,8 @@ def p_expresion_xor_logico(p):
     'expresion : expresion XOR_LOGICO expresion'
     p[0] = XorLogicoNode(p[1], p[3])
 
-def p_error(p):
-    if p:
-        print(f"Error de sintaxis en token '{p.type}', valor '{p.value}', línea {p.lineno}, posición {p.lexpos}")
-        # Puedes decidir si detener el análisis o intentar recuperarte (más complejo)
-    else:
-        print("Error de sintaxis al final del archivo (EOF inesperado)")
+
+# …existing code…
 
 #operadores
 
@@ -238,5 +235,52 @@ def p_comentario_una_linea(t):
 def p_expresion_parentesis(p):
     'expresion : PARIZQ expresion PARDER'
     p[0] = p[2]
+    
+def p_error(p):
+    if p:
+        errores_sintacticos.append({
+            'tipo':'Sintáctico',
+            'descripcion':f"Token inesperado '{p.value}'",
+            'linea':p.lineno,
+            'columna':p.lexpos  # o calcula columna como en el lexer
+        })
+        # panic‐mode: descartar hasta ; o }
+        while True:
+            tok = parser.token()
+            if not tok or tok.type in ('PTCOMA','LLAVE_DER'):
+                break
+        p.errok()
+    else:
+        errores_sintacticos.append({
+            'tipo':'Sintáctico',
+            'descripcion':'EOF inesperado',
+            'linea':-1,'columna':-1
+        })
+
+def p_error(p):
+    if p:
+        errores_sintacticos.append({
+            'tipo': 'Sintáctico',
+            'descripcion': f"Token inesperado '{p.value}'",
+            'linea': p.lineno,
+            'columna': p.lexpos
+        })
+        # Panic‐mode: descartar hasta ; o }
+        while True:
+            tok = parser.token()
+            if not tok or tok.type in ('PTCOMA','LLAVE_DER'):
+                break
+        # Reactivar el parser (ya no p.errok())
+        parser.errok()
+        # opcionalmente devolvemos el token de sincronización
+        return tok
+    else:
+        errores_sintacticos.append({
+            'tipo': 'Sintáctico',
+            'descripcion': 'EOF inesperado',
+            'linea': -1,
+            'columna': -1
+        })
+
 
 parser = yacc.yacc(start='inicio')

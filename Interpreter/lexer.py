@@ -103,7 +103,10 @@ t_IGUAL = r'='
 t_MAYORQ = r'>'
 t_PTC = r';'
 
+# lista global de errores
+errores_lexicos = []
 
+errores_sintacticos = []
 
 def t_DECIMAL(t):
     r'-?\d+\.\d+'
@@ -163,7 +166,16 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 def t_error(t):
-    print(f"Error léxico: caracter inesperado {repr(t.value[0])} (ord: {ord(t.value[0])}) en línea {t.lineno}")
+    # calculamos columna desde t.lexpos y t.lexer.lexdata
+    data = t.lexer.lexdata
+    col = data.rfind('\n', 0, t.lexpos)
+    col = t.lexpos - col
+    errores_lexicos.append({
+        'tipo':'Léxico',
+        'descripcion':f"Caracter inesperado {t.value[0]!r}",
+        'linea':t.lineno,
+        'columna':col
+    })
     t.lexer.skip(1)
 
 
@@ -215,5 +227,6 @@ def t_COMENTARIO_UNA_LINEA(t):
 def t_PRINTLN(t):
     r'println'
     return t
+
 
 lexer = lex.lex()
