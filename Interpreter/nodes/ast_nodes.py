@@ -618,3 +618,32 @@ class Distinto(Expresion):
 
     def __repr__(self):
         return f"Distinto({self.izquierda!r}, {self.derecha!r})"
+    
+#Ciclo for 
+
+class For(Expresion):
+    _contador = 0
+
+    def __init__(self, asignacion, condicion, actualizacion, instrucciones):
+        self.asignacion = asignacion             
+        self.condicion = condicion                
+        self.actualizacion = actualizacion        
+        self.instrucciones = instrucciones        
+        For._contador += 1
+        self.id = For._contador
+
+    def interpret(self):
+        print(f"Ejecutando for ID #{self.id}")
+        st.new_scope(f'for_{self.id}')  
+        
+        self.asignacion.interpret()  
+        while self.condicion.interpret():  
+            self.instrucciones.interpret() 
+            self.actualizacion.interpret()  
+        st.exit_scope()  
+
+    def __str__(self):
+        return f"for_{self.id}: for ({self.asignacion}; {self.condicion}; {self.actualizacion}) {{\n{self.instrucciones}\n}}"
+
+    def __repr__(self):
+        return f"For#{self.id}(asignacion={self.asignacion!r}, condicion={self.condicion!r}, actualizacion={self.actualizacion!r}, instrucciones={self.instrucciones!r})"
