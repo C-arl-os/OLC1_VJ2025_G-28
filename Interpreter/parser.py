@@ -2,7 +2,7 @@ import ply.yacc as yacc
 from lexer import tokens
 from nodes.ast_nodes import Numero, Decimal, Boleano, Caracter, Cadena, Identificador, Asignacion, Suma, Resta, Multiplicacion, Division,Potencia,Modulo,Negativo, Println
 from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento, Instruccion,Instrucciones,While, Distinto, If, For
-from nodes.ast_nodes import OrLogicoNode, AndLogicoNode, NotLogicoNode, XorLogicoNode
+from nodes.ast_nodes import OrLogicoNode, AndLogicoNode, NotLogicoNode, XorLogicoNode, DoWhile
 comentarios = []
 
 # Precedencia
@@ -20,8 +20,8 @@ precedence = (
 
 # Regla para expresiones simples
 def p_inicio(p):
-    '''inicio : expresion
-              | lista_expresiones
+    '''inicio : lista_expresiones
+              | expresion
               | comentario_una_linea
               | comentario_multi_linea'''
     p[0] = p[1]
@@ -43,10 +43,17 @@ def p_lista_expresiones_sin_punto(p):
     # lista previa + expresión final SIN ;
     p[0] = Instrucciones(p[2], p[1])
 #ciclo while 
+
+
 def p_expresion_while(p):
     'expresion : WHILE PARIZQ expresion PARDER LLAVE_IZQ lista_expresiones LLAVE_DER'
     p[0] = While(p[3], p[6])
+    
+#ciclo do while
 
+def p_expresion_do_while(p):
+    'expresion : DO LLAVE_IZQ lista_expresiones LLAVE_DER WHILE PARIZQ expresion PARDER PTCOMA'
+    p[0] = DoWhile(p[3], p[7])
 #if
 # if sin else
 def p_expresion_if(p):

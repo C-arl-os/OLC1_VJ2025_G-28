@@ -1,4 +1,58 @@
 '''
+println("Igual");
+int e = 3;
+do {
+    println(e);
+    e = 0;   
+} while (e == 3);
+int f = 1;
+println("Distinto");
+do {
+    println(f);
+    f++;
+} while (f != 4);
+
+println("Mayor o igual");
+int d = 5;
+do {
+    Println(d);
+    d--;
+} while (d >= 3);
+
+println("Mayor que");
+int c = 5;
+do {
+    Println(c);
+    c--;
+} while (c > 2);
+
+println("Menor o igual");
+int b = 1;
+do {
+    Println(b);
+    b++;
+} while (b <= 3);
+
+println("Menor que");
+int a = 1;
+do {
+    println(a);
+    a++;
+} while (a < 4);
+
+int x = 1;
+int y = 5;
+do {
+    println(x);
+    x++;
+while (y >= 3) {
+    println("");
+    println(y);
+    y--;
+}
+
+} while (x <= 3);
+
 int x = 1;
 while (x <= 3) {
     Println(x);

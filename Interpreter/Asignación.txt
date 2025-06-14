@@ -9,4 +9,8 @@ do-while -> CARLOS
 FOR ->Katherin
 OPERADORES LOGICOS->AND , OR , NOT, XOR BRYAN
 Validad (5+5)* 4; CARLOS
+tabla de token ->Jose,Katherins
+tabla de errores ->BRAYAN , Carlos 
 pip install flask Y FLASK CUK 
+
+Secuencia de escape 

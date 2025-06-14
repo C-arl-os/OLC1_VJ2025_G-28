@@ -14,7 +14,9 @@ reserved = {
     'while':'WHILE',
     'if':'IF',
     'else':'ELSE',
-    'for':'FOR'
+    'for':'FOR',
+    'do':'DO',
+    
 }
 
 # Lista de nombres de tokens
@@ -56,6 +58,7 @@ tokens = (
     'AND_LOGICO',  # &&
     'NOT_LOGICO',  # !
     'XOR_LOGICO',  # ^
+    'DO',
 ) + tuple(reserved.values())
 # Tokens
 

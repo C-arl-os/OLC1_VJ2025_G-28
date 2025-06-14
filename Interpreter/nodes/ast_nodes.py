@@ -647,3 +647,29 @@ class For(Expresion):
 
     def __repr__(self):
         return f"For#{self.id}(asignacion={self.asignacion!r}, condicion={self.condicion!r}, actualizacion={self.actualizacion!r}, instrucciones={self.instrucciones!r})"
+    
+
+class DoWhile(Expresion):
+    _contador = 0
+
+    def __init__(self, instrucciones, condicion):
+        self.instrucciones = instrucciones
+        self.condicion = condicion
+        DoWhile._contador += 1
+        self.id = DoWhile._contador
+
+    def interpret(self):
+        # Ya no hacemos `import contexto as st`
+        st.new_scope(f'dowhile_{self.id}')
+        print(f"Ejecutando do-while ID #{self.id}")
+        while True:
+            self.instrucciones.interpret()
+            if not self.condicion.interpret():
+                break
+        st.exit_scope()
+
+    def __str__(self):
+        return f"do_while_{self.id}: do {{\n{self.instrucciones}\n}} while ({self.condicion});"
+
+    def __repr__(self):
+        return f"DoWhile#{self.id}(instrucciones={self.instrucciones!r}, condicion={self.condicion!r})"
