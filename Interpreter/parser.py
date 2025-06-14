@@ -1,7 +1,7 @@
 import ply.yacc as yacc
 from lexer import tokens
 from nodes.ast_nodes import Numero, Decimal, Boleano, Caracter, Cadena, Identificador, Asignacion, Suma, Resta, Multiplicacion, Division,Potencia,Modulo,Negativo, Println
-from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento, Instruccion,Instrucciones,While, Distinto, If
+from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento, Instruccion,Instrucciones,While, Distinto, If, For
 comentarios = []
 
 # Precedencia
@@ -66,6 +66,15 @@ def p_expresion_decimal(p):
     
     'expresion : DECIMAL'
     p[0] = Decimal(p[1])
+
+#ciclo for
+def p_expresion_for(p):
+    '''expresion : FOR PARIZQ tipo ID ASIGNACION expresion PTCOMA expresion PTCOMA expresion PARDER LLAVE_IZQ lista_expresiones LLAVE_DER'''
+    asignacion = Asignacion(p[3], p[4], p[6])
+    condicion = p[8]
+    actualizacion = p[10]
+    instrucciones = p[13]
+    p[0] = For(asignacion, condicion, actualizacion, instrucciones)
 
 #booleanos
 

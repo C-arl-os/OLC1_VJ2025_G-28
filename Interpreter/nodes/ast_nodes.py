@@ -447,7 +447,6 @@ class Decremento(Expresion):
     def __repr__(self):
         return f"Decremento({self.identificador!r})"
     
-    
 #Ciclo while 
 
 class Instruccion(Expresion):
@@ -532,8 +531,6 @@ class If(Expresion):
 
     def __repr__(self):
         return f"If#{self.id}(condicion={self.condicion!r}, si={self.instrucciones_si!r}, sino={self.instrucciones_sino!r})"
-
-
         
 class Instruccion(Expresion):
     def __init__(self, instruccion):
@@ -576,3 +573,32 @@ class Distinto(Expresion):
 
     def __repr__(self):
         return f"Distinto({self.izquierda!r}, {self.derecha!r})"
+    
+#Ciclo for 
+
+class For(Expresion):
+    _contador = 0
+
+    def __init__(self, asignacion, condicion, actualizacion, instrucciones):
+        self.asignacion = asignacion              # Asignación inicial (ej. int i = 0)
+        self.condicion = condicion                # Condición de ejecución (ej. i != 10)
+        self.actualizacion = actualizacion        # Actualización (ej. i++, i = i + 1)
+        self.instrucciones = instrucciones        # Bloque de instrucciones dentro del for
+        For._contador += 1
+        self.id = For._contador
+
+    def interpret(self):
+        print(f"Ejecutando for ID #{self.id}")
+        st.new_scope(f'for_{self.id}')  # Entra a un nuevo scope (si usas scopes)
+        
+        self.asignacion.interpret()  # Inicializa la variable
+        while self.condicion.interpret():  # Mientras se cumpla la condición
+            self.instrucciones.interpret()  # Ejecuta el cuerpo
+            self.actualizacion.interpret()  # Actualiza la variable
+        st.exit_scope()  # Sale del scope
+
+    def __str__(self):
+        return f"for_{self.id}: for ({self.asignacion}; {self.condicion}; {self.actualizacion}) {{\n{self.instrucciones}\n}}"
+
+    def __repr__(self):
+        return f"For#{self.id}(asignacion={self.asignacion!r}, condicion={self.condicion!r}, actualizacion={self.actualizacion!r}, instrucciones={self.instrucciones!r})"

@@ -14,6 +14,7 @@ reserved = {
     'while':'WHILE',
     'if':'IF',
     'else':'ELSE',
+    'for':'FOR'
 }
 
 # Lista de nombres de tokens
