@@ -72,13 +72,23 @@ def p_expresion_decimal(p):
     'expresion : DECIMAL'
     p[0] = Decimal(p[1])
 
-#ciclo for
-def p_expresion_for(p):
+#ciclo for declarando variable
+def p_expresion_for_con_tipo(p):
     '''expresion : FOR PARIZQ tipo ID ASIGNACION expresion PTCOMA expresion PTCOMA expresion PARDER LLAVE_IZQ lista_expresiones LLAVE_DER'''
-    asignacion = Asignacion(p[3], p[4], p[6])
+    asignacion = Asignacion(p[3], p[4], p[6])  # tipo, id, valor
     condicion = p[8]
     actualizacion = p[10]
     instrucciones = p[13]
+    p[0] = For(asignacion, condicion, actualizacion, instrucciones)
+
+
+#ciclo for con una variable ya declarada
+def p_expresion_for_sin_tipo(p):
+    '''expresion : FOR PARIZQ ID ASIGNACION expresion PTCOMA expresion PTCOMA expresion PARDER LLAVE_IZQ lista_expresiones LLAVE_DER'''
+    asignacion = Asignacion(None, p[3], p[5])  # Sin tipo
+    condicion = p[7]
+    actualizacion = p[9]
+    instrucciones = p[12]
     p[0] = For(asignacion, condicion, actualizacion, instrucciones)
 
 #booleanos
