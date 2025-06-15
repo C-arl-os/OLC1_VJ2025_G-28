@@ -256,13 +256,78 @@ def graficar_tabla_tokens(codigo_fuente):
     html.append("<meta charset='UTF-8'>")
     html.append("<title>Tabla de Tokens</title>")
     html.append("<style>")
-    html.append("table { border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; border: 2px solid #1E90FF; }")
-    html.append("th, td { border: 1px solid #1E90FF; padding: 8px; text-align: left; }")
-    html.append("th { background-color: #1E90FF; color: white; font-weight: bold; }")
-    html.append("td { color: black; background-color: white; }")
+    html.append("""
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 20px;
+    }
+    h2 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 28px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        overflow-x: auto;
+    }
+    table {
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    th {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+        position: sticky;
+        top: 0;
+    }
+    tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+    tr:hover {
+        background-color: #f1f7fd;
+        transform: scale(1.01);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    td {
+        color: #34495e;
+    }
+    .token-type {
+        font-weight: 500;
+        color: #e74c3c;
+    }
+    @media (max-width: 768px) {
+        table {
+            border-radius: 5px;
+        }
+        th, td {
+            padding: 8px 10px;
+        }
+    }
+    """)
     html.append("</style>")
     html.append("</head>")
     html.append("<body>")
+    html.append("<div class='container'>")
     html.append("<h2>Tabla de Tokens</h2>")
     html.append("<table>")
     html.append("<thead><tr><th>Lexema</th><th>Token</th><th>Línea</th><th>Columna</th></tr></thead>")
@@ -273,13 +338,14 @@ def graficar_tabla_tokens(codigo_fuente):
         if not tok:
             break
         columna = calcular_columna(tok.lexpos, codigo_fuente)
-        html.append(f"<tr><td>{tok.value}</td><td>{tok.type}</td><td>{tok.lineno}</td><td>{columna}</td></tr>")
+        html.append(f"<tr><td>{tok.value}</td><td class='token-type'>{tok.type}</td><td>{tok.lineno}</td><td>{columna}</td></tr>")
 
     html.append("</tbody></table>")
+    html.append("</div>")
     html.append("</body>")
     html.append("</html>")
 
-    # Guardar en archivo HTML
+    # Guardar el HTML en un archivo
     with open("Tabla_de_Tokens.html", "w", encoding="utf-8") as f:
         f.write("\n".join(html))
 
