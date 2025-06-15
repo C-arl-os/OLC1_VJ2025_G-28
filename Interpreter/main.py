@@ -146,7 +146,7 @@ println(5561);
 # Parseamos la entrada
 from parser import parser, comentarios, errores_sintacticos
 from contexto import tabla_variables, salidas_de_impresion
-from lexer import lexer, errores_lexicos, graficar_tabla_tokens
+from lexer import lexer, errores_lexicos, graficar_tabla_tokens, graficar_tabla_errores
 
 def analizar_texto(texto):
     errores_semanticos = []
@@ -213,8 +213,12 @@ def analizar_texto(texto):
     for tbl in errores_lexicos + errores_sintacticos + errores_semanticos:
         salida.append(f"{tbl['tipo']}\t{tbl['descripcion']}\t{tbl['linea']}\t{tbl['columna']}")
 
-    return "\n".join(salida)
+    #Graficar tabla de errores
+    # Crear tabla HTML de errores (DEBE SER DESPUÉS de llenar las listas de errores)
+    # Al final de analizar_texto, antes del return:
+    graficar_tabla_errores(errores_lexicos, errores_sintacticos, errores_semanticos)
 
+    return "\n".join(salida)
 
 def encontrar_columna(input_text, lexpos):
     """Calcula la columna a partir del lexpos."""
@@ -223,3 +227,4 @@ def encontrar_columna(input_text, lexpos):
         return lexpos + 1
     else:
         return lexpos - last_newline
+

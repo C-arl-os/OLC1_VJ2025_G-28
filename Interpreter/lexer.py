@@ -349,6 +349,132 @@ def graficar_tabla_tokens(codigo_fuente):
     with open("Tabla_de_Tokens.html", "w", encoding="utf-8") as f:
         f.write("\n".join(html))
 
+def graficar_tabla_errores(errores_lexicos, errores_sintacticos, errores_semanticos):
+    html = []
+    html.append("<!DOCTYPE html>")
+    html.append("<html lang='es'>")
+    html.append("<head>")
+    html.append("<meta charset='UTF-8'>")
+    html.append("<title>Tabla de Errores</title>")
+    html.append("<style>")
+    html.append("""
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 20px;
+    }
+    h2 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 28px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        overflow-x: auto;
+    }
+    table {
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    th {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+        position: sticky;
+        top: 0;
+    }
+    tr:nth-child(even) {
+        background-color: #fef5f5;
+    }
+    tr:hover {
+        background-color: #ffebee;
+        transform: scale(1.01);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    .lexico {
+        border-left: 4px solid #3498db;
+    }
+    .sintactico {
+        border-left: 4px solid #f39c12;
+    }
+    .semantico {
+        border-left: 4px solid #e74c3c;
+    }
+    .tipo-error {
+        font-weight: 600;
+    }
+    .lexico .tipo-error {
+        color: #3498db;
+    }
+    .sintactico .tipo-error {
+        color: #f39c12;
+    }
+    .semantico .tipo-error {
+        color: #e74c3c;
+    }
+    @media (max-width: 768px) {
+        table {
+            border-radius: 5px;
+        }
+        th, td {
+            padding: 8px 10px;
+        }
+    }
+    """)
+    html.append("</style>")
+    html.append("</head>")
+    html.append("<body>")
+    html.append("<div class='container'>")
+    html.append("<h2>Tabla de Errores</h2>")
+    html.append("<table>")
+    html.append("<thead><tr><th>Tipo</th><th>Descripción</th><th>Línea</th><th>Columna</th></tr></thead>")
+    html.append("<tbody>")
+
+    todos_los_errores = errores_lexicos + errores_sintacticos + errores_semanticos
+    for error in todos_los_errores:
+        tipo_clase = ""
+        if error['tipo'].lower() == 'léxico' or error['tipo'].lower() == 'lexico':
+            tipo_clase = "lexico"
+        elif error['tipo'].lower() == 'sintáctico' or error['tipo'].lower() == 'sintactico':
+            tipo_clase = "sintactico"
+        elif error['tipo'].lower() == 'semántico' or error['tipo'].lower() == 'semantico':
+            tipo_clase = "semantico"
+        
+        html.append(f"""
+        <tr class="{tipo_clase}">
+            <td class="tipo-error">{error['tipo']}</td>
+            <td>{error['descripcion']}</td>
+            <td>{error['linea']}</td>
+            <td>{error['columna']}</td>
+        </tr>
+        """)
+
+    html.append("</tbody></table>")
+    html.append("</div>")
+    html.append("</body>")
+    html.append("</html>")
+
+    with open("Tabla_de_Errores.html", "w", encoding="utf-8") as f:
+        f.write("\n".join(html))
+
 def calcular_columna(lexpos, texto):
     # Calcula la columna a partir del lexpos
     ultima_linea = texto.rfind('\n', 0, lexpos)
