@@ -144,10 +144,9 @@ println(5561);
 '''
 
 # Parseamos la entrada
-from parser import parser, comentarios,errores_sintacticos
-from contexto import tabla_variables,salidas_de_impresion  # Asegúrate de tener esta variable accesible
-from contexto import salidas_de_impresion, tabla_variables
-from lexer import errores_lexicos
+from parser import parser, comentarios, errores_sintacticos
+from contexto import tabla_variables, salidas_de_impresion
+from lexer import lexer, errores_lexicos  # Asegúrate de tener tu lexer aquí
 
 def analizar_texto(texto):
     errores_semanticos = []
@@ -159,19 +158,31 @@ def analizar_texto(texto):
     salidas_de_impresion.clear()
     tabla_variables.clear()
 
-    # Parseo y construcción de lista de AST
+    # === Tabla de Tokens ===
+    salida.append("Tabla de Tokens:")
+    salida.append("Lexema\t\tToken\t\tLínea\tColumna")
+    lexer.input(texto)
+    while True:
+        tok = lexer.token()
+        if not tok:
+            break
+        columna = encontrar_columna(texto, tok.lexpos)
+        salida.append(f"{tok.value}\t\t{tok.type}\t\t{tok.lineno}\t{columna}")
+
+    # === Parseo y construcción de lista de AST ===
     arboles = []
     raiz = parser.parse(texto)
     if raiz is None:
-        return "Error de sintaxis"
+        salida.append("\nError de sintaxis: No se pudo generar el árbol.")
+        return "\n".join(salida)
     arboles = raiz if isinstance(raiz, list) else [raiz]
 
-    # Imprimir AST
-    salida.append("AST:")
+    # === AST ===
+    salida.append("\nAST:")
     for nodo in arboles:
         salida.append(str(nodo))
 
-    # Interpretar y capturar errores semánticos
+    # === Interpretación + Errores Semánticos ===
     for nodo in arboles:
         try:
             nodo.interpret()
@@ -183,20 +194,29 @@ def analizar_texto(texto):
                 'columna': getattr(nodo, 'columna', -1)
             })
 
-    # Salida de Println
+    # === Salidas de Println ===
     if salidas_de_impresion:
         salida.append("\nSalida de Println:")
         salida.extend(salidas_de_impresion)
 
-    # Tabla de variables
+    # === Tabla de Variables ===
     salida.append("\nTabla de variables:")
     for var, val in tabla_variables.items():
         salida.append(f"{var} = {val}")
 
-    # Tabla de errores
+    # === Tabla de Errores ===
     salida.append("\nTabla de errores:")
     salida.append("Tipo\tDescripción\tLínea\tColumna")
     for tbl in errores_lexicos + errores_sintacticos + errores_semanticos:
         salida.append(f"{tbl['tipo']}\t{tbl['descripcion']}\t{tbl['linea']}\t{tbl['columna']}")
 
     return "\n".join(salida)
+
+
+def encontrar_columna(input_text, lexpos):
+    """Calcula la columna a partir del lexpos."""
+    last_newline = input_text.rfind('\n', 0, lexpos)
+    if last_newline < 0:
+        return lexpos + 1
+    else:
+        return lexpos - last_newline

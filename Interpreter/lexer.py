@@ -228,5 +228,29 @@ def t_PRINTLN(t):
     r'println'
     return t
 
+def generar_tabla_tokens(codigo_fuente):
+    lexer.input(codigo_fuente)
+    tabla = []
+    
+    while True:
+        tok = lexer.token()
+        if not tok:
+            break
+        fila = {
+            'Lexema': tok.value,
+            'Token': tok.type,
+            'Línea': tok.lineno,
+            'Columna': calcular_columna(tok.lexpos, codigo_fuente)
+        }
+        tabla.append(fila)
+    
+    return tabla
+
+def calcular_columna(lexpos, texto):
+    # Calcula la columna a partir del lexpos
+    ultima_linea = texto.rfind('\n', 0, lexpos)
+    if ultima_linea < 0:
+        ultima_linea = -1
+    return lexpos - ultima_linea
 
 lexer = lex.lex()
