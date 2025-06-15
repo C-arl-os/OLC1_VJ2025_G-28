@@ -146,7 +146,7 @@ println(5561);
 # Parseamos la entrada
 from parser import parser, comentarios, errores_sintacticos
 from contexto import tabla_variables, salidas_de_impresion
-from lexer import lexer, errores_lexicos  # Asegúrate de tener tu lexer aquí
+from lexer import lexer, errores_lexicos, graficar_tabla_tokens
 
 def analizar_texto(texto):
     errores_semanticos = []
@@ -157,6 +157,9 @@ def analizar_texto(texto):
     errores_sintacticos.clear()
     salidas_de_impresion.clear()
     tabla_variables.clear()
+
+    # === Generar archivo HTML con tokens ===
+    graficar_tabla_tokens(texto)
 
     # === Tabla de Tokens ===
     salida.append("Tabla de Tokens:")

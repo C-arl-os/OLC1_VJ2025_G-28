@@ -246,6 +246,43 @@ def generar_tabla_tokens(codigo_fuente):
     
     return tabla
 
+def graficar_tabla_tokens(codigo_fuente):
+    lexer.input(codigo_fuente)
+    
+    html = []
+    html.append("<!DOCTYPE html>")
+    html.append("<html lang='es'>")
+    html.append("<head>")
+    html.append("<meta charset='UTF-8'>")
+    html.append("<title>Tabla de Tokens</title>")
+    html.append("<style>")
+    html.append("table { border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; border: 2px solid #1E90FF; }")
+    html.append("th, td { border: 1px solid #1E90FF; padding: 8px; text-align: left; }")
+    html.append("th { background-color: #1E90FF; color: white; font-weight: bold; }")
+    html.append("td { color: black; background-color: white; }")
+    html.append("</style>")
+    html.append("</head>")
+    html.append("<body>")
+    html.append("<h2>Tabla de Tokens</h2>")
+    html.append("<table>")
+    html.append("<thead><tr><th>Lexema</th><th>Token</th><th>Línea</th><th>Columna</th></tr></thead>")
+    html.append("<tbody>")
+
+    while True:
+        tok = lexer.token()
+        if not tok:
+            break
+        columna = calcular_columna(tok.lexpos, codigo_fuente)
+        html.append(f"<tr><td>{tok.value}</td><td>{tok.type}</td><td>{tok.lineno}</td><td>{columna}</td></tr>")
+
+    html.append("</tbody></table>")
+    html.append("</body>")
+    html.append("</html>")
+
+    # Guardar en archivo HTML
+    with open("Tabla_de_Tokens.html", "w", encoding="utf-8") as f:
+        f.write("\n".join(html))
+
 def calcular_columna(lexpos, texto):
     # Calcula la columna a partir del lexpos
     ultima_linea = texto.rfind('\n', 0, lexpos)
