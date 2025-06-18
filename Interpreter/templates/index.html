@@ -35,10 +35,21 @@
             border-radius: 8px;
             resize: vertical;
             box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .report-buttons {
+            display: flex;
+            gap: 10px;
         }
 
         button {
-            margin-top: 15px;
             padding: 10px 20px;
             font-size: 16px;
             background-color: #007bff;
@@ -46,11 +57,21 @@
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         button:hover {
             background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        button.report-btn {
+            background-color: #6c757d;
+        }
+
+        button.report-btn:hover {
+            background-color: #5a6268;
         }
 
         pre {
@@ -61,6 +82,76 @@
             white-space: pre-wrap;
             word-wrap: break-word;
         }
+
+        /* Estilos para el popup */
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .popup-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .popup-content {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow: auto;
+            transform: scale(0.9);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .popup-overlay.active .popup-content {
+            transform: scale(1);
+        }
+
+        .popup-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .popup-title {
+            margin: 0;
+            color: #333;
+            font-size: 1.5em;
+        }
+
+        .popup-close {
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: #6c757d;
+            transition: color 0.3s ease;
+        }
+
+        .popup-close:hover {
+            color: #333;
+        }
+
+        .popup-body {
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
@@ -68,8 +159,14 @@
         <h1>Analizador de Expresiones</h1>
         <form method="POST">
             <textarea name="codigo" placeholder="Escribe tu código aquí...">{{ request.form['codigo'] if request.method == 'POST' else '' }}</textarea>
-            <br>
-            <button type="submit">Analizar</button>
+            
+            <div class="button-container">
+                <button type="submit">Analizar</button>
+                <div class="report-buttons">
+                    <button type="button" class="report-btn" onclick="mostrarPopup('Tabla de Errores', '/reportes/Tabla_de_Errores.html')">Ver Errores</button>
+                    <button type="button" class="report-btn" onclick="mostrarPopup('Tabla de Tokens', '/reportes/Tabla_de_Tokens.html')">Ver Tokens</button>
+                </div>
+            </div>
         </form>
 
         {% if resultado %}
@@ -77,5 +174,61 @@
         <pre>{{ resultado }}</pre>
         {% endif %}
     </div>
+
+    <!-- Popup para los reportes -->
+    <div class="popup-overlay" id="reportPopup">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h2 class="popup-title" id="popupTitle">Título</h2>
+                <button class="popup-close" onclick="cerrarPopup()">&times;</button>
+            </div>
+            <div class="popup-body" id="popupContent">
+                Cargando contenido...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Función para mostrar el popup con animación
+        function mostrarPopup(titulo, url) {
+            const popup = document.getElementById('reportPopup');
+            const popupTitle = document.getElementById('popupTitle');
+            const popupContent = document.getElementById('popupContent');
+            
+            popupTitle.textContent = titulo;
+            popupContent.innerHTML = '<div style="text-align: center; padding: 20px;"><div class="loader" style="border: 5px solid #f3f3f3; border-top: 5px solid #3498db; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto;"></div><p>Cargando contenido...</p></div>';
+            
+            popup.classList.add('active');
+            
+            // Cargar el contenido del reporte
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                    popupContent.innerHTML = html;
+                })
+                .catch(error => {
+                    popupContent.innerHTML = `<p style="color: red;">Error al cargar el contenido: ${error.message}</p>`;
+                });
+        }
+        
+        // Función para cerrar el popup
+        function cerrarPopup() {
+            document.getElementById('reportPopup').classList.remove('active');
+        }
+        
+        // Cerrar popup al hacer clic fuera del contenido
+        document.getElementById('reportPopup').addEventListener('click', function(e) {
+            if (e.target === this) {
+                cerrarPopup();
+            }
+        });
+        
+        // Cerrar popup con la tecla ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && document.getElementById('reportPopup').classList.contains('active')) {
+                cerrarPopup();
+            }
+        });
+    </script>
 </body>
 </html>

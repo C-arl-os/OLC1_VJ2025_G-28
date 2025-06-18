@@ -213,9 +213,7 @@ def analizar_texto(texto):
     for tbl in errores_lexicos + errores_sintacticos + errores_semanticos:
         salida.append(f"{tbl['tipo']}\t{tbl['descripcion']}\t{tbl['linea']}\t{tbl['columna']}")
 
-    #Graficar tabla de errores
-    # Crear tabla HTML de errores (DEBE SER DESPUÉS de llenar las listas de errores)
-    # Al final de analizar_texto, antes del return:
+    # === Graficar tabla de errores ===
     graficar_tabla_errores(errores_lexicos, errores_sintacticos, errores_semanticos)
 
     return "\n".join(salida)

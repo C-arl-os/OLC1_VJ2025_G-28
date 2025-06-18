@@ -166,15 +166,17 @@ def t_newline(t):
     t.lexer.lineno += len(t.value)
 
 def t_error(t):
-    # calculamos columna desde t.lexpos y t.lexer.lexdata
     data = t.lexer.lexdata
-    col = data.rfind('\n', 0, t.lexpos)
-    col = t.lexpos - col
+    # Encuentra el inicio de la línea actual
+    last_cr = data.rfind('\n', 0, t.lexpos)
+    if last_cr < 0:
+        last_cr = -1
+    col = t.lexpos - last_cr
     errores_lexicos.append({
-        'tipo':'Léxico',
-        'descripcion':f"Caracter inesperado {t.value[0]!r}",
-        'linea':t.lineno,
-        'columna':col
+        'tipo': 'Léxico',
+        'descripcion': f"Caracter inesperado {t.value[0]!r}",
+        'linea': t.lineno,
+        'columna': col
     })
     t.lexer.skip(1)
 
@@ -254,7 +256,6 @@ def graficar_tabla_tokens(codigo_fuente):
     html.append("<html lang='es'>")
     html.append("<head>")
     html.append("<meta charset='UTF-8'>")
-    html.append("<title>Tabla de Tokens</title>")
     html.append("<style>")
     html.append("""
     body {
@@ -328,7 +329,6 @@ def graficar_tabla_tokens(codigo_fuente):
     html.append("</head>")
     html.append("<body>")
     html.append("<div class='container'>")
-    html.append("<h2>Tabla de Tokens</h2>")
     html.append("<table>")
     html.append("<thead><tr><th>Lexema</th><th>Token</th><th>Línea</th><th>Columna</th></tr></thead>")
     html.append("<tbody>")
@@ -346,7 +346,8 @@ def graficar_tabla_tokens(codigo_fuente):
     html.append("</html>")
 
     # Guardar el HTML en un archivo
-    with open("Tabla_de_Tokens.html", "w", encoding="utf-8") as f:
+    with open("Interpreter/Reportes/Tabla_de_Tokens.html", "w", encoding="utf-8") as f:
+
         f.write("\n".join(html))
 
 def graficar_tabla_errores(errores_lexicos, errores_sintacticos, errores_semanticos):
@@ -355,7 +356,6 @@ def graficar_tabla_errores(errores_lexicos, errores_sintacticos, errores_semanti
     html.append("<html lang='es'>")
     html.append("<head>")
     html.append("<meta charset='UTF-8'>")
-    html.append("<title>Tabla de Errores</title>")
     html.append("<style>")
     html.append("""
     body {
@@ -443,7 +443,6 @@ def graficar_tabla_errores(errores_lexicos, errores_sintacticos, errores_semanti
     html.append("</head>")
     html.append("<body>")
     html.append("<div class='container'>")
-    html.append("<h2>Tabla de Errores</h2>")
     html.append("<table>")
     html.append("<thead><tr><th>Tipo</th><th>Descripción</th><th>Línea</th><th>Columna</th></tr></thead>")
     html.append("<tbody>")
@@ -472,8 +471,12 @@ def graficar_tabla_errores(errores_lexicos, errores_sintacticos, errores_semanti
     html.append("</body>")
     html.append("</html>")
 
-    with open("Tabla_de_Errores.html", "w", encoding="utf-8") as f:
+    # Guardar el HTML en un archivo
+    with open("Interpreter/Reportes/Tabla_de_Errores.html", "w", encoding="utf-8") as f:
+
         f.write("\n".join(html))
+
+    
 
 def calcular_columna(lexpos, texto):
     # Calcula la columna a partir del lexpos

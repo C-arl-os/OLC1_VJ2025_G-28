@@ -306,14 +306,62 @@ class Asignacion(Expresion):
 
     def interpret(self):
         valor_interpretado = self.valor.interpret()
-        tabla_variables[self.identificador] = valor_interpretado
-        return valor_interpretado
+
+        if self.tipo is not None:
+            # Es declaración con asignación (ej: int x = 5;)
+            tabla_variables[self.identificador] = valor_interpretado
+            return valor_interpretado
+        else:
+            # Es solo asignación (ej: x = 5;)
+            if self.identificador not in tabla_variables:
+                raise Exception(f"Error semántico: Variable '{self.identificador}' no ha sido declarada.")
+            tabla_variables[self.identificador] = valor_interpretado
+            return valor_interpretado
 
     def __str__(self):
-        return f"{self.tipo} {self.identificador} = {self.valor}"
+        if self.tipo is not None:
+            return f"{self.tipo} {self.identificador} = {self.valor}"
+        else:
+            return f"{self.identificador} = {self.valor}"
 
     def __repr__(self):
         return f"Asignacion(tipo={self.tipo!r}, identificador={self.identificador!r}, valor={self.valor!r})"
+
+class Declaracion(Expresion):
+    def __init__(self, tipo, identificador, linea=None, columna=None):
+        self.tipo = tipo
+        self.identificador = identificador
+        self.linea = linea
+        self.columna = columna
+
+
+    def interpret(self):
+        # Verificar si la variable ya está declarada
+        if self.identificador in tabla_variables:
+            raise Exception(f"Error semántico: '{self.identificador}' ya ha sido declarado.")
+
+        # Si no existe, declararla con un valor por defecto
+        if self.tipo == "int":
+            tabla_variables[self.identificador] = 0
+        elif self.tipo == "float":
+            tabla_variables[self.identificador] = 0.0
+        elif self.tipo == "char":
+            tabla_variables[self.identificador] = '\0'
+        elif self.tipo == "string":
+            tabla_variables[self.identificador] = ""
+        elif self.tipo == "bool":
+            tabla_variables[self.identificador] = False
+        else:
+            tabla_variables[self.identificador] = None
+
+        return f"{self.tipo} {self.identificador} declarado."
+
+
+    def __str__(self):
+        return f"{self.tipo} {self.identificador};"
+
+    def __repr__(self):
+        return f"Declaracion(tipo={self.tipo!r}, identificador={self.identificador!r})"
 
 class Println(Expresion):
     def __init__(self, expresion):

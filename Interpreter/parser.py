@@ -1,8 +1,8 @@
 import ply.yacc as yacc
-from lexer import tokens, errores_lexicos
+from lexer import tokens, errores_lexicos, calcular_columna
 from nodes.ast_nodes import Numero, Decimal, Boleano, Caracter, Cadena, Identificador, Asignacion, Suma, Resta, Multiplicacion, Division,Potencia,Modulo,Negativo, Println
 from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento, Instruccion,Instrucciones,While, Distinto, If, For
-from nodes.ast_nodes import OrLogicoNode, AndLogicoNode, NotLogicoNode, XorLogicoNode, DoWhile
+from nodes.ast_nodes import OrLogicoNode, AndLogicoNode, NotLogicoNode, XorLogicoNode, DoWhile, Declaracion
 
 comentarios = []
 errores_sintacticos = []
@@ -148,6 +148,12 @@ def p_expresion_potencia(p):
 def p_expresion_modulo(p):
     'expresion : expresion MODULO expresion'
     p[0] = Modulo(p[1], p[3])
+
+def p_declaracion(p):
+    'expresion : tipo ID PTCOMA'
+    texto_fuente = p.lexer.lexdata  # Acceso al texto fuente completo
+    columna = calcular_columna(p.lexpos(2), texto_fuente)
+    p[0] = Declaracion(p[1], p[2], p.lineno(2), columna)
 
 def p_asignacion(p):
     'expresion : ID ASIGNACION expresion PTCOMA'
