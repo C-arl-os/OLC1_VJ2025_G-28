@@ -191,7 +191,10 @@ def analizar_texto(texto):
     # === Interpretación + Errores Semánticos ===
     for nodo in arboles:
         try:
-            nodo.interpret()
+            if hasattr(nodo, 'interpret') and nodo.interpret.__code__.co_argcount == 2:
+                nodo.interpret(errores_semanticos)
+            else:
+                nodo.interpret()
         except Exception as e:
             errores_semanticos.append({
                 'tipo': 'Semántico',

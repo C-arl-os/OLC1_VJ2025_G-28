@@ -76,9 +76,8 @@ class Suma(Expresion):
         if clave in combinaciones_validas:
             return combinaciones_validas[clave](izq, der)
         else:
-            print(f"Error: No se puede sumar tipos inválidos → {t_izq} + {t_der}")
-            return None
-
+            # Cambia este print por una excepción:
+            raise Exception(f"Error: No se puede sumar tipos inválidos → {t_izq} + {t_der}")
     def __str__(self):
         return f"({self.izquierda} + {self.derecha})"
 
@@ -127,8 +126,10 @@ class Resta(Expresion):
         if clave in combinaciones_validas:
             return combinaciones_validas[clave](izq, der)
         else:
+            
             print(f"Error: No se puede restar tipos inválidos → {t_izq} - {t_der}")
-            return None
+            raise Exception(f"Error: No se puede restar tipos inválidos → {t_izq} - {t_der}")
+            #return None
 
     def __str__(self):
         return f"({self.izquierda} - {self.derecha})"
@@ -177,7 +178,9 @@ class Multiplicacion(Expresion):
             return combinaciones_validas[clave](izq, der)
         else:
             print(f"Error: No se puede multiplicar tipos inválidos → {t_izq} * {t_der}")
-            return None
+            raise Exception(f"Error: No se puede multiplicar tipos inválidos → {t_izq} * {t_der}")
+
+            #return None
 
     def __str__(self):
         return f"({self.izquierda} * {self.derecha})"
@@ -228,10 +231,12 @@ class Division(Expresion):
                 return combinaciones_validas[clave](izq, der)
             else:
                 print(f"Error: No se puede dividir tipos inválidos → {t_izq} / {t_der}")
-                return None
+                raise Exception(f"Error: No se puede dividir tipos inválidos → {t_izq} / {t_der}")
+                #return None
         except ZeroDivisionError:
             print("Error: División por cero.")
-            return None
+            raise Exception(f"Error: División por cero")
+            #return None
 
     def __str__(self):
         return f"({self.izquierda} / {self.derecha})"
@@ -247,13 +252,42 @@ class Potencia(Expresion):
     def interpret(self):
         base_val = self.base.interpret()
         exponente_val = self.exponente.interpret()
-        
-        resultado = base_val ** exponente_val
 
-        if isinstance(base_val, int) and isinstance(exponente_val, int):
-            return int(resultado)
-        else:
-            return float(resultado)
+        # Clasificación de tipos
+        def tipo(val):
+            if isinstance(val, bool):
+                return "Booleano"
+            elif isinstance(val, int):
+                return "Entero"
+            elif isinstance(val, float):
+                return "Decimal"
+            elif isinstance(val, str) and len(val) == 1:
+                return "Carácter"
+            return "Desconocido"
+
+        t_base = tipo(base_val)
+        t_exponente = tipo(exponente_val)
+
+        # Combinaciones válidas
+        combinaciones_validas = {
+            ("Entero", "Entero"): lambda a, b: a ** b,
+            ("Entero", "Decimal"): lambda a, b: a ** b,
+            ("Decimal", "Entero"): lambda a, b: a ** b,
+            ("Decimal", "Decimal"): lambda a, b: a ** b,
+        }
+
+        clave = (t_base, t_exponente)
+        if clave in combinaciones_validas:
+            resultado = combinaciones_validas[clave](base_val, exponente_val)
+            # Retornar según el tipo dominante
+            if isinstance(base_val, float) or isinstance(exponente_val, float):
+                return float(resultado)
+            else:
+                return int(resultado)
+        else:            
+            print(f"Error: No se puede aplicar potencia a tipos inválidos → {t_base} ** {t_exponente}")
+            raise Exception(f"Error: No se puede aplicar potencia a tipos inválidos → {t_base} ** {t_exponente}")
+            #return None
 
     def __str__(self):
         return f"({self.base} ** {self.exponente})"
@@ -269,12 +303,43 @@ class Modulo(Expresion):
     def interpret(self):
         izq_val = self.izquierda.interpret()
         der_val = self.derecha.interpret()
+
+        # Clasificar tipo
+        def tipo(val):
+            if isinstance(val, bool):  # Excluir explícitamente booleanos
+                return "Booleano"
+            elif isinstance(val, int):
+                return "Entero"
+            elif isinstance(val, float):
+                return "Decimal"
+            elif isinstance(val, str):
+                return "Cadena" if len(val) > 1 else "Carácter"
+            else:
+                return "Desconocido"
+
+        t_izq = tipo(izq_val)
+        t_der = tipo(der_val)
+
+        # Combinaciones válidas
+        combinaciones_validas = {
+            ("Entero", "Entero"),
+            ("Entero", "Decimal"),
+            ("Decimal", "Entero"),
+            ("Decimal", "Decimal"),
+        }
+
+        if (t_izq, t_der) not in combinaciones_validas:
+            print(f"Error: No se puede aplicar módulo a tipos → {t_izq} % {t_der}")
+            raise Exception(f"Error: No se puede aplicar módulo a tipos → {t_izq} % {t_der}")
+            #return None
+
         try:
             resultado = izq_val % der_val
-            return float(resultado)  # Siempre se convierte a decimal según la tabla
+            return float(resultado)  # Siempre devuelve decimal
         except ZeroDivisionError:
             print("Error: módulo por cero.")
-            return None
+            raise Exception(f"Error: División por cero")
+            #return None
 
     def __str__(self):
         return f"({self.izquierda} % {self.derecha})"
@@ -442,75 +507,84 @@ class Println(Expresion):
 #operadores
 # ...existing code...
 
-class MayorIgual(Expresion):
-    def __init__(self, izquierda, derecha):
+class Relacional(Expresion):
+    def __init__(self, izquierda, derecha, operador):
         self.izquierda = izquierda
         self.derecha = derecha
+        self.operador = operador
 
     def interpret(self):
-        return self.izquierda.interpret() >= self.derecha.interpret()
+        izq = self.izquierda.interpret()
+        der = self.derecha.interpret()
+
+        def tipo(val):
+            if isinstance(val, bool):
+                return "Booleano"
+            elif isinstance(val, int):
+                return "Entero"
+            elif isinstance(val, float):
+                return "Decimal"
+            elif isinstance(val, str):
+                if len(val) == 1:
+                    return "Carácter"
+                return "Cadena"
+            return "Desconocido"
+
+        t_izq = tipo(izq)
+        t_der = tipo(der)
+
+        # Tabla de combinaciones válidas
+        combinaciones_validas = {
+            ("Entero", "Entero"), ("Entero", "Decimal"), ("Entero", "Carácter"),
+            ("Decimal", "Entero"), ("Decimal", "Decimal"), ("Decimal", "Carácter"),
+            ("Carácter", "Entero"), ("Carácter", "Decimal"), ("Carácter", "Carácter"),
+            ("Booleano", "Booleano"),
+            ("Cadena", "Cadena")
+        }
+
+        if (t_izq, t_der) not in combinaciones_validas:
+            print(f"Error: Comparación no válida entre tipos → {t_izq} {self.operador} {t_der}")
+            raise Exception(f"Error: Comparación no válida entre tipos → {t_izq} {self.operador} {t_der}")
+            #return None
+
+        try:
+            if self.operador == ">":
+                return izq > der
+            elif self.operador == "<":
+                return izq < der
+            elif self.operador == ">=":
+                return izq >= der
+            elif self.operador == "<=":
+                return izq <= der
+            elif self.operador == "==":
+                return izq == der
+        except Exception as e:
+            print(f"Error al comparar: {e}")
+            return None
 
     def __str__(self):
-        return f"({self.izquierda} >= {self.derecha})"
+        return f"({self.izquierda} {self.operador} {self.derecha})"
 
-    def __repr__(self):
-        return f"MayorIgual({self.izquierda!r}, {self.derecha!r})"
 
-class MenorIgual(Expresion):
+class MayorQue(Relacional):
     def __init__(self, izquierda, derecha):
-        self.izquierda = izquierda
-        self.derecha = derecha
+        super().__init__(izquierda, derecha, ">")
 
-    def interpret(self):
-        return self.izquierda.interpret() <= self.derecha.interpret()
-
-    def __str__(self):
-        return f"({self.izquierda} <= {self.derecha})"
-
-    def __repr__(self):
-        return f"MenorIgual({self.izquierda!r}, {self.derecha!r})"
-
-class MenorQue(Expresion):
+class MenorQue(Relacional):
     def __init__(self, izquierda, derecha):
-        self.izquierda = izquierda
-        self.derecha = derecha
+        super().__init__(izquierda, derecha, "<")
 
-    def interpret(self):
-        return self.izquierda.interpret() < self.derecha.interpret()
-
-    def __str__(self):
-        return f"({self.izquierda} < {self.derecha})"
-
-    def __repr__(self):
-        return f"MenorQue({self.izquierda!r}, {self.derecha!r})"
-
-class MayorQue(Expresion):
+class MayorIgual(Relacional):
     def __init__(self, izquierda, derecha):
-        self.izquierda = izquierda
-        self.derecha = derecha
+        super().__init__(izquierda, derecha, ">=")
 
-    def interpret(self):
-        return self.izquierda.interpret() > self.derecha.interpret()
-
-    def __str__(self):
-        return f"({self.izquierda} > {self.derecha})"
-
-    def __repr__(self):
-        return f"MayorQue({self.izquierda!r}, {self.derecha!r})"
-
-class Igual(Expresion):
+class MenorIgual(Relacional):
     def __init__(self, izquierda, derecha):
-        self.izquierda = izquierda
-        self.derecha = derecha
+        super().__init__(izquierda, derecha, "<=")
 
-    def interpret(self):
-        return self.izquierda.interpret() == self.derecha.interpret()
-
-    def __str__(self):
-        return f"({self.izquierda} == {self.derecha})"
-
-    def __repr__(self):
-        return f"Igual({self.izquierda!r}, {self.derecha!r})"
+class Igual(Relacional):
+    def __init__(self, izquierda, derecha):
+        super().__init__(izquierda, derecha, "==")
 
 # ...DECREMENTO Y iNCREMENTO...
 
@@ -604,6 +678,7 @@ class Instruccion(Expresion):
         print(self.instruccion)
         return f""
     
+    
 class Instrucciones(Expresion):
     def __init__(self, instruccion, instrucciones=None):
         if instrucciones is not None:
@@ -612,14 +687,58 @@ class Instrucciones(Expresion):
             self.instrucciones = []
         self.instrucciones.append(instruccion)
 
-    def interpret(self, tabla_variables):
+    def interpret(self, errores_semanticos=None):
         results = []
+        if errores_semanticos is None:
+            errores_semanticos = []
         for instr in self.instrucciones:
-            resultado = instr.interpret(tabla_variables)
-            results.append(resultado)
-            if isinstance(resultado, Break):
-                return resultado  # detener si se encuentra un break
+            try:
+                # Si el nodo tiene interpret con errores_semanticos, pásalo
+                if hasattr(instr, 'interpret') and instr.interpret.__code__.co_argcount == 2:
+                    results.append(instr.interpret(errores_semanticos))
+                else:
+                    results.append(instr.interpret())
+            except Exception as e:
+                errores_semanticos.append({
+                    'tipo': 'Semántico',
+                    'descripcion': str(e),
+                    'linea': getattr(instr, 'linea', -1),
+                    'columna': getattr(instr, 'columna', -1)
+                })
         return results
+
+    def __str__(self):
+        return "\n".join(str(instr) for instr in self.instrucciones)
+
+    
+class Instrucciones(Expresion):
+    def __init__(self, instruccion, instrucciones=None):
+        if instrucciones is not None:
+            self.instrucciones = instrucciones.instrucciones.copy()
+        else:
+            self.instrucciones = []
+        self.instrucciones.append(instruccion)
+
+    def interpret(self, errores_semanticos=None):
+        if errores_semanticos is None:
+            errores_semanticos = []
+        for instr in self.instrucciones:
+            try:
+                if hasattr(instr, 'interpret') and instr.interpret.__code__.co_argcount == 2:
+                    res = instr.interpret(errores_semanticos)
+                else:
+                    res = instr.interpret()
+                # Si la instrucción es Break o Continue, propágalo inmediatamente
+                if isinstance(res, Break) or isinstance(res, Continue):
+                    return res
+            except Exception as e:
+                errores_semanticos.append({
+                    'tipo': 'Semántico',
+                    'descripcion': str(e),
+                    'linea': getattr(instr, 'linea', -1),
+                    'columna': getattr(instr, 'columna', -1)
+                })
+        # Si no hubo break/continue, no retorna nada especial
 
     def __str__(self):
         return "\n".join(str(instr) for instr in self.instrucciones)
@@ -638,14 +757,7 @@ class While(Expresion):
         st.new_scope(f'while_{self.id}')
         while self.condicion.interpret():
             resultado = self.instrucciones.interpret()
-            if isinstance(resultado, list):
-                for r in resultado:
-                    if isinstance(r, Break):
-                        st.exit_scope()
-                        return
-                    if isinstance(r, Continue):
-                        break
-            elif isinstance(resultado, Break):
+            if isinstance(resultado, Break):
                 st.exit_scope()
                 return
             elif isinstance(resultado, Continue):
@@ -673,13 +785,15 @@ class If(Expresion):
         if self.condicion.interpret():
             st.new_scope(f'if_{self.id}_true')
             print(f"Condición verdadera, ejecutando bloque SI")
-            self.instrucciones_si.interpret()
+            res = self.instrucciones_si.interpret()
             st.exit_scope()
+            return res
         elif self.instrucciones_sino:
             st.new_scope(f'if_{self.id}_false')
             print(f"Condición falsa, ejecutando bloque SINO")
-            self.instrucciones_sino.interpret()
+            res = self.instrucciones_sino.interpret()
             st.exit_scope()
+            return res
 
     def __str__(self):
         texto = f"if_{self.id}: if ({self.condicion}) {{\n{self.instrucciones_si}\n}}"
@@ -711,11 +825,26 @@ class Instrucciones(Expresion):
             self.instrucciones = []
         self.instrucciones.append(instruccion)
 
-    def interpret(self):
-        results = []
+    def interpret(self, errores_semanticos=None):
+        if errores_semanticos is None:
+            errores_semanticos = []
         for instr in self.instrucciones:
-            results.append(instr.interpret())
-        return results
+            try:
+                if hasattr(instr, 'interpret') and instr.interpret.__code__.co_argcount == 2:
+                    res = instr.interpret(errores_semanticos)
+                else:
+                    res = instr.interpret()
+                # Si la instrucción es Break o Continue, propágalo inmediatamente
+                if isinstance(res, Break) or isinstance(res, Continue):
+                    return res
+            except Exception as e:
+                errores_semanticos.append({
+                    'tipo': 'Semántico',
+                    'descripcion': str(e),
+                    'linea': getattr(instr, 'linea', -1),
+                    'columna': getattr(instr, 'columna', -1)
+                })
+        # Si no hubo break/continue, no retorna nada especial
 
     def __str__(self):
         return "\n".join(str(instr) for instr in self.instrucciones)
@@ -788,21 +917,13 @@ class DoWhile(Expresion):
 
     def interpret(self):
         st.new_scope(f'dowhile_{self.id}')
-        print(f"Ejecutando do-while ID #{self.id}")
         while True:
             resultado = self.instrucciones.interpret()
-            if isinstance(resultado, list):
-                for r in resultado:
-                    if isinstance(r, Break):
-                        st.exit_scope()
-                        return
-                    if isinstance(r, Continue):
-                        break
-            elif isinstance(resultado, Break):
+            if isinstance(resultado, Break):
                 st.exit_scope()
                 return
             elif isinstance(resultado, Continue):
-                continue
+                pass  # Solo salta a la condición
             if not self.condicion.interpret():
                 break
         st.exit_scope()
@@ -824,3 +945,74 @@ class Continue(Expresion):
         return self
     def __str__(self):
         return "continue"
+
+# Clases para la sentencia Switch
+class Switch(Expresion):
+    _contador = 0
+
+    def __init__(self, expresion, casos, caso_default=None):
+        self.expresion = expresion
+        self.casos = casos 
+        self.caso_default = caso_default
+        Switch._contador += 1
+        self.id = Switch._contador
+
+    def interpret(self):
+        valor = self.expresion.interpret()
+        print(f"Evaluando switch ID #{self.id} con valor {valor}")
+        st.new_scope(f'switch_{self.id}')
+        ejecutado = False
+
+        for caso in self.casos:
+            if caso.valor.interpret() == valor:
+                caso.interpret()
+                ejecutado = True
+                break  
+
+        if not ejecutado and self.caso_default:
+            print(f"No hubo coincidencia, ejecutando default")
+            self.caso_default.interpret()
+
+        st.exit_scope()
+
+    def __str__(self):
+        texto = f"switch_{self.id}: switch ({self.expresion}) {{\n"
+        for caso in self.casos:
+            texto += f"  {caso}\n"
+        if self.caso_default:
+            texto += f"  {self.caso_default}\n"
+        texto += "}"
+        return texto
+
+    def __repr__(self):
+        return f"Switch#{self.id}(expresion={self.expresion!r}, casos={self.casos!r}, default={self.caso_default!r})"
+
+class Case(Expresion):
+    def __init__(self, valor, instrucciones):
+        self.valor = valor
+        self.instrucciones = instrucciones
+
+    def interpret(self):
+        print(f"Ejecutando case con valor {self.valor}")
+        self.instrucciones.interpret()
+
+    def __str__(self):
+        return f"case {self.valor}: {{\n{self.instrucciones}\n}}"
+
+    def __repr__(self):
+        return f"Case(valor={self.valor!r}, instrucciones={self.instrucciones!r})"
+
+class Default(Expresion):
+    def __init__(self, instrucciones):
+        self.instrucciones = instrucciones
+
+    def interpret(self):
+        print(f"Ejecutando default")
+        self.instrucciones.interpret()
+
+    def __str__(self):
+        return f"default: {{\n{self.instrucciones}\n}}"
+
+    def __repr__(self):
+        return f"Default(instrucciones={self.instrucciones!r})"
+# Aqui terminan las Clases para la Sentencia Switch.

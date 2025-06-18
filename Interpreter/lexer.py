@@ -1,5 +1,5 @@
 import ply.lex as lex
-
+import os
 # palabras reservadas
 reserved = {
     'eval':'REVAL',
@@ -349,7 +349,8 @@ def graficar_tabla_tokens(codigo_fuente):
     html.append("</div>")
     html.append("</body>")
     html.append("</html>")
-
+  # Crear el directorio Reportes si no existe
+    os.makedirs("Reportes", exist_ok=True)
     # Guardar el HTML en un archivo
     with open("Reportes/Tabla_de_Tokens.html", "w", encoding="utf-8") as f:
         f.write("\n".join(html))

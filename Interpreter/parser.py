@@ -3,6 +3,7 @@ from lexer import tokens, errores_lexicos, calcular_columna
 from nodes.ast_nodes import Numero, Decimal, Boleano, Caracter, Cadena, Identificador, Asignacion, Suma, Resta, Multiplicacion, Division,Potencia,Modulo,Negativo, Println
 from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento, Instruccion,Instrucciones,While, Distinto, If, For
 from nodes.ast_nodes import OrLogicoNode, AndLogicoNode, NotLogicoNode, XorLogicoNode, DoWhile, Declaracion,Break, Continue
+from nodes.ast_nodes import Switch,Case,Default
 
 comentarios = []
 errores_sintacticos = []
@@ -168,6 +169,11 @@ def p_tipo(p):
             | BOOL'''
     p[0] = p[1]
 
+#def p_expresion_println(p):
+ #   'expresion : PRINTLN PARIZQ expresion PARDER'
+  #  if not isinstance(p[3], (Cadena, Identificador)):
+   #     raise Exception(f"Error semántico: println solo acepta variables o cadenas válidas")
+    #p[0] = Println(p[3])
 def p_expresion_println(p):
     'expresion : PRINTLN PARIZQ expresion PARDER'
     p[0] = Println(p[3])
@@ -249,7 +255,38 @@ def p_comentario_una_linea(t):
 def p_expresion_parentesis(p):
     'expresion : PARIZQ expresion PARDER'
     p[0] = p[2]
-    
+
+# Reglas para la sentencia de control Switch
+def p_expresion_switch(p):
+    'expresion : SWITCH PARIZQ expresion PARDER LLAVE_IZQ lista_cases_opt LLAVE_DER'
+    p[0] = Switch(p[3], p[6]["casos"], p[6].get("default"))
+
+def p_lista_cases_opt_con_default(p):
+    'lista_cases_opt : lista_cases case_default'
+    p[0] = {"casos": p[1], "default": p[2]}
+
+def p_lista_cases_opt_sin_default(p):
+    'lista_cases_opt : lista_cases'
+    p[0] = {"casos": p[1]}
+
+def p_lista_cases_varios(p):
+    'lista_cases : lista_cases case'
+    p[0] = p[1] + [p[2]]
+
+def p_lista_cases_uno(p):
+    'lista_cases : case'
+    p[0] = [p[1]]
+
+def p_case(p):
+    'case : CASE expresion DOSPUNTOS lista_expresiones'
+    p[0] = Case(p[2], p[4])
+
+def p_case_default(p):
+    'case_default : DEFAULT DOSPUNTOS lista_expresiones'
+    p[0] = Default(p[3])
+
+# Aqui terminan...
+
 def p_error(p):
     if p:
         errores_sintacticos.append({
