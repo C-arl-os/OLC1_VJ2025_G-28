@@ -363,6 +363,42 @@ class Identificador(Expresion):
     def __repr__(self):
         return f"Identificador('{self.nombre}')"
 
+class Declaracion(Expresion):
+    def __init__(self, tipo, identificador, linea=None, columna=None):
+        self.tipo = tipo
+        self.identificador = identificador
+        self.linea = linea
+        self.columna = columna
+
+
+    def interpret(self):
+        # Verificar si la variable ya está declarada
+        if self.identificador in tabla_variables:
+            raise Exception(f"Error semántico: '{self.identificador}' ya ha sido declarado.")
+
+        # Si no existe, declararla con un valor por defecto
+        if self.tipo == "int":
+            tabla_variables[self.identificador] = 0
+        elif self.tipo == "float":
+            tabla_variables[self.identificador] = 0.0
+        elif self.tipo == "char":
+            tabla_variables[self.identificador] = '\0'
+        elif self.tipo == "string":
+            tabla_variables[self.identificador] = ""
+        elif self.tipo == "bool":
+            tabla_variables[self.identificador] = False
+        else:
+            tabla_variables[self.identificador] = None
+
+        return f"{self.tipo} {self.identificador} declarado."
+
+
+    def __str__(self):
+        return f"{self.tipo} {self.identificador};"
+
+    def __repr__(self):
+        return f"Declaracion(tipo={self.tipo!r}, identificador={self.identificador!r})"
+
 class Asignacion(Expresion):
     def __init__(self, tipo, identificador, valor): # Este es el __init__ correcto para Asignacion
         self.tipo = tipo
@@ -576,14 +612,18 @@ class Instrucciones(Expresion):
             self.instrucciones = []
         self.instrucciones.append(instruccion)
 
-    def interpret(self):
+    def interpret(self, tabla_variables):
         results = []
         for instr in self.instrucciones:
-            results.append(instr.interpret())
+            resultado = instr.interpret(tabla_variables)
+            results.append(resultado)
+            if isinstance(resultado, Break):
+                return resultado  # detener si se encuentra un break
         return results
 
     def __str__(self):
         return "\n".join(str(instr) for instr in self.instrucciones)
+
 
 class While(Expresion):
     _contador = 0
@@ -596,11 +636,21 @@ class While(Expresion):
 
     def interpret(self):
         st.new_scope(f'while_{self.id}')
-        print(f"Ejecutando while ID #{self.id}")
         while self.condicion.interpret():
-            self.instrucciones.interpret()
+            resultado = self.instrucciones.interpret()
+            if isinstance(resultado, list):
+                for r in resultado:
+                    if isinstance(r, Break):
+                        st.exit_scope()
+                        return
+                    if isinstance(r, Continue):
+                        break
+            elif isinstance(resultado, Break):
+                st.exit_scope()
+                return
+            elif isinstance(resultado, Continue):
+                continue
         st.exit_scope()
-
     def __str__(self):
         # Representación legible del AST
         return f"while_{self.id}: while ({self.condicion}) {{\n{self.instrucciones}\n}}"
@@ -703,7 +753,20 @@ class For(Expresion):
         
         self.asignacion.interpret()  
         while self.condicion.interpret():  
-            self.instrucciones.interpret() 
+            resultado = self.instrucciones.interpret()
+            if isinstance(resultado, list):
+                for r in resultado:
+                    if isinstance(r, Break):
+                        st.exit_scope()
+                        return
+                    if isinstance(r, Continue):
+                        break
+            elif isinstance(resultado, Break):
+                st.exit_scope()
+                return
+            elif isinstance(resultado, Continue):
+                self.actualizacion.interpret()
+                continue
             self.actualizacion.interpret()  
         st.exit_scope()  
 
@@ -724,11 +787,22 @@ class DoWhile(Expresion):
         self.id = DoWhile._contador
 
     def interpret(self):
-        # Ya no hacemos `import contexto as st`
         st.new_scope(f'dowhile_{self.id}')
         print(f"Ejecutando do-while ID #{self.id}")
         while True:
-            self.instrucciones.interpret()
+            resultado = self.instrucciones.interpret()
+            if isinstance(resultado, list):
+                for r in resultado:
+                    if isinstance(r, Break):
+                        st.exit_scope()
+                        return
+                    if isinstance(r, Continue):
+                        break
+            elif isinstance(resultado, Break):
+                st.exit_scope()
+                return
+            elif isinstance(resultado, Continue):
+                continue
             if not self.condicion.interpret():
                 break
         st.exit_scope()
@@ -738,3 +812,15 @@ class DoWhile(Expresion):
 
     def __repr__(self):
         return f"DoWhile#{self.id}(instrucciones={self.instrucciones!r}, condicion={self.condicion!r})"
+    
+class Break(Expresion):
+    def interpret(self):
+        return self
+    def __str__(self):
+        return "break"
+
+class Continue(Expresion):
+    def interpret(self):
+        return self
+    def __str__(self):
+        return "continue"

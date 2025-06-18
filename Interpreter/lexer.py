@@ -16,7 +16,11 @@ reserved = {
     'else':'ELSE',
     'for':'FOR',
     'do':'DO',
-    
+    'break': 'BREAK',
+    'continue': 'CONTINUE', 
+    'switch': 'SWITCH',
+    'case': 'CASE',
+    'default': 'DEFAULT'
 }
 
 # Lista de nombres de tokens
@@ -59,6 +63,7 @@ tokens = (
     'NOT_LOGICO',  # !
     'XOR_LOGICO',  # ^
     'DO',
+    'DOSPUNTOS'
 ) + tuple(reserved.values())
 # Tokens
 
@@ -102,7 +107,7 @@ t_CORIZQ = r'\['
 t_IGUAL = r'='
 t_MAYORQ = r'>'
 t_PTC = r';'
-
+t_DOSPUNTOS = r':'
 # lista global de errores
 errores_lexicos = []
 
@@ -346,7 +351,7 @@ def graficar_tabla_tokens(codigo_fuente):
     html.append("</html>")
 
     # Guardar el HTML en un archivo
-    with open("Tabla_de_Tokens.html", "w", encoding="utf-8") as f:
+    with open("Reportes/Tabla_de_Tokens.html", "w", encoding="utf-8") as f:
         f.write("\n".join(html))
 
 def graficar_tabla_errores(errores_lexicos, errores_sintacticos, errores_semanticos):
@@ -472,7 +477,7 @@ def graficar_tabla_errores(errores_lexicos, errores_sintacticos, errores_semanti
     html.append("</body>")
     html.append("</html>")
 
-    with open("Tabla_de_Errores.html", "w", encoding="utf-8") as f:
+    with open("Reportes/Tabla_de_Errores.html", "w", encoding="utf-8") as f:
         f.write("\n".join(html))
 
 def calcular_columna(lexpos, texto):

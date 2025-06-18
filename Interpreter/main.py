@@ -162,8 +162,6 @@ def analizar_texto(texto):
     graficar_tabla_tokens(texto)
 
     # === Tabla de Tokens ===
-    salida.append("Tabla de Tokens:")
-    salida.append("Lexema\t\tToken\t\tLínea\tColumna")
     lexer.input(texto)
     while True:
         tok = lexer.token()
@@ -171,6 +169,11 @@ def analizar_texto(texto):
             break
         columna = encontrar_columna(texto, tok.lexpos)
         salida.append(f"{tok.value}\t\t{tok.type}\t\t{tok.lineno}\t{columna}")
+
+    # ——— Limpiar errores léxicos de las fases anteriores ———
+    errores_lexicos.clear()
+        
+    
 
     # === Parseo y construcción de lista de AST ===
     arboles = []
