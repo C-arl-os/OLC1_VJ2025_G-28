@@ -26,49 +26,57 @@ class Suma(Expresion):
         izq = self.izquierda.interpret()
         der = self.derecha.interpret()
 
-        # Manejo de errores: combinaciones no válidas
-        if isinstance(izq, bool) or isinstance(der, bool):
-            # Solo se permite booleano + cadena
-            if isinstance(izq, str) or isinstance(der, str):
-                return str(izq) + str(der)
-            else:
-                print(f"Error: No se puede sumar tipos inválidos → {type(izq).__name__} + {type(der).__name__}")
-                return None
+        tipo_izq = type(izq)
+        tipo_der = type(der)
 
-        # Caracter a número (usa ord)
-        if isinstance(izq, str) and len(izq) == 1 and not izq.isnumeric():
-            izq_val = ord(izq)
-        else:
-            izq_val = izq
+        # Clasificar los tipos
+        def tipo(val):
+            if isinstance(val, bool):
+                return "Booleano"
+            elif isinstance(val, int):
+                return "Entero"
+            elif isinstance(val, float):
+                return "Decimal"
+            elif isinstance(val, str):
+                if len(val) == 1:
+                    return "Carácter"
+                return "Cadena"
+            return "Desconocido"
 
-        if isinstance(der, str) and len(der) == 1 and not der.isnumeric():
-            der_val = ord(der)
-        else:
-            der_val = der
+        t_izq = tipo(izq)
+        t_der = tipo(der)
 
-        # Reglas de suma
-        if isinstance(izq, int) and isinstance(der, int):
-            return izq + der
-        elif isinstance(izq, (int, float)) and isinstance(der, (int, float)):
-            return float(izq) + float(der)
-        elif isinstance(izq, (int, float)) and isinstance(der, str) and len(der) > 1:
-            return str(izq) + der
-        elif isinstance(izq, str) and isinstance(der, (int, float)):
-            return izq + str(der)
-        elif isinstance(izq, (int, float)) and isinstance(der, str) and len(der) == 1:
-            return izq + ord(der)
-        elif isinstance(izq, str) and len(izq) == 1 and isinstance(der, (int, float)):
-            return ord(izq) + der
-        elif isinstance(izq, str) and isinstance(der, str):
-            return izq + der
-        elif isinstance(izq, str) and isinstance(der, bool):
-            return izq + str(der)
-        elif isinstance(izq, bool) and isinstance(der, str):
-            return str(izq) + der
-        elif isinstance(izq, str) and len(izq) == 1 and isinstance(der, str) and len(der) == 1:
-            return izq + der  # caracter + caracter = cadena
+        # Tabla de combinaciones válidas
+        combinaciones_validas = {
+            ("Entero", "Entero"): lambda a, b: a + b,
+            ("Entero", "Decimal"): lambda a, b: a + b,
+            ("Entero", "Carácter"): lambda a, b: a + ord(b),
+            ("Entero", "Cadena"): lambda a, b: str(a) + b,
+
+            ("Decimal", "Entero"): lambda a, b: a + b,
+            ("Decimal", "Decimal"): lambda a, b: a + b,
+            ("Decimal", "Carácter"): lambda a, b: a + ord(b),
+            ("Decimal", "Cadena"): lambda a, b: str(a) + b,
+
+            ("Carácter", "Entero"): lambda a, b: ord(a) + b,
+            ("Carácter", "Decimal"): lambda a, b: ord(a) + b,
+            ("Carácter", "Carácter"): lambda a, b: a + b,
+            ("Carácter", "Cadena"): lambda a, b: a + b,
+
+            ("Cadena", "Entero"): lambda a, b: a + str(b),
+            ("Cadena", "Decimal"): lambda a, b: a + str(b),
+            ("Cadena", "Booleano"): lambda a, b: a + str(b),
+            ("Cadena", "Carácter"): lambda a, b: a + b,
+            ("Cadena", "Cadena"): lambda a, b: a + b,
+
+            ("Booleano", "Cadena"): lambda a, b: str(a) + b,
+        }
+
+        clave = (t_izq, t_der)
+        if clave in combinaciones_validas:
+            return combinaciones_validas[clave](izq, der)
         else:
-            print(f"Error: No se puede sumar tipos inválidos → {type(izq).__name__} + {type(der).__name__}")
+            print(f"Error: No se puede sumar tipos inválidos → {t_izq} + {t_der}")
             return None
 
     def __str__(self):
@@ -86,20 +94,41 @@ class Resta(Expresion):
         izq = self.izquierda.interpret()
         der = self.derecha.interpret()
 
-        # Caso caracter - caracter (no válido)
-        if isinstance(izq, str) and isinstance(der, str) and len(izq) == 1 and len(der) == 1:
-            print("Error: No se puede restar caracter - caracter")
+        # Clasificar el tipo de cada operando (con detección de booleanos)
+        def tipo(val):
+            if isinstance(val, bool):
+                return "Booleano"
+            elif isinstance(val, int):
+                return "Entero"
+            elif isinstance(val, float):
+                return "Decimal"
+            elif isinstance(val, str) and len(val) == 1:
+                return "Carácter"
+            return "Desconocido"
+
+        t_izq = tipo(izq)
+        t_der = tipo(der)
+
+        # Tabla de combinaciones válidas (basada en tu imagen)
+        combinaciones_validas = {
+            ("Entero", "Entero"): lambda a, b: a - b,
+            ("Entero", "Decimal"): lambda a, b: a - b,
+            ("Entero", "Carácter"): lambda a, b: a - ord(b),
+
+            ("Decimal", "Entero"): lambda a, b: a - b,
+            ("Decimal", "Decimal"): lambda a, b: a - b,
+            ("Decimal", "Carácter"): lambda a, b: a - ord(b),
+
+            ("Carácter", "Entero"): lambda a, b: ord(a) - b,
+            ("Carácter", "Decimal"): lambda a, b: ord(a) - b,
+        }
+
+        clave = (t_izq, t_der)
+        if clave in combinaciones_validas:
+            return combinaciones_validas[clave](izq, der)
+        else:
+            print(f"Error: No se puede restar tipos inválidos → {t_izq} - {t_der}")
             return None
-
-        # Convertir caracteres a código ASCII si es necesario
-        if isinstance(izq, str) and len(izq) == 1:
-            izq = ord(izq)
-        if isinstance(der, str) and len(der) == 1:
-            der = ord(der)
-
-        # Realizar la resta con promoción de tipos
-        resultado = izq - der
-        return resultado
 
     def __str__(self):
         return f"({self.izquierda} - {self.derecha})"
@@ -116,24 +145,39 @@ class Multiplicacion(Expresion):
         izq = self.izquierda.interpret()
         der = self.derecha.interpret()
 
-        # Validar si ambos son caracteres (no válido)
-        if isinstance(izq, str) and isinstance(der, str) and len(izq) == 1 and len(der) == 1:
-            print("Error: No se puede multiplicar caracter * caracter")
-            return None
+        # Clasificar tipo
+        def tipo(val):
+            if isinstance(val, int):
+                return "Entero"
+            elif isinstance(val, float):
+                return "Decimal"
+            elif isinstance(val, str) and len(val) == 1:
+                return "Carácter"
+            return "Desconocido"
 
-        # Convertir caracteres a ASCII si es necesario
-        if isinstance(izq, str) and len(izq) == 1:
-            izq = ord(izq)
-        if isinstance(der, str) and len(der) == 1:
-            der = ord(der)
+        t_izq = tipo(izq)
+        t_der = tipo(der)
 
-        resultado = izq * der
+        # Tabla de combinaciones válidas
+        combinaciones_validas = {
+            ("Entero", "Entero"): lambda a, b: a * b,
+            ("Entero", "Decimal"): lambda a, b: a * b,
+            ("Entero", "Carácter"): lambda a, b: a * ord(b),
 
-        # Promoción de tipo
-        if isinstance(izq, float) or isinstance(der, float):
-            return float(resultado)
+            ("Decimal", "Entero"): lambda a, b: a * b,
+            ("Decimal", "Decimal"): lambda a, b: a * b,
+            ("Decimal", "Carácter"): lambda a, b: a * ord(b),
+
+            ("Carácter", "Entero"): lambda a, b: ord(a) * b,
+            ("Carácter", "Decimal"): lambda a, b: ord(a) * b,
+        }
+
+        clave = (t_izq, t_der)
+        if clave in combinaciones_validas:
+            return combinaciones_validas[clave](izq, der)
         else:
-            return int(resultado)
+            print(f"Error: No se puede multiplicar tipos inválidos → {t_izq} * {t_der}")
+            return None
 
     def __str__(self):
         return f"({self.izquierda} * {self.derecha})"
@@ -147,26 +191,47 @@ class Division(Expresion):
         self.derecha = derecha
 
     def interpret(self):
-        izquierda = self.izquierda.interpret()
-        derecha = self.derecha.interpret()
+        izq = self.izquierda.interpret()
+        der = self.derecha.interpret()
 
-        if isinstance(izquierda, str):
-            izquierda = ord(izquierda)
-        if isinstance(derecha, str):
-            derecha = ord(derecha)
+        # Clasificación de tipo
+        def tipo(val):
+            if isinstance(val, int):
+                return "Entero"
+            elif isinstance(val, float):
+                return "Decimal"
+            elif isinstance(val, str) and len(val) == 1:
+                return "Carácter"
+            return "Desconocido"
+
+        t_izq = tipo(izq)
+        t_der = tipo(der)
+
+        # Validar combinación
+        combinaciones_validas = {
+            ("Entero", "Entero"): lambda a, b: float(a) / b,
+            ("Entero", "Decimal"): lambda a, b: float(a) / b,
+            ("Entero", "Carácter"): lambda a, b: float(a) / ord(b),
+
+            ("Decimal", "Entero"): lambda a, b: a / b,
+            ("Decimal", "Decimal"): lambda a, b: a / b,
+            ("Decimal", "Carácter"): lambda a, b: a / ord(b),
+
+            ("Carácter", "Entero"): lambda a, b: float(ord(a)) / b,
+            ("Carácter", "Decimal"): lambda a, b: float(ord(a)) / b,
+        }
+
+        clave = (t_izq, t_der)
 
         try:
-            resultado = izquierda / derecha
+            if clave in combinaciones_validas:
+                return combinaciones_validas[clave](izq, der)
+            else:
+                print(f"Error: No se puede dividir tipos inválidos → {t_izq} / {t_der}")
+                return None
         except ZeroDivisionError:
             print("Error: División por cero.")
             return None
-
-        # Validaciones por tipo
-        if isinstance(self.izquierda, Caracter) and isinstance(self.derecha, Caracter):
-            print("Error: No se puede dividir caracter / caracter")
-            return None
-
-        return float(resultado)
 
     def __str__(self):
         return f"({self.izquierda} / {self.derecha})"

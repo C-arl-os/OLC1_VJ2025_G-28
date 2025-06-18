@@ -192,7 +192,6 @@ def t_COMENTARIO_INICIO(t):
     r'/\*'
     t.lexer.push_state('comentario')
     t.lexer.comment_value = ''  # Inicializa acumulador
-    # No retorna token aquí, el token se retorna cuando termina el comentario
 
 # Estado comentario: salto de línea
 def t_comentario_newline(t):
@@ -204,6 +203,7 @@ def t_comentario_newline(t):
 def t_comentario_content(t):
     r'[^*\n]+|\*+[^/\n]'
     t.lexer.comment_value += t.value
+    pass
 
 # Estado comentario: fin de comentario */
 def t_comentario_end(t):
@@ -211,7 +211,7 @@ def t_comentario_end(t):
     t.lexer.pop_state()
     t.type = 'COMENTARIO_MULTILINEA'
     t.value = t.lexer.comment_value
-    return t
+    #return t
 
 # Ignorar espacios y tab en estado comentario
 t_comentario_ignore = ' \t'
@@ -222,7 +222,7 @@ def t_comentario_error(t):
 
 def t_COMENTARIO_UNA_LINEA(t):
     r'//[^\n]*'
-    return t
+    #return t
 
 def t_PRINTLN(t):
     r'println'

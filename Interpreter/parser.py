@@ -225,11 +225,13 @@ def p_comentario_multi_linea(t):
     'comentario_multi_linea : COMENTARIO_MULTILINEA'
     comentarios.append(f'Comentario Multilínea: {t[1]}')
     print(f'Comentario Multilínea: {t[1]}')
+    pass
 
 def p_comentario_una_linea(t):
     'comentario_una_linea : COMENTARIO_UNA_LINEA'
     comentarios.append(f'Comentario de una línea: {t[1]}')
     print(f'Comentario de una línea: {t[1]}')
+    pass
 
 # Regla para expresiones entre paréntesis
 def p_expresion_parentesis(p):
