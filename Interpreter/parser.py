@@ -169,12 +169,9 @@ def p_tipo(p):
             | BOOL'''
     p[0] = p[1]
 
-#def p_expresion_println(p):
- #   'expresion : PRINTLN PARIZQ expresion PARDER'
-  #  if not isinstance(p[3], (Cadena, Identificador)):
-   #     raise Exception(f"Error semántico: println solo acepta variables o cadenas válidas")
-    #p[0] = Println(p[3])
-
+# === Errores manejables con punto y coma ===
+# ===> Error para print
+# ===> Error para una cadena en caso no lleve comillas
 def p_expresion_println(p):
     'expresion : PRINTLN PARIZQ expresion PARDER PTCOMA'
     
@@ -184,46 +181,73 @@ def p_expresion_println(p):
     else:
         # Permitir tanto cadenas como identificadores (variables)
         p[0] = Println(p[3])
-"""
-def p_expresion_println(p):
-    'expresion : PRINTLN PARIZQ expresion PARDER'
-    
-    # Validación de error: palabra reservada `print`
-    if isinstance(p[3], Identificador) and p[3].nombre == 'print':
-        p[0] = ErrorPrintln("print", "'print' en lugar de 'println'", p.lineno(1), p.lexpos(1))
-    
-    # Validación: identificador sin comillas
-    elif isinstance(p[3], Identificador):
-        p[0] = ErrorPrintln(p[3].nombre, "Faltan comillas ", p.lineno(1), p.lexpos(1))
 
-    # Validación: múltiples identificadores juntos
-    elif isinstance(p[3], list) and all(isinstance(e, Identificador) for e in p[3]):
-        p[0] = ErrorPrintln(" ".join(e.nombre for e in p[3]), "Multiple ID sin comillas", p.lineno(1), p.lexpos(1))
-
-    else:
-        p[0] = Println(p[3])
-"""
+# === Errores manejables sin punto y coma ===
+# ===> Error para print
+# ===> Error para una cadena en caso no lleve comillas
+# ===> Error para punto y coma
 def p_expresion_println_sin_ptcoma(p):
     'expresion : PRINTLN PARIZQ expresion PARDER'
     errores_sintacticos.append({
         'tipo': 'Sintáctico',
-        'descripcion': "Falta punto y coma al final de 'println(...)'",
+        'descripcion': "Falta punto y coma",
         'linea': p.lineno(1),
         'columna': p.lexpos(1)
+        #Si ya entro aqui que ya no ejecute la ultima linea
     })
-    p[0] = ErrorPrintln("println", "Falta punto y coma ';'", p.lineno(1), p.lexpos(1))
+    # === Esto es para mostrar el error en el semantico ===
+    p[0] = ErrorPrintln("println falta ';'", p.lineno(1), p.lexpos(1))
 
-def p_expresion_println_error(p):
-    'expresion : PRINTLN PARIZQ error PARDER'
+# === Errores manejables con multiples ID (oraciones sin comillas) ===
+
+# === Errores manejables con multiples ID (oraciones sin comillas) con punto y coma ===
+# ===> La entrada aceptada es: println(probando la catidad de id); ---> El error es el multiple ID
+# ===> La entrada aceptada es: print(probando la catidad de id); ---> El error es la palabra print y el multiple ID
+
+# !!!!!!!!!!!!!!!!! No reconoce PRINT print(no funciona la parte de oraciones 2); !!!!!!!!!!!!!!!!!!!!!!!!!
+def p_expresion_oraciones_println(p):
+    'expresion : PRINTLN PARIZQ oraciones PARDER PTCOMA'
+    
+    # Caso de múltiples ID → error semántico
+    if isinstance(p[3], list) and len(p[3]) > 1:
+        p[0] = ErrorPrintln("Se detectaron múltiples ID sin comillas", p.lineno(1), p.lexpos(1))
+
+    # Caso válido: un solo ID
+    else:
+        p[0] = Println(p[3])
+
+
+# === Errores manejables con multiples ID (oraciones sin comillas) sin punto y coma ===
+# ===> La entrada aceptada es: println(probando la catidad de id) ---> El error es el multiple ID y el punto y coma
+# ===> La entrada aceptada es: print(probando la catidad de id) ---> El error es la palabra print, multiple ID y el punto y coma
+
+# !!!!!!!!!!!!!!!!! No reconoce PRINT print(no funciona la parte de oraciones 2) !!!!!!!!!!!!!!!!!!!!!!!!!
+def p_expresion_oraciones_println_sin_ptcoma(p):
+    'expresion : PRINTLN PARIZQ oraciones PARDER'
+
     errores_sintacticos.append({
         'tipo': 'Sintáctico',
-        'descripcion': "Error de sintaxis en Println: argumento inválido.",
+        'descripcion': "Falta punto y coma",
         'linea': p.lineno(1),
         'columna': p.lexpos(1)
     })
-    p[0] = ErrorPrintln("error", "Sintaxis inválida dentro de println", p.lineno(1), p.lexpos(1))
 
+    # Generar error semántico también por múltiples ID
+    if isinstance(p[3], list) and len(p[3]) > 1:
+        p[0] = ErrorPrintln("Cadena sin comillas + falta ';'", p.lineno(1), p.lexpos(1))
+    else:
+        p[0] = ErrorPrintln("println falta ';'", p.lineno(1), p.lexpos(1))
 
+# === Detectan N cantidad de ID (oraciones sin comillas dentro de un println)
+def p_oraciones_lista(p):
+    'oraciones : oraciones ID'
+    p[0] = [*p[1], p[2]]
+
+def p_oraciones_id(p):
+    'oraciones : ID'
+    p[0] = [p[1]]
+
+# Declara la asignacion
 def p_declaracion_asignacion(p):
     'expresion : tipo ID ASIGNACION expresion PTCOMA'
     p[0] = Asignacion(p[1], p[2], p[4])

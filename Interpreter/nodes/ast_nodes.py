@@ -101,8 +101,10 @@ class Resta(Expresion):
                 return "Entero"
             elif isinstance(val, float):
                 return "Decimal"
-            elif isinstance(val, str) and len(val) == 1:
-                return "Carácter"
+            elif isinstance(val, str):
+                if len(val) == 1:
+                    return "Carácter"
+                return "Cadena"
             return "Desconocido"
 
         t_izq = tipo(izq)
@@ -154,8 +156,10 @@ class Multiplicacion(Expresion):
                 return "Entero"
             elif isinstance(val, float):
                 return "Decimal"
-            elif isinstance(val, str) and len(val) == 1:
-                return "Carácter"
+            elif isinstance(val, str):
+                if len(val) == 1:
+                    return "Carácter"
+                return "Cadena"
             return "Desconocido"
 
         t_izq = tipo(izq)
@@ -204,11 +208,13 @@ class Division(Expresion):
             if isinstance(val, bool):
                 return "Booleano"
             elif isinstance(val, int):
-                return "Entero"            
+                return "Entero"
             elif isinstance(val, float):
                 return "Decimal"
-            elif isinstance(val, str) and len(val) == 1:
-                return "Carácter"
+            elif isinstance(val, str):
+                if len(val) == 1:
+                    return "Carácter"
+                return "Cadena"
             return "Desconocido"
 
         t_izq = tipo(izq)
@@ -265,9 +271,9 @@ class Potencia(Expresion):
                 return "Entero"
             elif isinstance(val, float):
                 return "Decimal"
-            elif isinstance(val, str) and len(val) == 1:
-                return "Carácter"
-            elif isinstance(val, str) and not (len(val) == 1):
+            elif isinstance(val, str):
+                if len(val) == 1:
+                    return "Carácter"
                 return "Cadena"
             return "Desconocido"
 
