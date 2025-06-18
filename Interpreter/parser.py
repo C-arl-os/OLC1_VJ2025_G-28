@@ -203,6 +203,15 @@ def p_expresion_println(p):
     else:
         p[0] = Println(p[3])
 """
+def p_expresion_println_sin_ptcoma(p):
+    'expresion : PRINTLN PARIZQ expresion PARDER'
+    errores_sintacticos.append({
+        'tipo': 'Sintáctico',
+        'descripcion': "Falta punto y coma al final de 'println(...)'",
+        'linea': p.lineno(1),
+        'columna': p.lexpos(1)
+    })
+    p[0] = ErrorPrintln("println", "Falta punto y coma ';'", p.lineno(1), p.lexpos(1))
 
 def p_expresion_println_error(p):
     'expresion : PRINTLN PARIZQ error PARDER'
