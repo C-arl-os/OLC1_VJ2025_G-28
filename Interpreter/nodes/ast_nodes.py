@@ -504,6 +504,22 @@ class Println(Expresion):
 
     def __repr__(self):
         return f"Println({self.expresion!r})"
+    
+class ErrorPrintln(Expresion):
+    def __init__(self, contenido, linea=None, columna=None):
+        self.contenido = contenido
+        self.linea = linea
+        self.columna = columna
+
+    def interpret(self):
+        raise Exception(
+            f"Error en println: '{self.contenido}'"
+            #+ (f" en línea {self.linea}, columna {self.columna}" if self.linea is not None else "")
+        )
+
+    def __str__(self):
+        return f"ErrorPrintln({self.contenido})"
+
 #operadores
 # ...existing code...
 

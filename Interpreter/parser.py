@@ -1,6 +1,6 @@
 import ply.yacc as yacc
 from lexer import tokens, errores_lexicos, calcular_columna
-from nodes.ast_nodes import Numero, Decimal, Boleano, Caracter, Cadena, Identificador, Asignacion, Suma, Resta, Multiplicacion, Division,Potencia,Modulo,Negativo, Println
+from nodes.ast_nodes import Numero, Decimal, Boleano, Caracter, Cadena, Identificador, Asignacion, Suma, Resta, Multiplicacion, Division,Potencia,Modulo,Negativo, Println, ErrorPrintln
 from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento, Instruccion,Instrucciones,While, Distinto, If, For
 from nodes.ast_nodes import OrLogicoNode, AndLogicoNode, NotLogicoNode, XorLogicoNode, DoWhile, Declaracion,Break, Continue
 from nodes.ast_nodes import Switch,Case,Default
@@ -284,6 +284,14 @@ def p_case(p):
 def p_case_default(p):
     'case_default : DEFAULT DOSPUNTOS lista_expresiones'
     p[0] = Default(p[3])
+
+def p_expresion_multiple_ids(p):
+    'expresion : ID ID'
+    p[0] = ErrorPrintln(
+        contenido=f"{p[1]} {p[2]}",
+        linea=p.lineno(1),
+        columna=p.lexpos(1)
+    )
 
 # Aqui terminan...
 
