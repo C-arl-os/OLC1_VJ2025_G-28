@@ -74,6 +74,14 @@
             background-color: #5a6268;
         }
 
+        button.ast-btn {
+            background-color: #28a745;
+        }
+
+        button.ast-btn:hover {
+            background-color: #218838;
+        }
+
         pre {
             background-color: #f0f0f0;
             padding: 15px;
@@ -109,9 +117,9 @@
             background-color: white;
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            width: 80%;
-            max-width: 800px;
-            max-height: 80vh;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
             overflow: auto;
             transform: scale(0.9);
             transition: all 0.3s ease;
@@ -151,8 +159,47 @@
 
         .popup-body {
             padding: 20px;
+            height: calc(100% - 60px);
+        }
+
+        .pdf-container {
+            width: 100%;
+            height: 70vh;
+            border: none;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .pdf-placeholder {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .pdf-placeholder i {
+            font-size: 48px;
+            color: #dc3545;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
         }
     </style>
+    <!-- Iconos para el placeholder del PDF -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <div class="container">
@@ -165,6 +212,7 @@
                 <div class="report-buttons">
                     <button type="button" class="report-btn" onclick="mostrarPopup('Tabla de Errores', '/reportes/Tabla_de_Errores.html')">Ver Errores</button>
                     <button type="button" class="report-btn" onclick="mostrarPopup('Tabla de Tokens', '/reportes/Tabla_de_Tokens.html')">Ver Tokens</button>
+                    <button type="button" class="ast-btn" onclick="mostrarPDF('Árbol de Sintaxis Abstracta (AST)', '/reportes/AST.pdf')">Ver AST</button>
                 </div>
             </div>
         </form>
@@ -196,7 +244,7 @@
             const popupContent = document.getElementById('popupContent');
             
             popupTitle.textContent = titulo;
-            popupContent.innerHTML = '<div style="text-align: center; padding: 20px;"><div class="loader" style="border: 5px solid #f3f3f3; border-top: 5px solid #3498db; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto;"></div><p>Cargando contenido...</p></div>';
+            popupContent.innerHTML = '<div style="text-align: center; padding: 20px;"><div class="loader"></div><p>Cargando contenido...</p></div>';
             
             popup.classList.add('active');
             
@@ -209,6 +257,39 @@
                 .catch(error => {
                     popupContent.innerHTML = `<p style="color: red;">Error al cargar el contenido: ${error.message}</p>`;
                 });
+        }
+        
+        // Función para mostrar PDF
+        function mostrarPDF(titulo, url) {
+            const popup = document.getElementById('reportPopup');
+            const popupTitle = document.getElementById('popupTitle');
+            const popupContent = document.getElementById('popupContent');
+            
+            popupTitle.textContent = titulo;
+            popupContent.innerHTML = `
+                <div class="pdf-container">
+                    <div class="pdf-placeholder">
+                        <i class="fas fa-file-pdf"></i>
+                        <p>Cargando PDF...</p>
+                        <div class="loader"></div>
+                        <p>Si el PDF no se carga automáticamente, <a href="${url}" target="_blank">haz clic aquí</a></p>
+                    </div>
+                </div>
+            `;
+            
+            popup.classList.add('active');
+            
+            // Crear el iframe para el PDF después de un pequeño retraso para que se muestre el loader
+            setTimeout(() => {
+                popupContent.innerHTML = `
+                    <div class="pdf-container">
+                        <embed src="${url}#toolbar=0&navpanes=0" type="application/pdf" width="100%" height="100%">
+                        <p style="text-align: center; margin-top: 10px;">
+                            <a href="${url}" target="_blank" download>Descargar PDF</a>
+                        </p>
+                    </div>
+                `;
+            }, 500);
         }
         
         // Función para cerrar el popup

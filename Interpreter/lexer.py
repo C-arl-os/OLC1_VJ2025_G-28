@@ -1,4 +1,5 @@
 import ply.lex as lex
+from graphviz import Digraph
 import os
 # palabras reservadas
 reserved = {
@@ -145,6 +146,7 @@ def t_CARACTER(t):
             t.value = bytes(contenido, "utf-8").decode("unicode_escape")
         else:
             t.value = contenido
+        # print(f"Token CARACTER capturado: {repr(t.value)}")
     except Exception as e:
         print(f"Error al procesar carácter: {t.value} → {e}")
         t.value = '\u0000'  # Valor por defecto: carácter nulo
@@ -162,8 +164,13 @@ def t_CADENA(t):
 # manejo de asignacion de variables
 def t_ID(t):
     r'[a-zA-Z][a-zA-Z0-9_]*'
-    t.type = reserved.get(t.value.lower(), 'ID')
-    t.value = t.value.lower()
+    palabra = t.value
+    t.type = reserved.get(palabra.lower(), 'ID')
+    # Solo cambia a minúsculas palabra reservada
+    if t.type in reserved.values():
+        t.value = palabra.lower()
+    else:
+        t.value = palabra  # Mantén el valor original
     return t
     
 def t_newline(t):
@@ -481,6 +488,52 @@ def graficar_tabla_errores(errores_lexicos, errores_sintacticos, errores_semanti
     with open("Reportes/Tabla_de_Errores.html", "w", encoding="utf-8") as f:
         f.write("\n".join(html))
 
+def graficar_ast(arboles, output_path_pdf='Reportes/AST'):
+    dot = Digraph(comment='Árbol de Sintaxis Abstracta')
+    dot.attr(rankdir='TB')
+
+    contador = {'n': 0}
+
+    def agregar_nodo(dot, nodo, padre_id=None):
+        nodo_id = f"n{contador['n']}"
+        contador['n'] += 1
+
+        label = nodo.__class__.__name__
+        if hasattr(nodo, 'valor'):
+            label += f"\\n{nodo.valor}"
+        elif hasattr(nodo, 'nombre'):
+            label += f"\\n{nodo.nombre}"
+        elif hasattr(nodo, 'contenido'):
+            label += f"\\n{nodo.contenido}"
+
+        dot.node(nodo_id, label)
+
+        if padre_id:
+            dot.edge(padre_id, nodo_id)
+
+        if hasattr(nodo, 'hijos'):
+            for hijo in nodo.hijos:
+                if hijo:
+                    agregar_nodo(dot, hijo, nodo_id)
+        elif hasattr(nodo, '__dict__'):
+            for attr in nodo.__dict__.values():
+                if isinstance(attr, list):
+                    for item in attr:
+                        if hasattr(item, '__class__'):
+                            agregar_nodo(dot, item, nodo_id)
+                elif hasattr(attr, '__class__'):
+                    agregar_nodo(dot, attr, nodo_id)
+
+    for raiz in arboles:
+        agregar_nodo(dot, raiz)
+
+    # Asegura la carpeta destino
+    os.makedirs(os.path.dirname(output_path_pdf), exist_ok=True)
+
+    # === Guardar como PDF ===
+    dot.render(output_path_pdf, format='pdf', cleanup=True)
+    print(f"AST guardado como PDF en {output_path_pdf}.pdf")
+    
 def calcular_columna(lexpos, texto):
     # Calcula la columna a partir del lexpos
     ultima_linea = texto.rfind('\n', 0, lexpos)

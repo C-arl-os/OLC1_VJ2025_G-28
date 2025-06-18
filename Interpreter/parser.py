@@ -1,6 +1,6 @@
 import ply.yacc as yacc
 from lexer import tokens, errores_lexicos, calcular_columna
-from nodes.ast_nodes import Numero, Decimal, Boleano, Caracter, Cadena, Identificador, Asignacion, Suma, Resta, Multiplicacion, Division,Potencia,Modulo,Negativo, Println
+from nodes.ast_nodes import Numero, Decimal, Boleano, Caracter, Cadena, Identificador, Asignacion, Suma, Resta, Multiplicacion, Division,Potencia,Modulo,Negativo, Println, ErrorPrintln
 from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento, Instruccion,Instrucciones,While, Distinto, If, For
 from nodes.ast_nodes import OrLogicoNode, AndLogicoNode, NotLogicoNode, XorLogicoNode, DoWhile, Declaracion,Break, Continue
 from nodes.ast_nodes import Switch,Case,Default
@@ -174,9 +174,46 @@ def p_tipo(p):
   #  if not isinstance(p[3], (Cadena, Identificador)):
    #     raise Exception(f"Error semántico: println solo acepta variables o cadenas válidas")
     #p[0] = Println(p[3])
+
+def p_expresion_println(p):
+    'expresion : PRINTLN PARIZQ expresion PARDER PTCOMA'
+    
+    # Solo generar error para la palabra reservada 'print'
+    if isinstance(p[3], Identificador) and p[3].nombre == 'print':
+        p[0] = ErrorPrintln("print", "'print' en lugar de 'println'", p.lineno(1), p.lexpos(1))
+    else:
+        # Permitir tanto cadenas como identificadores (variables)
+        p[0] = Println(p[3])
+"""
 def p_expresion_println(p):
     'expresion : PRINTLN PARIZQ expresion PARDER'
-    p[0] = Println(p[3])
+    
+    # Validación de error: palabra reservada `print`
+    if isinstance(p[3], Identificador) and p[3].nombre == 'print':
+        p[0] = ErrorPrintln("print", "'print' en lugar de 'println'", p.lineno(1), p.lexpos(1))
+    
+    # Validación: identificador sin comillas
+    elif isinstance(p[3], Identificador):
+        p[0] = ErrorPrintln(p[3].nombre, "Faltan comillas ", p.lineno(1), p.lexpos(1))
+
+    # Validación: múltiples identificadores juntos
+    elif isinstance(p[3], list) and all(isinstance(e, Identificador) for e in p[3]):
+        p[0] = ErrorPrintln(" ".join(e.nombre for e in p[3]), "Multiple ID sin comillas", p.lineno(1), p.lexpos(1))
+
+    else:
+        p[0] = Println(p[3])
+"""
+
+def p_expresion_println_error(p):
+    'expresion : PRINTLN PARIZQ error PARDER'
+    errores_sintacticos.append({
+        'tipo': 'Sintáctico',
+        'descripcion': "Error de sintaxis en Println: argumento inválido.",
+        'linea': p.lineno(1),
+        'columna': p.lexpos(1)
+    })
+    p[0] = ErrorPrintln("error", "Sintaxis inválida dentro de println", p.lineno(1), p.lexpos(1))
+
 
 def p_declaracion_asignacion(p):
     'expresion : tipo ID ASIGNACION expresion PTCOMA'
@@ -284,6 +321,7 @@ def p_case(p):
 def p_case_default(p):
     'case_default : DEFAULT DOSPUNTOS lista_expresiones'
     p[0] = Default(p[3])
+# Aqui terminan...
 
 # Aqui terminan...
 

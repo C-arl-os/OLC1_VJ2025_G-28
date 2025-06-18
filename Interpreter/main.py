@@ -146,7 +146,7 @@ println(5561);
 # Parseamos la entrada
 from parser import parser, comentarios, errores_sintacticos
 from contexto import tabla_variables, salidas_de_impresion
-from lexer import lexer, errores_lexicos, graficar_tabla_tokens, graficar_tabla_errores
+from lexer import lexer, errores_lexicos, graficar_tabla_tokens, graficar_tabla_errores, graficar_ast
 
 def analizar_texto(texto):
     errores_semanticos = []
@@ -175,18 +175,24 @@ def analizar_texto(texto):
         
     
 
-    # === Parseo y construcción de lista de AST ===
+     # === Parseo y construcción de lista de AST ===
     arboles = []
     raiz = parser.parse(texto)
     if raiz is None:
         salida.append("\nError de sintaxis: No se pudo generar el árbol.")
-        return "\n".join(salida)
-    arboles = raiz if isinstance(raiz, list) else [raiz]
+        # NO retornes aquí, sigue para mostrar errores y lo que sí se pudo analizar
+        arboles = []
+    else:
+        arboles = raiz if isinstance(raiz, list) else [raiz]
 
     # === AST ===
     salida.append("\nAST:")
     for nodo in arboles:
         salida.append(str(nodo))
+
+    # === Graficar AST ===
+    graficar_ast(arboles, 'Reportes/AST')
+
 
     # === Interpretación + Errores Semánticos ===
     for nodo in arboles:

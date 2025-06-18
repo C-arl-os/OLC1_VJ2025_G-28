@@ -148,7 +148,9 @@ class Multiplicacion(Expresion):
 
         # Clasificar tipo
         def tipo(val):
-            if isinstance(val, int):
+            if isinstance(val, bool):
+                return "Booleano"
+            elif isinstance(val, int):
                 return "Entero"
             elif isinstance(val, float):
                 return "Decimal"
@@ -199,8 +201,10 @@ class Division(Expresion):
 
         # Clasificación de tipo
         def tipo(val):
-            if isinstance(val, int):
-                return "Entero"
+            if isinstance(val, bool):
+                return "Booleano"
+            elif isinstance(val, int):
+                return "Entero"            
             elif isinstance(val, float):
                 return "Decimal"
             elif isinstance(val, str) and len(val) == 1:
@@ -263,6 +267,8 @@ class Potencia(Expresion):
                 return "Decimal"
             elif isinstance(val, str) and len(val) == 1:
                 return "Carácter"
+            elif isinstance(val, str) and not (len(val) == 1):
+                return "Cadena"
             return "Desconocido"
 
         t_base = tipo(base_val)
@@ -352,7 +358,27 @@ class Negativo(Expresion):
         self.expresion = expresion
 
     def interpret(self):
-        return -self.expresion.interpret()
+        valor = self.expresion.interpret()
+        # Verifica tipo
+        if isinstance(valor, bool):
+            tipo = "Booleano"
+        elif isinstance(valor, int):
+            tipo = "Entero"
+        elif isinstance(valor, float):
+            tipo = "Decimal"
+        elif isinstance(valor, str):
+            if len(valor) == 1:
+                tipo = "Caracter"
+            else: 
+                tipo = "Cadena"
+        else:
+            tipo = "Desconocido"
+
+        if tipo not in ("Entero", "Decimal"):
+            print(f"Error: No se puede aplicar negación a tipo {tipo}")
+            raise Exception(f"Error: No se puede aplicar negación a tipo {tipo}")
+
+        return -valor
 
     def __str__(self):
         return f"-({self.expresion})"
@@ -376,6 +402,12 @@ class Decimal(Expresion):
 class Caracter(Expresion):
     def __init__(self, valor):
         self.valor = valor
+        # Si el valor ya es un solo carácter, conviértelo a su código ASCII
+        # if isinstance(valor, str) and len(valor) == 1:
+        #     self.valor = ord(valor)
+        # else:
+        #     # Si por alguna razón no es un carácter válido, puedes manejarlo aquí
+        #     self.valor = valor
 
     def interpret(self):
         return self.valor  
@@ -504,6 +536,25 @@ class Println(Expresion):
 
     def __repr__(self):
         return f"Println({self.expresion!r})"
+    
+class ErrorPrintln(Expresion):
+    def __init__(self, contenido, mensaje, linea=None, columna=None):
+        self.contenido = contenido
+        self.mensaje = mensaje
+        self.linea = linea
+        self.columna = columna
+
+    def interpret(self):
+        raise Exception(
+            f"Error en println: {self.mensaje} -> '{self.contenido}'"
+        )
+
+    def __str__(self):
+        return f"ErrorPrintln({self.mensaje}: {self.contenido})"
+
+    def __repr__(self):
+        return str(self)
+
 #operadores
 # ...existing code...
 
@@ -742,7 +793,6 @@ class Instrucciones(Expresion):
 
     def __str__(self):
         return "\n".join(str(instr) for instr in self.instrucciones)
-
 
 class While(Expresion):
     _contador = 0
