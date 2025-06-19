@@ -64,7 +64,8 @@ tokens = (
     'NOT_LOGICO',  # !
     'XOR_LOGICO',  # ^
     'DO',
-    'DOSPUNTOS'
+    'DOSPUNTOS',
+    'COMENTARIO_MALFORMADO' 
 ) + tuple(reserved.values())
 # Tokens
 
@@ -176,17 +177,39 @@ def t_ID(t):
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
+    
+def t_COMENTARIO_MALFORMADO(t):
+    r'/[^*/\s][^\n\s]*'  # '/' seguido de texto que no sea '*' o '/' o espacios
+    data = t.lexer.lexdata
+    col = data.rfind('\n', 0, t.lexpos)
+    col = t.lexpos - col
+    
+    errores_lexicos.append({
+        'tipo': 'Léxico',
+        'descripcion': f"Comentario malformado: '{t.value}'",
+        'linea': t.lineno,
+        'columna': col
+    })
+    # No retornar token, solo registrar el error y continuar
+    pass
 
 def t_error(t):
     # calculamos columna desde t.lexpos y t.lexer.lexdata
     data = t.lexer.lexdata
     col = data.rfind('\n', 0, t.lexpos)
     col = t.lexpos - col
+    
+    # Filtrar caracteres no ASCII problemáticos
+    char = t.value[0]
+    if ord(char) == 0xa0:  # Espacio no-ASCII
+        t.lexer.skip(1)
+        return
+    
     errores_lexicos.append({
-        'tipo':'Léxico',
-        'descripcion':f"Caracter inesperado {t.value[0]!r}",
-        'linea':t.lineno,
-        'columna':col
+        'tipo': 'Léxico',
+        'descripcion': f"Caracter inesperado {char!r}",
+        'linea': t.lineno,
+        'columna': col
     })
     t.lexer.skip(1)
 

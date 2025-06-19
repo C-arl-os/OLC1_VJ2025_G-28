@@ -450,6 +450,19 @@ class Boleano(Expresion):
     def __repr__(self):
         return f"Boleano({self.valor})"
 
+'''class Boleano(Expresion):
+    def __init__(self, valor):  # valor puede ser 'true' o 'false' como string
+        self.valor = valor  # por si lo escribes en mayúsculas
+
+    def interpret(self):
+        return True if self.valor == 'true' else False
+
+    def __str__(self):
+        return "true" if self.valor == 'true' else "false"
+
+    def __repr__(self):
+        return f"Boleano({self.valor})"'''
+
 class Identificador(Expresion):
     def __init__(self, nombre):
         self.nombre = nombre
@@ -575,11 +588,11 @@ class Relacional(Expresion):
         der = self.derecha.interpret()
 
         def tipo(val):
-            if isinstance(val, bool):
+            if type(val) is bool:
                 return "Booleano"
-            elif isinstance(val, int):
+            elif type(val) is int:
                 return "Entero"
-            elif isinstance(val, float):
+            elif type(val) is float:
                 return "Decimal"
             elif isinstance(val, str):
                 if len(val) == 1:
@@ -682,22 +695,70 @@ class Decremento(Expresion):
 class OrLogicoNode:
     def __init__(self, izquierda, derecha):
         self.izquierda = izquierda
-        self. derecha = derecha
-
-    def interpret(self):
-        return bool(self.izquierda.interpret()) or bool(self.derecha.interpret())
-    
-    def __repr__(self):
-        return f'({self.izquierda} || {self.derecha})'   
-
-class AndLogicoNode:
-    def __init__(self, izquierda, derecha):
-        self. izquierda = izquierda
         self.derecha = derecha
 
     def interpret(self):
-        return bool(self.izquierda.interpret()) and bool(self.derecha.interpret())
-    
+        izq = self.izquierda.interpret()
+        der = self.derecha.interpret()
+
+        def tipo(val):
+            if type(val) is bool:
+                return "Booleano"
+            elif type(val) is int:
+                return "Entero"
+            elif type(val) is float:
+                return "Decimal"
+            elif isinstance(val, str):
+                if len(val) == 1:
+                    return "Carácter"
+                else:
+                    return "Cadena"
+            return "Desconocido"
+
+        t_izq = tipo(izq)
+        t_der = tipo(der)
+
+        if t_izq != "Booleano" or t_der != "Booleano":
+            print(f"Error: Operación lógica '||' solo válida entre booleanos → {t_izq} || {t_der}")
+            raise Exception(f"Error: Operación lógica '||' solo válida entre booleanos → {t_izq} || {t_der}")
+
+        return izq or der
+
+    def __repr__(self):
+        return f'({self.izquierda} || {self.derecha})'
+
+class AndLogicoNode:
+    def __init__(self, izquierda, derecha):
+        self.izquierda = izquierda
+        self.derecha = derecha
+
+    def interpret(self):
+        izq = self.izquierda.interpret()
+        der = self.derecha.interpret()
+
+        def tipo(val):
+            if type(val) is bool:
+                return "Booleano"
+            elif type(val) is int:
+                return "Entero"
+            elif type(val) is float:
+                return "Decimal"
+            elif isinstance(val, str):
+                if len(val) == 1:
+                    return "Carácter"
+                else:
+                    return "Cadena"
+            return "Desconocido"
+
+        t_izq = tipo(izq)
+        t_der = tipo(der)
+
+        if t_izq != "Booleano" or t_der != "Booleano":
+            print(f"Error: Operación lógica '&&' solo válida entre booleanos → {t_izq} && {t_der}")
+            raise Exception(f"Error: Operación lógica '&&' solo válida entre booleanos → {t_izq} && {t_der}")
+
+        return izq and der
+
     def __str__(self):
         return f"({self.izquierda} && {self.derecha})"
 
@@ -706,21 +767,67 @@ class NotLogicoNode:
         self.expr = expr
 
     def interpret(self):
-        return not self.expr.interpret()
-    
+        val = self.expr.interpret()
+
+        def tipo(val):
+            if type(val) is bool:
+                return "Booleano"
+            elif type(val) is int:
+                return "Entero"
+            elif type(val) is float:
+                return "Decimal"
+            elif isinstance(val, str):
+                if len(val) == 1:
+                    return "Carácter"
+                else:
+                    return "Cadena"
+            return "Desconocido"
+
+        t_val = tipo(val)
+
+        if t_val != "Booleano":
+            print(f"Error: Operación lógica '!' solo válida sobre booleano → !{t_val}")
+            raise Exception(f"Error: Operación lógica '!' solo válida sobre booleano → !{t_val}")
+
+        return not val
+
     def __str__(self):
         return f"(!{self.expr})"
 
 class XorLogicoNode:
     def __init__(self, izquierda, derecha):
-        self. izquierda = izquierda
-        self. derecha = derecha
+        self.izquierda = izquierda
+        self.derecha = derecha
 
     def interpret(self):
-        return bool(self.izquierda.interpret()) ^ bool(self.derecha.interpret())
-    
+        izq = self.izquierda.interpret()
+        der = self.derecha.interpret()
+
+        def tipo(val):
+            if type(val) is bool:
+                return "Booleano"
+            elif type(val) is int:
+                return "Entero"
+            elif type(val) is float:
+                return "Decimal"
+            elif isinstance(val, str):
+                if len(val) == 1:
+                    return "Carácter"
+                else:
+                    return "Cadena"
+            return "Desconocido"
+
+        t_izq = tipo(izq)
+        t_der = tipo(der)
+
+        if t_izq != "Booleano" or t_der != "Booleano":
+            print(f"Error: Operación lógica '^' solo válida entre booleanos → {t_izq} ^ {t_der}")
+            raise Exception(f"Error: Operación lógica '^' solo válida entre booleanos → {t_izq} ^ {t_der}")
+
+        return izq ^ der
+
     def __str__(self):
-        return f"({self. izquierda} ^ {self.derecha})"
+        return f"({self.izquierda} ^ {self.derecha})"
 
 #Ciclo while 
 

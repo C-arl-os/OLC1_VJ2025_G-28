@@ -355,7 +355,50 @@ def p_case_default(p):
     'case_default : DEFAULT DOSPUNTOS lista_expresiones'
     p[0] = Default(p[3])
 # Aqui terminan...
+# Reglas para manejar bloques vacíos - agregar antes de p_error
 
+# IF con bloque vacío
+def p_expresion_if_vacio(p):
+    'expresion : IF PARIZQ expresion PARDER LLAVE_IZQ LLAVE_DER'
+    # Bloque vacío = solo continue
+    p[0] = If(p[3], Continue())
+
+# WHILE con bloque vacío
+def p_expresion_while_vacio(p):
+    'expresion : WHILE PARIZQ expresion PARDER LLAVE_IZQ LLAVE_DER'
+    p[0] = While(p[3], Continue())
+
+# FOR con bloque vacío (con tipo)
+def p_expresion_for_con_tipo_vacio(p):
+    '''expresion : FOR PARIZQ tipo ID ASIGNACION expresion PTCOMA expresion PTCOMA expresion PARDER LLAVE_IZQ LLAVE_DER'''
+    asignacion = Asignacion(p[3], p[4], p[6])
+    p[0] = For(asignacion, p[8], p[10], Continue())
+
+# FOR con bloque vacío (sin tipo)
+def p_expresion_for_sin_tipo_vacio(p):
+    '''expresion : FOR PARIZQ ID ASIGNACION expresion PTCOMA expresion PTCOMA expresion PARDER LLAVE_IZQ LLAVE_DER'''
+    asignacion = Asignacion(None, p[3], p[5])
+    p[0] = For(asignacion, p[7], p[9], Continue())
+
+# DO-WHILE con bloque vacío
+def p_expresion_do_while_vacio(p):
+    'expresion : DO LLAVE_IZQ LLAVE_DER WHILE PARIZQ expresion PARDER PTCOMA'
+    p[0] = DoWhile(Continue(), p[6])
+
+# IF-ELSE con bloque SI vacío
+def p_expresion_if_else_vacio_si(p):
+    'expresion : IF PARIZQ expresion PARDER LLAVE_IZQ LLAVE_DER ELSE LLAVE_IZQ lista_expresiones LLAVE_DER'
+    p[0] = If(p[3], Continue(), p[9])
+
+# IF-ELSE con bloque ELSE vacío
+def p_expresion_if_else_vacio_else(p):
+    'expresion : IF PARIZQ expresion PARDER LLAVE_IZQ lista_expresiones LLAVE_DER ELSE LLAVE_IZQ LLAVE_DER'
+    p[0] = If(p[3], p[6], Continue())
+
+# Lista de expresiones vacía (para casos donde se necesite)
+def p_lista_expresiones_vacia(p):
+    '''lista_expresiones : '''
+    p[0] = Continue()
 # Aqui terminan...
 
 def p_error(p):
