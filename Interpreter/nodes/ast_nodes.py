@@ -1179,3 +1179,236 @@ class Default(Expresion):
     def __repr__(self):
         return f"Default(instrucciones={self.instrucciones!r})"
 # Aqui terminan las Clases para la Sentencia Switch.
+
+# ...existing code...
+
+class Vector(Expresion):
+    def __init__(self, tipo, identificador, dimensiones, valores=None, linea=None, columna=None):
+        self.tipo = tipo
+        self.identificador = identificador
+        self.dimensiones = dimensiones  # Lista de enteros [2, 2] para 2x2
+        self.valores = valores  # Lista anidada de valores [[1,2],[1,5]]
+        self.linea = linea
+        self.columna = columna
+
+    def interpret(self):
+        # Verificar si la variable ya está declarada
+        if self.identificador in tabla_variables:
+            raise Exception(f"Error semántico: Vector '{self.identificador}' ya ha sido declarado.")
+
+        # Validar dimensiones
+        for dim in self.dimensiones:
+            if not isinstance(dim, int) or dim <= 0:
+                raise Exception(f"Error: Las dimensiones del vector deben ser números enteros positivos")
+
+        # Crear estructura del vector
+        if self.valores is None:
+            # Solo declaración, inicializar con valores por defecto
+            vector_data = self._crear_vector_vacio(self.dimensiones, self.tipo)
+        else:
+            # Declaración con inicialización
+            vector_data = self._validar_y_crear_vector(self.valores, self.dimensiones, self.tipo)
+
+        # Guardar en la tabla de variables con metadatos
+        tabla_variables[self.identificador] = {
+            'tipo': 'vector',
+            'subtipo': self.tipo,
+            'dimensiones': self.dimensiones,
+            'data': vector_data
+        }
+
+        return f"Vector[{self.tipo}] {self.identificador} declarado."
+
+    def _crear_vector_vacio(self, dimensiones, tipo):
+        """Crea un vector vacío con valores por defecto según el tipo"""
+        if len(dimensiones) == 1:
+            if tipo == "int":
+                return [0] * dimensiones[0]
+            elif tipo == "float":
+                return [0.0] * dimensiones[0]
+            elif tipo == "char":
+                return ['\0'] * dimensiones[0]
+            elif tipo == "string":
+                return [""] * dimensiones[0]
+            elif tipo == "bool":
+                return [False] * dimensiones[0]
+        else:
+            return [self._crear_vector_vacio(dimensiones[1:], tipo) for _ in range(dimensiones[0])]
+
+    def _validar_y_crear_vector(self, valores, dimensiones, tipo):
+        """Valida y crea el vector con los valores proporcionados"""
+        if len(dimensiones) == 1:
+            # Vector unidimensional
+            if len(valores) != dimensiones[0]:
+                raise Exception(f"Error: Se esperaban {dimensiones[0]} elementos, se recibieron {len(valores)}")
+            
+            vector_data = []
+            for valor in valores:
+                valor_interpretado = valor.interpret() if hasattr(valor, 'interpret') else valor
+                vector_data.append(self._validar_tipo(valor_interpretado, tipo))
+            return vector_data
+        else:
+            # Vector multidimensional
+            if len(valores) != dimensiones[0]:
+                raise Exception(f"Error: Se esperaban {dimensiones[0]} filas, se recibieron {len(valores)}")
+            
+            vector_data = []
+            for fila in valores:
+                if not isinstance(fila, list):
+                    raise Exception(f"Error: Se esperaba una lista para la fila del vector multidimensional")
+                vector_data.append(self._validar_y_crear_vector(fila, dimensiones[1:], tipo))
+            return vector_data
+
+    def _validar_tipo(self, valor, tipo_esperado):
+        """Valida que el valor sea del tipo correcto"""
+        def obtener_tipo(val):
+            if isinstance(val, bool):
+                return "bool"
+            elif isinstance(val, int):
+                return "int"
+            elif isinstance(val, float):
+                return "float"
+            elif isinstance(val, str):
+                if len(val) == 1:
+                    return "char"
+                return "string"
+            return "desconocido"
+
+        tipo_actual = obtener_tipo(valor)
+        
+        if tipo_esperado == tipo_actual:
+            return valor
+        elif tipo_esperado == "float" and tipo_actual == "int":
+            return float(valor)
+        else:
+            raise Exception(f"Error: Tipo incompatible. Se esperaba {tipo_esperado}, se recibió {tipo_actual}")
+
+    def __str__(self):
+        dimensiones_str = ",".join(map(str, self.dimensiones))
+        if self.valores:
+            return f"Vector[{self.tipo}] {self.identificador}({dimensiones_str}) = {self.valores}"
+        else:
+            return f"Vector[{self.tipo}] {self.identificador}({dimensiones_str});"
+
+    def __repr__(self):
+        return f"Vector(tipo={self.tipo!r}, identificador={self.identificador!r}, dimensiones={self.dimensiones!r}, valores={self.valores!r})"
+
+class AccesoVector(Expresion):
+    def __init__(self, identificador, indices):
+        self.identificador = identificador
+        self.indices = indices  # Lista de expresiones que representan los índices
+
+    def interpret(self):
+        if self.identificador not in tabla_variables:
+            raise Exception(f"Error: Vector '{self.identificador}' no ha sido declarado")
+
+        vector_info = tabla_variables[self.identificador]
+        if vector_info['tipo'] != 'vector':
+            raise Exception(f"Error: '{self.identificador}' no es un vector")
+
+        # Interpretar índices
+        indices_interpretados = []
+        for indice in self.indices:
+            valor_indice = indice.interpret()
+            if not isinstance(valor_indice, int):
+                raise Exception(f"Error: Los índices del vector deben ser números enteros")
+            if valor_indice < 0:
+                raise Exception(f"Error: Los índices del vector no pueden ser negativos")
+            indices_interpretados.append(valor_indice)
+
+        # Validar número de dimensiones
+        if len(indices_interpretados) != len(vector_info['dimensiones']):
+            raise Exception(f"Error: Se esperaban {len(vector_info['dimensiones'])} índices, se recibieron {len(indices_interpretados)}")
+
+        # Acceder al elemento
+        data = vector_info['data']
+        for i, indice in enumerate(indices_interpretados):
+            if indice >= vector_info['dimensiones'][i]:
+                raise Exception(f"Error: Índice {indice} fuera de rango para la dimensión {i+1} (tamaño: {vector_info['dimensiones'][i]})")
+            data = data[indice]
+
+        return data
+
+    def __str__(self):
+        indices_str = "][".join(str(indice) for indice in self.indices)
+        return f"{self.identificador}[{indices_str}]"
+
+    def __repr__(self):
+        return f"AccesoVector(identificador={self.identificador!r}, indices={self.indices!r})"
+
+class AsignacionVector(Expresion):
+    def __init__(self, identificador, indices, valor):
+        self.identificador = identificador
+        self.indices = indices
+        self.valor = valor
+
+    def interpret(self):
+        if self.identificador not in tabla_variables:
+            raise Exception(f"Error: Vector '{self.identificador}' no ha sido declarado")
+
+        vector_info = tabla_variables[self.identificador]
+        if vector_info['tipo'] != 'vector':
+            raise Exception(f"Error: '{self.identificador}' no es un vector")
+
+        # Interpretar índices
+        indices_interpretados = []
+        for indice in self.indices:
+            valor_indice = indice.interpret()
+            if not isinstance(valor_indice, int):
+                raise Exception(f"Error: Los índices del vector deben ser números enteros")
+            if valor_indice < 0:
+                raise Exception(f"Error: Los índices del vector no pueden ser negativos")
+            indices_interpretados.append(valor_indice)
+
+        # Validar número de dimensiones
+        if len(indices_interpretados) != len(vector_info['dimensiones']):
+            raise Exception(f"Error: Se esperaban {len(vector_info['dimensiones'])} índices, se recibieron {len(indices_interpretados)}")
+
+        # Interpretar valor a asignar
+        valor_interpretado = self.valor.interpret()
+
+        # Validar tipo
+        tipo_esperado = vector_info['subtipo']
+        def obtener_tipo(val):
+            if isinstance(val, bool):
+                return "bool"
+            elif isinstance(val, int):
+                return "int"
+            elif isinstance(val, float):
+                return "float"
+            elif isinstance(val, str):
+                if len(val) == 1:
+                    return "char"
+                return "string"
+            return "desconocido"
+
+        tipo_actual = obtener_tipo(valor_interpretado)
+        if tipo_esperado != tipo_actual and not (tipo_esperado == "float" and tipo_actual == "int"):
+            raise Exception(f"Error: Tipo incompatible. Se esperaba {tipo_esperado}, se recibió {tipo_actual}")
+
+        if tipo_esperado == "float" and tipo_actual == "int":
+            valor_interpretado = float(valor_interpretado)
+
+        # Navegar hasta el elemento y asignar
+        data = vector_info['data']
+        for i, indice in enumerate(indices_interpretados[:-1]):
+            if indice >= vector_info['dimensiones'][i]:
+                raise Exception(f"Error: Índice {indice} fuera de rango para la dimensión {i+1}")
+            data = data[indice]
+
+        # Asignar el último índice
+        ultimo_indice = indices_interpretados[-1]
+        if ultimo_indice >= vector_info['dimensiones'][-1]:
+            raise Exception(f"Error: Índice {ultimo_indice} fuera de rango para la última dimensión")
+        
+        data[ultimo_indice] = valor_interpretado
+        return valor_interpretado
+
+    def __str__(self):
+        indices_str = "][".join(str(indice) for indice in self.indices)
+        return f"{self.identificador}[{indices_str}] = {self.valor}"
+
+    def __repr__(self):
+        return f"AsignacionVector(identificador={self.identificador!r}, indices={self.indices!r}, valor={self.valor!r})"
+
+# ...existing code...

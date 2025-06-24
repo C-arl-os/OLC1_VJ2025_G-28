@@ -21,7 +21,8 @@ reserved = {
     'continue': 'CONTINUE', 
     'switch': 'SWITCH',
     'case': 'CASE',
-    'default': 'DEFAULT'
+    'default': 'DEFAULT',
+    'vector': 'VECTOR'  # Nuevo token para Vector
 }
 
 # Lista de nombres de tokens
@@ -65,7 +66,8 @@ tokens = (
     'XOR_LOGICO',  # ^
     'DO',
     'DOSPUNTOS',
-    'COMENTARIO_MALFORMADO' 
+    'COMENTARIO_MALFORMADO',
+    'COMA'  # Nueva coma para separar elementos
 ) + tuple(reserved.values())
 # Tokens
 
@@ -104,12 +106,14 @@ t_LLAVE_DER = r'\}'
 # Ignorar espacios y tabulaciones
 t_ignore = ' \t\r'
 #ciclo while
-t_CORDER = r']'
-t_CORIZQ = r'\['
+t_CORIZQ = r'\['  # Cambiar orden
+t_CORDER = r'\]'
 t_IGUAL = r'='
 t_MAYORQ = r'>'
 t_PTC = r';'
 t_DOSPUNTOS = r':'
+#matriz 
+t_COMA = r','
 # lista global de errores
 errores_lexicos = []
 

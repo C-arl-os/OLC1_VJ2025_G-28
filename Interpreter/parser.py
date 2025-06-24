@@ -5,6 +5,8 @@ from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,In
 from nodes.ast_nodes import OrLogicoNode, AndLogicoNode, NotLogicoNode, XorLogicoNode, DoWhile, Declaracion,Break, Continue
 from nodes.ast_nodes import Switch,Case,Default
 
+from nodes.ast_nodes import Vector, AccesoVector, AsignacionVector
+
 comentarios = []
 errores_sintacticos = []
 # Precedencia
@@ -13,11 +15,12 @@ precedence = (
     ('left', 'OR_LOGICO'),  
     ('left', 'AND_LOGICO'),  
     ('left', 'XOR_LOGICO'),  
-    ('left', 'GE', 'LE', 'LT', 'GT', 'EQ'),  # Comparaciones
+    ('left', 'GE', 'LE', 'LT', 'GT', 'EQ', 'NE'),   # Comparaciones
     ('left', 'MAS', 'MENOS'),
     ('left', 'POR', 'DIVIDIDO', 'MODULO'),
     ('right', 'POTENCIA'),
     ('right', 'UMINUS'),
+    ('left', 'CORIZQ', 'CORDER'),
 )
 
 # Regla para expresiones simples
@@ -44,6 +47,9 @@ def p_lista_expresiones_sin_punto(p):
     'lista_expresiones : lista_expresiones expresion'
     # lista previa + expresión final SIN ;
     p[0] = Instrucciones(p[2], p[1])
+#Matriz 
+
+
 #ciclo while 
 
 
@@ -400,28 +406,74 @@ def p_lista_expresiones_vacia(p):
     '''lista_expresiones : '''
     p[0] = Continue()
 # Aqui terminan...
+def p_expresion_vector_declaracion(p):
+    'expresion : VECTOR CORIZQ tipo CORDER ID PARIZQ lista_dimensiones PARDER PTCOMA'
+    p[0] = Vector(p[3], p[5], p[7])
 
-def p_error(p):
-    if p:
-        errores_sintacticos.append({
-            'tipo':'Sintáctico',
-            'descripcion':f"Token inesperado '{p.value}'",
-            'linea':p.lineno,
-            'columna':p.lexpos  # o calcula columna como en el lexer
-        })
-        # panic‐mode: descartar hasta ; o }
-        while True:
-            tok = parser.token()
-            if not tok or tok.type in ('PTCOMA','LLAVE_DER'):
-                break
-        p.errok()
+# Declaración de vector con inicialización
+def p_expresion_vector_declaracion_inicializacion(p):
+    'expresion : VECTOR CORIZQ tipo CORDER ID PARIZQ lista_dimensiones PARDER ASIGNACION lista_valores PTCOMA'
+    p[0] = Vector(p[3], p[5], p[7], p[10])
+
+# Lista de dimensiones (números separados por comas)
+def p_lista_dimensiones_multiple(p):
+    'lista_dimensiones : lista_dimensiones COMA ENTERO'
+    p[0] = p[1] + [p[3]]
+
+def p_lista_dimensiones_unica(p):
+    'lista_dimensiones : ENTERO'
+    p[0] = [p[1]]
+
+# Para la inicialización de vectores multidimensionales, necesitamos ajustar las reglas
+def p_lista_valores_multiple(p):
+    'lista_valores : lista_valores COMA fila_vector'
+    p[0] = p[1] + [p[3]]
+
+def p_lista_valores_unica(p):
+    'lista_valores : fila_vector'
+    p[0] = [p[1]]
+
+def p_fila_vector(p):
+    'fila_vector : CORIZQ lista_elementos CORDER'
+    p[0] = p[2]
+
+def p_lista_elementos_multiple(p):
+    'lista_elementos : lista_elementos COMA expresion'
+    p[0] = p[1] + [p[3]]
+
+def p_lista_elementos_unica(p):
+    'lista_elementos : expresion'
+    p[0] = [p[1]]
+
+# Acceso a elementos de vector - necesita prioridad más baja
+def p_expresion_acceso_vector(p):
+    'expresion : ID lista_indices'
+    # Solo aplicar si realmente hay índices y no es una variable normal
+    if len(p[2]) > 0:
+        p[0] = AccesoVector(p[1], p[2])
     else:
-        errores_sintacticos.append({
-            'tipo':'Sintáctico',
-            'descripcion':'EOF inesperado',
-            'linea':-1,'columna':-1
-        })
+        p[0] = Identificador(p[1])
 
+# Asignación a elementos de vector
+def p_expresion_asignacion_vector(p):
+    'expresion : ID lista_indices ASIGNACION expresion PTCOMA'
+    p[0] = AsignacionVector(p[1], p[2], p[4])
+
+# Lista de índices
+def p_lista_indices_multiple(p):
+    'lista_indices : lista_indices CORIZQ expresion CORDER'
+    p[0] = p[1] + [p[3]]
+
+def p_lista_indices_unica(p):
+    'lista_indices : CORIZQ expresion CORDER'
+    p[0] = [p[2]]
+
+# Regla para lista_indices vacía (para evitar conflictos)
+def p_lista_indices_vacia(p):
+    'lista_indices : '
+    p[0] = []
+
+# Eliminar la función p_error duplicada y mantener solo esta versión:
 def p_error(p):
     if p:
         errores_sintacticos.append({
@@ -430,15 +482,12 @@ def p_error(p):
             'linea': p.lineno,
             'columna': p.lexpos
         })
-        # Panic‐mode: descartar hasta ; o }
+        # Panic-mode: descartar hasta ; o }
         while True:
             tok = parser.token()
             if not tok or tok.type in ('PTCOMA','LLAVE_DER'):
                 break
-        # Reactivar el parser (ya no p.errok())
         parser.errok()
-        # opcionalmente devolvemos el token de sincronización
-        return tok
     else:
         errores_sintacticos.append({
             'tipo': 'Sintáctico',

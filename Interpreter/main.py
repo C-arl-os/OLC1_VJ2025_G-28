@@ -1,4 +1,28 @@
 '''
+Vector[int] vec_ejemplo (2,2);
+vec_ejemplo[0][0] = 1;
+vec_ejemplo[1][0] = 2;
+vec_ejemplo[0][1] = 1;
+
+println(vec_ejemplo[1][1]);
+
+// Declaración simple
+Vector[int] vec1(5);
+
+// Declaración con inicialización unidimensional
+Vector[int] vec2(3) = [1, 2, 3];
+
+// Declaración con inicialización bidimensional
+Vector[int] matriz(2,2) = [1,2],[3,4];
+
+// Acceso a elementos
+println(matriz[0][0]); // Imprime 1
+println(matriz[1][1]); // Imprime 4
+
+// Asignación a elementos
+matriz[0][1] = 10;
+println(matriz[0][1]); // Imprime 10
+
 println("Igual");
 int e = 3;
 do {
