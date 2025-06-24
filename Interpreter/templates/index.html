@@ -74,14 +74,6 @@
             background-color: #5a6268;
         }
 
-        button.ast-btn {
-            background-color: #28a745;
-        }
-
-        button.ast-btn:hover {
-            background-color: #218838;
-        }
-
         pre {
             background-color: #f0f0f0;
             padding: 15px;
@@ -210,9 +202,10 @@
             <div class="button-container">
                 <button type="submit">Analizar</button>
                 <div class="report-buttons">
-                    <button type="button" class="report-btn" onclick="mostrarPopup('Tabla de Errores', '/reportes/Tabla_de_Errores.html')">Ver Errores</button>
                     <button type="button" class="report-btn" onclick="mostrarPopup('Tabla de Tokens', '/reportes/Tabla_de_Tokens.html')">Ver Tokens</button>
-                    <button type="button" class="ast-btn" onclick="mostrarPDF('Árbol de Sintaxis Abstracta (AST)', '/reportes/AST.pdf')">Ver AST</button>
+                    <button type="button" class="report-btn" onclick="mostrarPopup('Tabla de Variables', '/reportes/Tabla_de_Variables.html')">Ver Variables</button>
+                    <button type="button" class="report-btn" onclick="mostrarPopup('Tabla de Errores', '/reportes/Tabla_de_Errores.html')">Ver Errores</button>
+                    <button type="button" class="report-btn" onclick="mostrarPDF('Árbol de Sintaxis Abstracta (AST)', '/reportes/AST.pdf')">Ver AST</button>
                 </div>
             </div>
         </form>

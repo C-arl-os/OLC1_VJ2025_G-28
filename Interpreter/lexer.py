@@ -22,7 +22,10 @@ reserved = {
     'switch': 'SWITCH',
     'case': 'CASE',
     'default': 'DEFAULT',
-    'vector': 'VECTOR'  # Nuevo token para Vector
+    'vector': 'VECTOR',  # Nuevo token para Vector
+    'seno': 'SENO',
+    'coseno': 'COSENO',
+    'inv': 'INV'
 }
 
 # Lista de nombres de tokens
@@ -389,6 +392,99 @@ def graficar_tabla_tokens(codigo_fuente):
     with open("Reportes/Tabla_de_Tokens.html", "w", encoding="utf-8") as f:
         f.write("\n".join(html))
 
+def graficar_tabla_variables(tabla_variables):
+    html = []
+    html.append("<!DOCTYPE html>")
+    html.append("<html lang='es'>")
+    html.append("<head>")
+    html.append("<meta charset='UTF-8'>")
+    html.append("<title>Tabla de Variables</title>")
+    html.append("<style>")
+    html.append("""
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 20px;
+    }
+    h2 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 28px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    .container {
+        max-width: 700px;
+        margin: 0 auto;
+        overflow-x: auto;
+    }
+    table {
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    th {
+        background: linear-gradient(135deg, #27ae60, #16a085);
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+        position: sticky;
+        top: 0;
+    }
+    tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+    tr:hover {
+        background-color: #eafaf1;
+        transform: scale(1.01);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    td {
+        color: #34495e;
+    }
+    @media (max-width: 768px) {
+        table {
+            border-radius: 5px;
+        }
+        th, td {
+            padding: 8px 10px;
+        }
+    }
+    """)
+    html.append("</style>")
+    html.append("</head>")
+    html.append("<body>")
+    html.append("<div class='container'>")
+    html.append("<h2>Tabla de Variables</h2>")
+    html.append("<table>")
+    html.append("<thead><tr><th>Variable</th><th>Valor</th></tr></thead>")
+    html.append("<tbody>")
+
+    for var, val in tabla_variables.items():
+        html.append(f"<tr><td>{var}</td><td>{val}</td></tr>")
+
+    html.append("</tbody></table>")
+    html.append("</div>")
+    html.append("</body>")
+    html.append("</html>")
+
+    os.makedirs("Reportes", exist_ok=True)
+    with open("Reportes/Tabla_de_Variables.html", "w", encoding="utf-8") as f:
+        f.write("\n".join(html))
+
 def graficar_tabla_errores(errores_lexicos, errores_sintacticos, errores_semanticos):
     html = []
     html.append("<!DOCTYPE html>")
@@ -559,7 +655,6 @@ def graficar_ast(arboles, output_path_pdf='Reportes/AST'):
 
     # === Guardar como PDF ===
     dot.render(output_path_pdf, format='pdf', cleanup=True)
-    print(f"AST guardado como PDF en {output_path_pdf}.pdf")
     
 def calcular_columna(lexpos, texto):
     # Calcula la columna a partir del lexpos

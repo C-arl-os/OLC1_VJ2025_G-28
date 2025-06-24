@@ -2,6 +2,7 @@ from contexto import tabla_variables
 from .Nodo import Expresion
 from contexto import tabla_variables, salidas_de_impresion
 from tabla_simbolos.instancia import symbol_table as st
+import math
 
 
 class Numero(Expresion):
@@ -307,6 +308,60 @@ class Potencia(Expresion):
     def __repr__(self):
         return f"Potencia({self.base!r}, {self.exponente!r})"
 
+class Seno(Expresion):
+    def __init__(self, expresion):
+        self.expresion = expresion
+
+    def interpret(self):
+        valor = self.expresion.interpret()
+        # Solo acepta int o float
+        if not isinstance(valor, (int, float)):
+            raise Exception(f"Error: El argumento de seno debe ser un número, se recibió {type(valor).__name__}")
+        return math.sin(valor)
+
+    def __str__(self):
+        return f"sin({self.expresion})"
+
+    def __repr__(self):
+        return f"Seno({self.expresion!r})"
+
+class Coseno(Expresion):
+    def __init__(self, expresion):
+        self.expresion = expresion
+
+    def interpret(self):
+        valor = self.expresion.interpret()
+        # Solo acepta int o float
+        if not isinstance(valor, (int, float)):
+            raise Exception(f"Error: El argumento de coseno debe ser un número, se recibió {type(valor).__name__}")
+        return math.cos(valor)
+
+    def __str__(self):
+        return f"cos({self.expresion})"
+
+    def __repr__(self):
+        return f"Coseno({self.expresion!r})"
+
+class Inversa(Expresion):
+    def __init__(self, expresion):
+        self.expresion = expresion
+
+    def interpret(self):
+        valor = self.expresion.interpret()
+        if not isinstance(valor, int):
+            raise Exception(f"Error: El argumento de Inv debe ser un entero, se recibió {type(valor).__name__}")
+        # Reordena los dígitos (invierte el número)
+        signo = -1 if valor < 0 else 1
+        valor_abs = abs(valor)
+        invertido = int(str(valor_abs)[::-1])
+        return signo * invertido
+
+    def __str__(self):
+        return f"Inv({self.expresion})"
+
+    def __repr__(self):
+        return f"Inversa({self.expresion!r})"
+
 class Modulo(Expresion):
     def __init__(self, izquierda, derecha):
         self.izquierda = izquierda
@@ -575,7 +630,6 @@ class ErrorPrintln(Expresion):
         return str(self)
 
 #operadores
-# ...existing code...
 
 class Relacional(Expresion):
     def __init__(self, izquierda, derecha, operador):
@@ -634,7 +688,6 @@ class Relacional(Expresion):
 
     def __str__(self):
         return f"({self.izquierda} {self.operador} {self.derecha})"
-
 
 class MayorQue(Relacional):
     def __init__(self, izquierda, derecha):
@@ -873,8 +926,7 @@ class Instrucciones(Expresion):
 
     def __str__(self):
         return "\n".join(str(instr) for instr in self.instrucciones)
-
-    
+  
 class Instrucciones(Expresion):
     def __init__(self, instruccion, instrucciones=None):
         if instrucciones is not None:
@@ -966,9 +1018,7 @@ class If(Expresion):
 
     def __repr__(self):
         return f"If#{self.id}(condicion={self.condicion!r}, si={self.instrucciones_si!r}, sino={self.instrucciones_sino!r})"
-
-
-        
+     
 class Instruccion(Expresion):
     def __init__(self, instruccion):
         self.instruccion = instruccion
@@ -1068,7 +1118,6 @@ class For(Expresion):
     def __repr__(self):
         return f"For#{self.id}(asignacion={self.asignacion!r}, condicion={self.condicion!r}, actualizacion={self.actualizacion!r}, instrucciones={self.instrucciones!r})"
     
-
 class DoWhile(Expresion):
     _contador = 0
 
@@ -1179,8 +1228,6 @@ class Default(Expresion):
     def __repr__(self):
         return f"Default(instrucciones={self.instrucciones!r})"
 # Aqui terminan las Clases para la Sentencia Switch.
-
-# ...existing code...
 
 class Vector(Expresion):
     def __init__(self, tipo, identificador, dimensiones, valores=None, linea=None, columna=None):
@@ -1410,5 +1457,3 @@ class AsignacionVector(Expresion):
 
     def __repr__(self):
         return f"AsignacionVector(identificador={self.identificador!r}, indices={self.indices!r}, valor={self.valor!r})"
-
-# ...existing code...

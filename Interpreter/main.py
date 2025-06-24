@@ -170,7 +170,7 @@ println(5561);
 # Parseamos la entrada
 from parser import parser, comentarios, errores_sintacticos
 from contexto import tabla_variables, salidas_de_impresion
-from lexer import lexer, errores_lexicos, graficar_tabla_tokens, graficar_tabla_errores, graficar_ast
+from lexer import lexer, errores_lexicos, graficar_tabla_tokens, graficar_tabla_errores, graficar_ast, graficar_tabla_variables
 
 def analizar_texto(texto):
     errores_semanticos = []
@@ -242,6 +242,9 @@ def analizar_texto(texto):
     salida.append("\nTabla de variables:")
     for var, val in tabla_variables.items():
         salida.append(f"{var} = {val}")
+
+    # Graficar tabla de variables
+    graficar_tabla_variables(tabla_variables)
 
     # === Tabla de Errores ===
     salida.append("\nTabla de errores:")

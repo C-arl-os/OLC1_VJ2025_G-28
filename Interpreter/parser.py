@@ -3,7 +3,7 @@ from lexer import tokens, errores_lexicos, calcular_columna
 from nodes.ast_nodes import Numero, Decimal, Boleano, Caracter, Cadena, Identificador, Asignacion, Suma, Resta, Multiplicacion, Division,Potencia,Modulo,Negativo, Println, ErrorPrintln
 from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,Incremento, Decremento, Instruccion,Instrucciones,While, Distinto, If, For
 from nodes.ast_nodes import OrLogicoNode, AndLogicoNode, NotLogicoNode, XorLogicoNode, DoWhile, Declaracion,Break, Continue
-from nodes.ast_nodes import Switch,Case,Default
+from nodes.ast_nodes import Switch,Case,Default, Seno, Coseno, Inversa
 
 from nodes.ast_nodes import Vector, AccesoVector, AsignacionVector
 
@@ -151,6 +151,18 @@ def p_expresion_division(p):
 def p_expresion_potencia(p):
     'expresion : expresion POTENCIA expresion'
     p[0] = Potencia(p[1], p[3])
+
+def p_expresion_seno(p):
+    'expresion : SENO PARIZQ expresion PARDER'
+    p[0] = Seno(p[3])
+
+def p_expresion_coseno(p):
+    'expresion : COSENO PARIZQ expresion PARDER'
+    p[0] = Coseno(p[3])
+
+def p_expresion_inverso(p):
+    'expresion : INV PARIZQ expresion PARDER'
+    p[0] = Inversa(p[3])
 
 def p_expresion_modulo(p):
     'expresion : expresion MODULO expresion'

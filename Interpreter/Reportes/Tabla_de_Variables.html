@@ -2,7 +2,7 @@
 <html lang='es'>
 <head>
 <meta charset='UTF-8'>
-<title>Tabla de Errores</title>
+<title>Tabla de Variables</title>
 <style>
 
     body {
@@ -19,7 +19,7 @@
         text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
     .container {
-        max-width: 1000px;
+        max-width: 700px;
         margin: 0 auto;
         overflow-x: auto;
     }
@@ -38,7 +38,7 @@
         border-bottom: 1px solid #e0e0e0;
     }
     th {
-        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        background: linear-gradient(135deg, #27ae60, #16a085);
         color: white;
         font-weight: 600;
         text-transform: uppercase;
@@ -48,34 +48,16 @@
         top: 0;
     }
     tr:nth-child(even) {
-        background-color: #fef5f5;
+        background-color: #f8f9fa;
     }
     tr:hover {
-        background-color: #ffebee;
+        background-color: #eafaf1;
         transform: scale(1.01);
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         transition: all 0.3s ease;
     }
-    .lexico {
-        border-left: 4px solid #3498db;
-    }
-    .sintactico {
-        border-left: 4px solid #f39c12;
-    }
-    .semantico {
-        border-left: 4px solid #e74c3c;
-    }
-    .tipo-error {
-        font-weight: 600;
-    }
-    .lexico .tipo-error {
-        color: #3498db;
-    }
-    .sintactico .tipo-error {
-        color: #f39c12;
-    }
-    .semantico .tipo-error {
-        color: #e74c3c;
+    td {
+        color: #34495e;
     }
     @media (max-width: 768px) {
         table {
@@ -90,10 +72,14 @@
 </head>
 <body>
 <div class='container'>
-<h2>Tabla de Errores</h2>
+<h2>Tabla de Variables</h2>
 <table>
-<thead><tr><th>Tipo</th><th>Descripción</th><th>Línea</th><th>Columna</th></tr></thead>
+<thead><tr><th>Variable</th><th>Valor</th></tr></thead>
 <tbody>
+<tr><td>x</td><td>13</td></tr>
+<tr><td>sin_1</td><td>0.0</td></tr>
+<tr><td>cos_1</td><td>1.0</td></tr>
+<tr><td>x_inv</td><td>987654321</td></tr>
 </tbody></table>
 </div>
 </body>
