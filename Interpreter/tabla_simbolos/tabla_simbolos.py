@@ -96,4 +96,30 @@ class SymbolTable(metaclass=SingletonMeta):
             row = [str(d[h]) for h in headers]
             print(" | ".join(row))
 
-    
+    def add_procedure(self, name, procedimiento, line=None, column=None):
+        """Registrar un procedimiento en el scope actual."""
+        # Eliminar si ya existe uno con el mismo nombre en el mismo scope
+        self.symbols = [
+            sym for sym in self.symbols
+            if not (sym.entity_type == 'procedure' and sym.name == name and sym.scope == self.current_scope)
+        ]
+        sym = Symbol(name=name, entity_type='procedure', data_type=None,
+                     value=procedimiento, scope=self.current_scope,
+                     line=line, column=column)
+        self.symbols.append(sym)
+        return sym
+
+    def get_procedure(self, name, scope=None):
+        """Obtener un procedimiento por nombre, buscando desde el scope dado hacia global."""
+        scope = scope or self.current_scope
+        # Buscar en el scope actual
+        for sym in reversed(self.symbols):
+            if sym.entity_type == 'procedure' and sym.name == name and sym.scope == scope:
+                return sym.value
+        # Buscar en scopes anteriores
+        idx = self.scopes.index(scope)
+        for prev in reversed(self.scopes[:idx]):
+            for sym in reversed(self.symbols):
+                if sym.entity_type == 'procedure' and sym.name == name and sym.scope == prev:
+                    return sym.value
+        raise KeyError(f"Procedimiento '{name}' no encontrado")

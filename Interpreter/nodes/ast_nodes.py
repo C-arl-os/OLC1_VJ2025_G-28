@@ -523,10 +523,13 @@ class Identificador(Expresion):
         self.nombre = nombre
 
     def interpret(self):
-        if self.nombre in tabla_variables:
-            return tabla_variables[self.nombre]
-        else:
-            raise Exception(f"Variable '{self.nombre}' no ha sido definida")
+        try:
+            return st.get_variable(self.nombre)
+        except Exception:
+            if self.nombre in tabla_variables:
+                return tabla_variables[self.nombre]
+            else:
+                raise Exception(f"Variable '{self.nombre}' no ha sido definida")
 
     def __str__(self):
         return self.nombre
@@ -1457,3 +1460,129 @@ class AsignacionVector(Expresion):
 
     def __repr__(self):
         return f"AsignacionVector(identificador={self.identificador!r}, indices={self.indices!r}, valor={self.valor!r})"
+
+class Instrucciones(Expresion):
+    def __init__(self, instruccion, instrucciones=None):
+        if instrucciones is not None:
+            self.instrucciones = instrucciones.instrucciones.copy()
+        else:
+            self.instrucciones = []
+        self.instrucciones.append(instruccion)
+
+    def interpret(self, errores_semanticos=None):
+            results = []
+            if errores_semanticos is None:
+                errores_semanticos = []
+            for instr in self.instrucciones:
+                try:
+                    if hasattr(instr, 'interpret') and instr.interpret.__code__.co_argcount == 2:
+                        results.append(instr.interpret(errores_semanticos))
+                    else:
+                        results.append(instr.interpret())
+                except Exception as e:
+                    errores_semanticos.append({
+                        'tipo': 'Semántico',
+                        'descripcion': str(e),
+                        'linea': getattr(instr, 'linea', -1),
+                        'columna': getattr(instr, 'columna', -1)
+                    })
+            if len(results) == 1:
+                return results[0]
+            return results
+
+    def __str__(self):
+        return "\n".join(str(instr) for instr in self.instrucciones)
+
+en_procedimiento = False
+# Clases para los Procedimientos.
+class Procedimiento(Expresion):
+    def __init__(self, nombre, parametros, instrucciones):
+        self.nombre = nombre
+        self.parametros = parametros  # lista de (tipo, id)
+        self.instrucciones = instrucciones
+
+    def interpret(self):
+        global en_procedimiento
+        if en_procedimiento:
+            raise Exception("Error: No se permite declarar un procedimiento dentro de otro procedimiento.")
+        en_procedimiento = True
+        try:
+            st.add_procedure(self.nombre, self)
+            return f"Procedimiento '{self.nombre}' registrado."
+        finally:
+            en_procedimiento = False
+
+    def ejecutar(self, argumentos):
+        if len(argumentos) != len(self.parametros):
+            raise Exception(
+                f"Error: El procedimiento '{self.nombre}' esperaba {len(self.parametros)} argumento(s), pero recibió {len(argumentos)}."
+            )
+        
+        # Validar tipos de parámetros
+        for i, ((tipo_esperado, id_), valor) in enumerate(zip(self.parametros, argumentos)):
+            tipo_actual = self._obtener_tipo(valor)
+            if not self._validar_tipo_parametro(tipo_esperado, tipo_actual):
+                raise Exception(
+                    f"Error: El parámetro {i+1} del procedimiento '{self.nombre}' esperaba tipo '{tipo_esperado}', pero recibió tipo '{tipo_actual}'"
+                )
+        
+        st.new_scope(f'proc_{self.nombre}')
+        for (tipo, id_), valor in zip(self.parametros, argumentos):
+            st.add_variable(id_, tipo, valor)
+        resultado = self.instrucciones.interpret()
+        st.exit_scope()
+        return resultado
+
+    def __str__(self):
+        return f"proc {self.nombre}({self.parametros}) {{...}}"
+
+    def __repr__(self):
+        return f"Procedimiento({self.nombre!r}, {self.parametros!r}, {self.instrucciones!r})"
+    
+    def _obtener_tipo(self, valor):
+        """Determina el tipo de un valor de Python"""
+        if isinstance(valor, bool):
+            return "bool"
+        elif isinstance(valor, int):
+            return "int"
+        elif isinstance(valor, float):
+            return "float"
+        elif isinstance(valor, str):
+            if len(valor) == 1:
+                return "char"
+            return "string"
+        else:
+            return "desconocido"
+    
+    def _validar_tipo_parametro(self, tipo_esperado, tipo_actual):
+        """Valida si el tipo actual es compatible con el tipo esperado"""
+        # Coincidencia exacta
+        if tipo_esperado == tipo_actual:
+            return True
+        
+        # Conversiones implícitas permitidas
+        conversiones_permitidas = {
+            "float": ["int"],  # int puede convertirse a float
+        }
+        
+        if tipo_esperado in conversiones_permitidas:
+            return tipo_actual in conversiones_permitidas[tipo_esperado]
+        
+        return False
+
+class LlamadaProcedimiento(Expresion):
+    def __init__(self, nombre, argumentos):
+        self.nombre = nombre
+        self.argumentos = argumentos  # lista de Expresion
+
+    def interpret(self):
+        valores = [arg.interpret() for arg in self.argumentos]
+        proc = st.get_procedure(self.nombre)
+        resultado = proc.ejecutar(valores)
+        return resultado
+
+    def __str__(self):
+        return f"{self.nombre}({', '.join(str(a) for a in self.argumentos)})"
+
+    def __repr__(self):
+        return f"LlamadaProcedimiento({self.nombre!r}, {self.argumentos!r})"

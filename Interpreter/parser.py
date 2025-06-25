@@ -6,6 +6,7 @@ from nodes.ast_nodes import OrLogicoNode, AndLogicoNode, NotLogicoNode, XorLogic
 from nodes.ast_nodes import Switch,Case,Default, Seno, Coseno, Inversa
 
 from nodes.ast_nodes import Vector, AccesoVector, AsignacionVector
+from nodes.ast_nodes import Procedimiento, LlamadaProcedimiento
 
 comentarios = []
 errores_sintacticos = []
@@ -484,6 +485,86 @@ def p_lista_indices_unica(p):
 def p_lista_indices_vacia(p):
     'lista_indices : '
     p[0] = []
+
+# Regla para procedimientos
+# Procedimientos con nombre, parámetros y cuerpo
+def p_expresion_procedimiento(p):
+    'expresion : PROC ID PARIZQ lista_parametros_opt PARDER LLAVE_IZQ lista_expresiones LLAVE_DER'
+    p[0] = Procedimiento(p[2], p[4], p[7])
+
+
+def p_lista_parametros_opt(p):
+    '''lista_parametros_opt : lista_parametros
+                           | '''
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = []
+
+def p_lista_parametros_varios(p):
+    'lista_parametros : lista_parametros COMA tipo DOSPUNTOS ID'
+    p[0] = p[1] + [(p[3], p[5])]
+
+def p_lista_parametros_uno(p):
+    'lista_parametros : tipo DOSPUNTOS ID'
+    p[0] = [(p[1], p[3])]
+
+# Regla para llamadas a procedimientos con EXEC
+def p_expresion_llamada_procedimiento_exec(p):
+    'expresion : EXEC ID PARIZQ lista_argumentos_exec_opt PARDER PTCOMA'
+    p[0] = LlamadaProcedimiento(p[2], p[4])
+
+def p_lista_argumentos_exec_opt(p):
+    '''lista_argumentos_exec_opt : lista_argumentos_exec
+                                 | '''
+    if len(p) == 2:
+        p[0] = p[1]
+    else:
+        p[0] = []
+
+def p_lista_argumentos_exec_varios(p):
+    'lista_argumentos_exec : lista_argumentos_exec COMA argumento_exec'
+    p[0] = p[1] + [p[3]]
+
+def p_lista_argumentos_exec_uno(p):
+    'lista_argumentos_exec : argumento_exec'
+    p[0] = [p[1]]
+
+def p_argumento_exec_id(p):
+    'argumento_exec : ID'
+    p[0] = Identificador(p[1])
+
+def p_argumento_exec_entero(p):
+    'argumento_exec : ENTERO'
+    p[0] = Numero(p[1])
+
+def p_argumento_exec_decimal(p):
+    'argumento_exec : DECIMAL'
+    p[0] = Decimal(p[1])
+
+def p_argumento_exec_caracter(p):
+    'argumento_exec : CARACTER'
+    p[0] = Caracter(p[1])
+
+def p_argumento_exec_cadena(p):
+    'argumento_exec : CADENA'
+    p[0] = Cadena(p[1])
+
+def p_argumento_exec_true(p):
+    'argumento_exec : TRUE'
+    p[0] = Boleano(True)
+
+def p_argumento_exec_false(p):
+    'argumento_exec : FALSE'
+    p[0] = Boleano(False)
+
+def p_lista_argumentos_varios(p):
+    'lista_argumentos : lista_argumentos COMA expresion'
+    p[0] = p[1] + [p[3]]
+
+def p_lista_argumentos_uno(p):
+    'lista_argumentos : expresion'
+    p[0] = [p[1]]
 
 # Eliminar la función p_error duplicada y mantener solo esta versión:
 def p_error(p):

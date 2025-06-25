@@ -25,7 +25,9 @@ reserved = {
     'vector': 'VECTOR',  # Nuevo token para Vector
     'seno': 'SENO',
     'coseno': 'COSENO',
-    'inv': 'INV'
+    'inv': 'INV',
+    'proc': 'PROC',
+    'exec': 'EXEC',
 }
 
 # Lista de nombres de tokens
