@@ -28,6 +28,8 @@ reserved = {
     'inv': 'INV',
     'proc': 'PROC',
     'exec': 'EXEC',
+    'shuffle' : 'SHUFFLE',
+    'sort' : 'SORT'
 }
 
 # Lista de nombres de tokens

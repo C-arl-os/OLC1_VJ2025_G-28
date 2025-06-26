@@ -5,7 +5,7 @@ from nodes.ast_nodes import MayorIgual, MenorIgual, MenorQue, MayorQue, Igual,In
 from nodes.ast_nodes import OrLogicoNode, AndLogicoNode, NotLogicoNode, XorLogicoNode, DoWhile, Declaracion,Break, Continue
 from nodes.ast_nodes import Switch,Case,Default, Seno, Coseno, Inversa
 
-from nodes.ast_nodes import Vector, AccesoVector, AsignacionVector
+from nodes.ast_nodes import Vector, AccesoVector, AsignacionVector, VectorShuffle, VectorSort
 from nodes.ast_nodes import Procedimiento, LlamadaProcedimiento
 
 comentarios = []
@@ -423,9 +423,24 @@ def p_expresion_vector_declaracion(p):
     'expresion : VECTOR CORIZQ tipo CORDER ID PARIZQ lista_dimensiones PARDER PTCOMA'
     p[0] = Vector(p[3], p[5], p[7])
 
+def p_expresion_vector_declaracion_shuffle(p):
+    'expresion : VECTOR CORIZQ tipo CORDER ID PARIZQ lista_dimensiones PARDER ASIGNACION SHUFFLE PARIZQ ID PARDER PTCOMA'    
+    print("RTESTESETSFLKSJFLKSEJFLSKEJF")
+    p[0] = VectorShuffle(p[3], p[5], p[7], p[12])
+
+def p_vector_una_dimension(p):
+    'expresion : VECTOR CORIZQ tipo CORDER ID PARIZQ ENTERO PARDER ASIGNACION CORIZQ lista_elementos CORDER PTCOMA'
+    dimensiones = [p[7]]  # solo una dimensión
+    p[0] = Vector(p[3], p[5], dimensiones, p[11])
+
+def p_expresion_vector_declaracion_sort(p):
+    'expresion : VECTOR CORIZQ tipo CORDER ID PARIZQ ENTERO PARDER ASIGNACION SORT PARIZQ ID PARDER PTCOMA'
+    dimensiones = [p[7]]
+    p[0] = VectorSort(p[3], p[5], dimensiones, p[12])
+
 # Declaración de vector con inicialización
 def p_expresion_vector_declaracion_inicializacion(p):
-    'expresion : VECTOR CORIZQ tipo CORDER ID PARIZQ lista_dimensiones PARDER ASIGNACION lista_valores PTCOMA'
+    'expresion : VECTOR CORIZQ tipo CORDER ID PARIZQ lista_dimensiones PARDER ASIGNACION lista_valores PTCOMA'    
     p[0] = Vector(p[3], p[5], p[7], p[10])
 
 # Lista de dimensiones (números separados por comas)
@@ -439,12 +454,20 @@ def p_lista_dimensiones_unica(p):
 
 # Para la inicialización de vectores multidimensionales, necesitamos ajustar las reglas
 def p_lista_valores_multiple(p):
-    'lista_valores : lista_valores COMA fila_vector'
-    p[0] = p[1] + [p[3]]
+    '''lista_valores : lista_valores COMA fila_vector
+                     | lista_valores COMA CORIZQ lista_elementos CORDER'''
+    if len(p) == 4:  # lista_valores COMA fila_vector
+        p[0] = p[1] + [p[3]]
+    else:  # lista_valores COMA CORIZQ lista_elementos CORDER
+        p[0] = p[1] + [p[4]]
 
 def p_lista_valores_unica(p):
-    'lista_valores : fila_vector'
-    p[0] = [p[1]]
+    '''lista_valores : fila_vector
+                     | CORIZQ lista_elementos CORDER'''
+    if len(p) == 2:  # fila_vector
+        p[0] = [p[1]]
+    else:  # CORIZQ lista_elementos CORDER
+        p[0] = [p[2]]
 
 def p_fila_vector(p):
     'fila_vector : CORIZQ lista_elementos CORDER'

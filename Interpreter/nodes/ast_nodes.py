@@ -1342,6 +1342,48 @@ class Vector(Expresion):
 
     def __repr__(self):
         return f"Vector(tipo={self.tipo!r}, identificador={self.identificador!r}, dimensiones={self.dimensiones!r}, valores={self.valores!r})"
+    
+class VectorSort(Expresion):
+    def __init__(self, tipo, identificador, dimensiones, id_origen, linea=None, columna=None):
+        self.tipo = tipo
+        self.identificador = identificador
+        self.dimensiones = dimensiones  # [5]
+        self.id_origen = id_origen
+        self.linea = linea
+        self.columna = columna
+
+    def interpret(self):
+        if self.id_origen not in tabla_variables:
+            raise Exception(f"Error semántico: Vector '{self.id_origen}' no ha sido declarado.")
+
+        origen = tabla_variables[self.id_origen]
+
+        if origen['tipo'] != 'vector':
+            raise Exception(f"Error: '{self.id_origen}' no es un vector.")
+        if origen['subtipo'] != self.tipo:
+            raise Exception(f"Error: Tipos incompatibles. Se esperaba '{self.tipo}', se recibió '{origen['subtipo']}'.")
+
+        datos = origen['data']
+        if not isinstance(datos, list) or isinstance(datos[0], list):
+            raise Exception(f"Error: '{self.id_origen}' debe ser un vector unidimensional para usar 'sort'.")
+
+        if len(datos) != self.dimensiones[0]:
+            raise Exception(f"Error: Dimensión incorrecta. Se esperaban {self.dimensiones[0]} elementos, se recibió {len(datos)}")
+
+        datos_ordenados = sorted(datos)
+
+        tabla_variables[self.identificador] = {
+            'tipo': 'vector',
+            'subtipo': self.tipo,
+            'dimensiones': self.dimensiones,
+            'data': datos_ordenados
+        }
+
+        return f"Vector[{self.tipo}] {self.identificador} declarado como sort de {self.id_origen}."
+
+    def __str__(self):
+        return f"Vector[{self.tipo}] {self.identificador}({self.dimensiones[0]}) = sort({self.id_origen});"
+
 
 class AccesoVector(Expresion):
     def __init__(self, identificador, indices):
@@ -1460,6 +1502,62 @@ class AsignacionVector(Expresion):
 
     def __repr__(self):
         return f"AsignacionVector(identificador={self.identificador!r}, indices={self.indices!r}, valor={self.valor!r})"
+    
+class VectorShuffle(Expresion):
+    def __init__(self, tipo, identificador, dimensiones, id_origen, linea=None, columna=None):
+        self.tipo = tipo
+        self.identificador = identificador
+        self.dimensiones = dimensiones  # [filas, columnas]
+        self.id_origen = id_origen
+        self.linea = linea
+        self.columna = columna
+
+    def interpret(self):
+        if self.identificador in tabla_variables:
+            raise Exception(f"Error semántico: Vector '{self.identificador}' ya ha sido declarado.")
+        # Verificar que el vector de origen exista
+        if self.id_origen not in tabla_variables:
+            raise Exception(f"Error semántico: Vector '{self.id_origen}' no ha sido declarado.")
+
+        entrada = tabla_variables[self.id_origen]
+
+        # Validar estructura del vector de entrada
+        if entrada['tipo'] != 'vector':
+            raise Exception(f"Error: '{self.id_origen}' no es un vector.")
+        if entrada['subtipo'] != self.tipo:
+            raise Exception(f"Error: Tipos incompatibles. Se esperaba '{self.tipo}', se recibió '{entrada['subtipo']}'.")
+
+        datos_origen = entrada['data']
+        dim_filas, dim_columnas = self.dimensiones
+
+        # Validar que las dimensiones coincidan con las del vector original
+        if not isinstance(datos_origen, list) or not all(isinstance(fila, list) for fila in datos_origen):
+            raise Exception(f"Error: '{self.id_origen}' no es un vector bidimensional válido.")
+        if len(datos_origen) != dim_filas or len(datos_origen[0]) != dim_columnas:
+            raise Exception(f"Error: Dimensiones incompatibles para '{self.id_origen}'. Se esperaba {dim_filas}x{dim_columnas}, se recibió {len(datos_origen)}x{len(datos_origen[0])}")
+
+        # Transposición (row-major a column-major)
+        matriz_transpuesta = [
+            [datos_origen[i][j] for i in range(dim_filas)]
+            for j in range(dim_columnas)
+        ]
+
+        # Declarar el nuevo vector (igual que Vector)
+        tabla_variables[self.identificador] = {
+            'tipo': 'vector',
+            'subtipo': self.tipo,
+            'dimensiones': [dim_columnas, dim_filas],  # ¡Importante! Dimensiones después del shuffle
+            'data': matriz_transpuesta
+        }
+
+        return f"Vector[{self.tipo}] {self.identificador} declarado con shuffle de {self.id_origen}."
+
+    def __str__(self):
+        dimensiones_str = ",".join(map(str, self.dimensiones))
+        return f"Vector[{self.tipo}] {self.identificador}({dimensiones_str}) = shuffle({self.id_origen});"
+
+    def __repr__(self):
+        return f"VectorShuffle(tipo={self.tipo!r}, identificador={self.identificador!r}, dimensiones={self.dimensiones!r}, id_origen={self.id_origen!r})"
 
 class Instrucciones(Expresion):
     def __init__(self, instruccion, instrucciones=None):
