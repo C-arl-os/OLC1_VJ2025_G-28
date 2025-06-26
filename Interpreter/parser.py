@@ -425,13 +425,17 @@ def p_expresion_vector_declaracion(p):
 
 def p_expresion_vector_declaracion_shuffle(p):
     'expresion : VECTOR CORIZQ tipo CORDER ID PARIZQ lista_dimensiones PARDER ASIGNACION SHUFFLE PARIZQ ID PARDER PTCOMA'    
-    print("RTESTESETSFLKSJFLKSEJFLSKEJF")
     p[0] = VectorShuffle(p[3], p[5], p[7], p[12])
 
 def p_vector_una_dimension(p):
     'expresion : VECTOR CORIZQ tipo CORDER ID PARIZQ ENTERO PARDER ASIGNACION CORIZQ lista_elementos CORDER PTCOMA'
     dimensiones = [p[7]]  # solo una dimensión
     p[0] = Vector(p[3], p[5], dimensiones, p[11])
+
+def p_vector_una_dimension_asignacion_automatica(p):
+    'expresion : VECTOR CORIZQ tipo CORDER ID PARIZQ ENTERO PARDER PTCOMA'
+    dimensiones = [p[7]]  # solo una dimensión
+    p[0] = Vector(p[3], p[5], dimensiones)
 
 def p_expresion_vector_declaracion_sort(p):
     'expresion : VECTOR CORIZQ tipo CORDER ID PARIZQ ENTERO PARDER ASIGNACION SORT PARIZQ ID PARDER PTCOMA'
