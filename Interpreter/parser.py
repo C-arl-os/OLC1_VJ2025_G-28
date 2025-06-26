@@ -443,6 +443,33 @@ def p_expresion_vector_declaracion_inicializacion(p):
     'expresion : VECTOR CORIZQ tipo CORDER ID PARIZQ lista_dimensiones PARDER ASIGNACION lista_valores PTCOMA'    
     p[0] = Vector(p[3], p[5], p[7], p[10])
 
+# Regla para vectores multidimensionales con inicialización compleja
+def p_vector_multidimensional_complejo(p):
+    'expresion : VECTOR CORIZQ tipo CORDER ID PARIZQ lista_dimensiones PARDER ASIGNACION estructura_multidimensional PTCOMA'
+    p[0] = Vector(p[3], p[5], p[7], p[10])
+
+# Estructura multidimensional anidada
+def p_estructura_multidimensional(p):
+    'estructura_multidimensional : CORIZQ lista_estructuras CORDER'
+    p[0] = p[2]
+
+def p_lista_estructuras_multiple(p):
+    'lista_estructuras : lista_estructuras COMA elemento_estructura'
+    p[0] = p[1] + [p[3]]
+
+def p_lista_estructuras_unica(p):
+    'lista_estructuras : elemento_estructura'
+    p[0] = [p[1]]
+
+def p_elemento_estructura_anidado(p):
+    'elemento_estructura : estructura_multidimensional'
+    p[0] = p[1]
+
+def p_elemento_estructura_lista(p):
+    'elemento_estructura : CORIZQ lista_elementos CORDER'
+    p[0] = p[2]
+
+# ...existing code...
 # Lista de dimensiones (números separados por comas)
 def p_lista_dimensiones_multiple(p):
     'lista_dimensiones : lista_dimensiones COMA ENTERO'
