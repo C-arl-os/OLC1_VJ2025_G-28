@@ -170,7 +170,8 @@ println(5561);
 # Parseamos la entrada
 from parser import parser, comentarios, errores_sintacticos
 from contexto import tabla_variables, salidas_de_impresion
-from lexer import lexer, errores_lexicos, graficar_tabla_tokens, graficar_tabla_errores, graficar_ast, graficar_tabla_variables
+from lexer import lexer, errores_lexicos, graficar_tabla_tokens, graficar_tabla_errores, graficar_ast, graficar_tabla_variables, graficar_tabla_advertencias
+from advertencias import limpiar_advertencias, obtener_advertencias
 
 def analizar_texto(texto):
     errores_semanticos = []
@@ -181,6 +182,7 @@ def analizar_texto(texto):
     errores_sintacticos.clear()
     salidas_de_impresion.clear()
     tabla_variables.clear()
+    limpiar_advertencias()  # Limpiar advertencias de ejecuciones previas
 
     # === Generar archivo HTML con tokens ===
     graficar_tabla_tokens(texto)
@@ -246,6 +248,14 @@ def analizar_texto(texto):
     # Graficar tabla de variables
     graficar_tabla_variables(tabla_variables)
 
+    # === Tabla de Advertencias ===
+    advertencias_lista = obtener_advertencias()
+    if advertencias_lista:
+        salida.append("\nTabla de advertencias:")
+        salida.append("Tipo\tDescripción\tLínea\tColumna")
+        for adv in advertencias_lista:
+            salida.append(f"{adv['tipo']}\t{adv['descripcion']}\t{adv['linea']}\t{adv['columna']}")
+
     # === Tabla de Errores ===
     salida.append("\nTabla de errores:")
     salida.append("Tipo\tDescripción\tLínea\tColumna")
@@ -256,6 +266,9 @@ def analizar_texto(texto):
     # Crear tabla HTML de errores (DEBE SER DESPUÉS de llenar las listas de errores)
     # Al final de analizar_texto, antes del return:
     graficar_tabla_errores(errores_lexicos, errores_sintacticos, errores_semanticos)
+    
+    # Generar reporte de advertencias
+    graficar_tabla_advertencias(obtener_advertencias())
 
     return "\n".join(salida)
 

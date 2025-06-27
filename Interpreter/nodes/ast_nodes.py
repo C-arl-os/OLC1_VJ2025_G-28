@@ -4,6 +4,9 @@ from contexto import tabla_variables, salidas_de_impresion
 from tabla_simbolos.instancia import symbol_table as st
 import math
 
+# Importar el sistema de advertencias
+from advertencias import agregar_advertencia
+
 
 class Numero(Expresion):
     def __init__(self, valor):
@@ -1686,6 +1689,8 @@ class Procedimiento(Expresion):
         en_procedimiento = True
         try:
             st.add_procedure(self.nombre, self)
+            # Analizar variables no utilizadas
+            self._analizar_variables_no_utilizadas()
             return f"Procedimiento '{self.nombre}' registrado."
         finally:
             en_procedimiento = False
@@ -1716,6 +1721,88 @@ class Procedimiento(Expresion):
 
     def __repr__(self):
         return f"Procedimiento({self.nombre!r}, {self.parametros!r}, {self.instrucciones!r})"
+    
+    def _analizar_variables_no_utilizadas(self):
+        """Analiza si hay variables declaradas en el procedimiento que no se usan"""
+        variables_declaradas = set()
+        variables_utilizadas = set()
+        
+        # Obtener parámetros del procedimiento
+        for tipo, nombre_param in self.parametros:
+            variables_declaradas.add(nombre_param)
+        
+        # Analizar las instrucciones para encontrar declaraciones y usos
+        self._encontrar_declaraciones_y_usos(self.instrucciones, variables_declaradas, variables_utilizadas)
+        
+        # Encontrar variables no utilizadas
+        variables_no_utilizadas = variables_declaradas - variables_utilizadas
+        
+        # Generar advertencias para variables no utilizadas
+        for var in variables_no_utilizadas:
+            agregar_advertencia(
+                'Advertencia',
+                f"Variable '{var}' declarada en el procedimiento '{self.nombre}' pero no utilizada",
+                -1,  # Por ahora no tenemos información de línea
+                -1   # Por ahora no tenemos información de columna
+            )
+    
+    def _encontrar_declaraciones_y_usos(self, nodo, variables_declaradas, variables_utilizadas):
+        """Recursivamente encuentra declaraciones y usos de variables"""
+        if nodo is None:
+            return
+            
+        # Si es una lista de instrucciones
+        if isinstance(nodo, list):
+            for instruccion in nodo:
+                self._encontrar_declaraciones_y_usos(instruccion, variables_declaradas, variables_utilizadas)
+            return
+        
+        # Obtener el nombre de la clase
+        clase = nodo.__class__.__name__
+        
+        if clase == 'Declaracion':
+            # Es una declaración de variable
+            if hasattr(nodo, 'identificador'):
+                variables_declaradas.add(nodo.identificador)
+        elif clase == 'Asignacion':
+            # Es una asignación - la variable del lado izquierdo se considera declarada
+            if hasattr(nodo, 'identificador'):
+                # Si es una asignación con declaración de tipo (int x = 5)
+                if nodo.tipo is not None:
+                    variables_declaradas.add(nodo.identificador)
+            # Analizar el valor asignado para encontrar variables utilizadas
+            if hasattr(nodo, 'valor'):
+                self._encontrar_declaraciones_y_usos(nodo.valor, variables_declaradas, variables_utilizadas)
+        elif clase == 'Identificador':
+            # Es el uso de una variable
+            if hasattr(nodo, 'nombre'):
+                variables_utilizadas.add(nodo.nombre)
+        elif clase == 'Instrucciones':
+            # Procesar las instrucciones
+            if hasattr(nodo, 'instrucciones') and nodo.instrucciones:
+                for instr in nodo.instrucciones:
+                    self._encontrar_declaraciones_y_usos(instr, variables_declaradas, variables_utilizadas)
+            if hasattr(nodo, 'instruccion') and nodo.instruccion:
+                self._encontrar_declaraciones_y_usos(nodo.instruccion, variables_declaradas, variables_utilizadas)
+        elif clase == 'Println':
+            # Println usa variables
+            if hasattr(nodo, 'expresion'):
+                self._encontrar_declaraciones_y_usos(nodo.expresion, variables_declaradas, variables_utilizadas)
+        else:
+            # Para otros tipos de nodos, analizar recursivamente todos los atributos relevantes
+            for attr_name in ['left', 'right', 'expresion', 'condicion', 'instrucciones', 'valor', 'operando', 'cuerpo', 'incremento', 'inicializacion', 'si_verdadero', 'si_falso']:
+                if hasattr(nodo, attr_name):
+                    try:
+                        attr = getattr(nodo, attr_name)
+                        if hasattr(attr, '__class__') and hasattr(attr, 'interpret'):
+                            self._encontrar_declaraciones_y_usos(attr, variables_declaradas, variables_utilizadas)
+                        elif isinstance(attr, list):
+                            for item in attr:
+                                if hasattr(item, '__class__') and hasattr(item, 'interpret'):
+                                    self._encontrar_declaraciones_y_usos(item, variables_declaradas, variables_utilizadas)
+                    except:
+                        # Ignorar errores de acceso a atributos
+                        pass
     
     def _obtener_tipo(self, valor):
         """Determina el tipo de un valor de Python"""

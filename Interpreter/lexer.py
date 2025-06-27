@@ -615,6 +615,125 @@ def graficar_tabla_errores(errores_lexicos, errores_sintacticos, errores_semanti
     with open("Reportes/Tabla_de_Errores.html", "w", encoding="utf-8") as f:
         f.write("\n".join(html))
 
+def graficar_tabla_advertencias(advertencias):
+    """Genera un reporte HTML de advertencias"""
+    html = []
+    html.append("<!DOCTYPE html>")
+    html.append("<html lang='es'>")
+    html.append("<head>")
+    html.append("<meta charset='UTF-8'>")
+    html.append("<title>Tabla de Advertencias</title>")
+    html.append("<style>")
+    html.append("""
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 20px;
+    }
+    h2 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 28px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        overflow-x: auto;
+    }
+    table {
+        border-collapse: separate;
+        border-spacing: 0;
+        width: 100%;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    th, td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    th {
+        background: linear-gradient(135deg, #f39c12, #e67e22);
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 14px;
+        letter-spacing: 0.5px;
+        position: sticky;
+        top: 0;
+    }
+    tr:nth-child(even) {
+        background-color: #fff9e6;
+    }
+    tr:hover {
+        background-color: #fffbee;
+        transform: scale(1.01);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+    .warning-icon {
+        color: #f39c12;
+        font-weight: bold;
+        margin-right: 5px;
+    }
+    .no-warnings {
+        text-align: center;
+        padding: 40px;
+        color: #27ae60;
+        font-size: 18px;
+        font-weight: 500;
+    }
+    """)
+    html.append("</style>")
+    html.append("</head>")
+    html.append("<body>")
+    html.append("<div class='container'>")
+    html.append("<h2>⚠️ Tabla de Advertencias</h2>")
+    
+    if not advertencias:
+        html.append("<div class='no-warnings'>")
+        html.append("✅ No se encontraron advertencias en el código")
+        html.append("</div>")
+    else:
+        html.append("<table>")
+        html.append("<thead>")
+        html.append("<tr>")
+        html.append("<th>Tipo</th>")
+        html.append("<th>Descripción</th>")
+        html.append("<th>Línea</th>")
+        html.append("<th>Columna</th>")
+        html.append("</tr>")
+        html.append("</thead>")
+        html.append("<tbody>")
+        
+        for adv in advertencias:
+            html.append("<tr>")
+            html.append(f"<td><span class='warning-icon'>⚠️</span>{adv['tipo']}</td>")
+            html.append(f"<td>{adv['descripcion']}</td>")
+            html.append(f"<td>{adv['linea']}</td>")
+            html.append(f"<td>{adv['columna']}</td>")
+            html.append("</tr>")
+        
+        html.append("</tbody>")
+        html.append("</table>")
+    
+    html.append("</div>")
+    html.append("</body>")
+    html.append("</html>")
+    
+    # Crear directorio si no existe
+    reportes_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'Reportes')
+    os.makedirs(reportes_dir, exist_ok=True)
+    
+    # Escribir archivo HTML
+    with open(os.path.join(reportes_dir, 'Tabla_de_Advertencias.html'), 'w', encoding='utf-8') as f:
+        f.write("\n".join(html))
+
 def graficar_ast(arboles, output_path_pdf='Reportes/AST'):
     dot = Digraph(comment='Árbol de Sintaxis Abstracta')
     dot.attr(rankdir='TB')
