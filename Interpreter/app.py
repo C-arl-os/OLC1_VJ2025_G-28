@@ -15,8 +15,7 @@ def inicio():
 
 @app.route('/reportes/<path:filename>')
 def reportes_static(filename):
-    # Obtiene la ruta absoluta de la carpeta Reportes
-    reportes_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Reportes')
+    reportes_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'Reportes')
     return send_from_directory(reportes_dir, filename)
 
 if __name__ == '__main__':
