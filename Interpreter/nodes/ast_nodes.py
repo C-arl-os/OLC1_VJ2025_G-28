@@ -714,7 +714,7 @@ class Igual(Relacional):
 
 # ...DECREMENTO Y iNCREMENTO...
 
-class Incremento(Expresion):
+'''class Incremento(Expresion):
     def __init__(self, identificador):
         self.identificador = identificador
 
@@ -729,9 +729,40 @@ class Incremento(Expresion):
         return f"{self.identificador}++"
 
     def __repr__(self):
+        return f"Incremento({self.identificador!r})"'''
+
+class Incremento(Expresion):
+    def __init__(self, identificador):
+        self.identificador = identificador  # Puede ser Identificador o AccesoVector
+
+    def interpret(self):
+        valor_actual = self.identificador.interpret()
+
+        if not isinstance(valor_actual, (int, float)):
+            raise Exception("Solo se puede incrementar valores numéricos")
+
+        nuevo_valor = valor_actual + 1
+
+        if isinstance(self.identificador, Identificador):
+            nombre = self.identificador.nombre
+            if nombre in tabla_variables:
+                tabla_variables[nombre] = nuevo_valor
+            else:
+                raise Exception(f"Variable '{nombre}' no ha sido definida")
+        elif isinstance(self.identificador, AccesoVector):
+            self.identificador.asignar(nuevo_valor)
+        else:
+            raise Exception("No se puede incrementar este tipo de expresión")
+
+        return nuevo_valor
+    
+    def __str__(self):
+        return f"{self.identificador}++"
+
+    def __repr__(self):
         return f"Incremento({self.identificador!r})"
 
-class Decremento(Expresion):
+'''class Decremento(Expresion):
     def __init__(self, identificador):
         self.identificador = identificador
 
@@ -746,7 +777,39 @@ class Decremento(Expresion):
         return f"{self.identificador}--"
 
     def __repr__(self):
-        return f"Decremento({self.identificador!r})"
+        return f"Decremento({self.identificador!r})"'''
+
+class Decremento(Expresion):
+    def __init__(self, identificador):
+        self.identificador = identificador  # Puede ser Identificador o AccesoVector
+
+    def interpret(self):
+        valor_actual = self.identificador.interpret()
+
+        if not isinstance(valor_actual, (int, float)):
+            raise Exception("Solo se puede incrementar valores numéricos")
+
+        nuevo_valor = valor_actual - 1
+
+        if isinstance(self.identificador, Identificador):
+            nombre = self.identificador.nombre
+            if nombre in tabla_variables:
+                tabla_variables[nombre] = nuevo_valor
+            else:
+                raise Exception(f"Variable '{nombre}' no ha sido definida")
+        elif isinstance(self.identificador, AccesoVector):
+            self.identificador.asignar(nuevo_valor)
+        else:
+            raise Exception("No se puede incrementar este tipo de expresión")
+
+        return nuevo_valor
+    
+    def __str__(self):
+        return f"{self.identificador}--"
+
+    def __repr__(self):
+        return f"Incremento({self.identificador!r})"
+
     
 class OrLogicoNode:
     def __init__(self, izquierda, derecha):
@@ -1353,6 +1416,10 @@ class VectorSort(Expresion):
         self.columna = columna
 
     def interpret(self):
+        # Validar que solo tenga una dimensión
+        if not isinstance(self.dimensiones, list) or len(self.dimensiones) != 1:
+            raise Exception(f"Error: El vector destino '{self.identificador}' debe tener exactamente una dimensión para aplicar 'sort'.")
+
         if self.id_origen not in tabla_variables:
             raise Exception(f"Error semántico: Vector '{self.id_origen}' no ha sido declarado.")
 
@@ -1364,6 +1431,7 @@ class VectorSort(Expresion):
             raise Exception(f"Error: Tipos incompatibles. Se esperaba '{self.tipo}', se recibió '{origen['subtipo']}'.")
 
         datos = origen['data']
+
         if not isinstance(datos, list) or isinstance(datos[0], list):
             raise Exception(f"Error: '{self.id_origen}' debe ser un vector unidimensional para usar 'sort'.")
 
@@ -1420,6 +1488,18 @@ class AccesoVector(Expresion):
             data = data[indice]
 
         return data
+    
+    def asignar(self, nuevo_valor):
+        vector_info = tabla_variables[self.identificador]
+        data = vector_info['data']
+        indices_interpretados = [indice.interpret() for indice in self.indices]
+
+        # Recorremos hasta el penúltimo índice
+        for i in range(len(indices_interpretados) - 1):
+            data = data[indices_interpretados[i]]
+
+        # Asignamos el nuevo valor al último índice
+        data[indices_interpretados[-1]] = nuevo_valor
 
     def __str__(self):
         indices_str = "][".join(str(indice) for indice in self.indices)

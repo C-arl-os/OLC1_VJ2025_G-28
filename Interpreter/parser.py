@@ -324,9 +324,18 @@ def p_expresion_incremento(p):
     'expresion : ID INCREMENTO'
     p[0] = Incremento(Identificador(p[1]))
 
+def p_expresion_incremento_vector(p):
+    'expresion : ID lista_indices INCREMENTO'
+    p[0] = Incremento(AccesoVector(p[1], p[2]))
+
 def p_expresion_decremento(p):
     'expresion : ID DECREMENTO'
     p[0] = Decremento(Identificador(p[1]))
+
+def p_expresion_decremento_vector(p):
+    'expresion : ID lista_indices DECREMENTO'
+    p[0] = Decremento(AccesoVector(p[1], p[2]))
+
 #comentarios
 def p_comentario_multi_linea(t):
     'comentario_multi_linea : COMENTARIO_MULTILINEA'
@@ -437,10 +446,17 @@ def p_vector_una_dimension_asignacion_automatica(p):
     dimensiones = [p[7]]  # solo una dimensión
     p[0] = Vector(p[3], p[5], dimensiones)
 
-def p_expresion_vector_declaracion_sort(p):
+'''def p_dimensiones_argumento(p):
+    'dimensiones_argumento : lista_dimensiones'
+    p[0] = p[1]'''
+
+def p_expresion_vector_declaracion_sort_una_dimension(p):
     'expresion : VECTOR CORIZQ tipo CORDER ID PARIZQ ENTERO PARDER ASIGNACION SORT PARIZQ ID PARDER PTCOMA'
-    dimensiones = [p[7]]
-    p[0] = VectorSort(p[3], p[5], dimensiones, p[12])
+    p[0] = VectorSort(p[3], p[5], [p[7]], p[12])
+
+def p_expresion_vector_declaracion_sort_varias_dimensiones(p):
+    'expresion : VECTOR CORIZQ tipo CORDER ID PARIZQ lista_dimensiones PARDER ASIGNACION SORT PARIZQ ID PARDER PTCOMA'
+    p[0] = VectorSort(p[3], p[5], p[7], p[12])
 
 # Declaración de vector con inicialización
 def p_expresion_vector_declaracion_inicializacion(p):
