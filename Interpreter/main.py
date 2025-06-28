@@ -217,7 +217,7 @@ def analizar_texto(texto):
         salida.append(str(nodo))
 
     # === Graficar AST ===
-    graficar_ast(arboles, 'Reportes/AST')
+    graficar_ast(arboles, '../Reportes/AST')
 
 
     # === Interpretación + Errores Semánticos ===

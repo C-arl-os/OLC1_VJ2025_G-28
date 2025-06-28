@@ -391,9 +391,9 @@ def graficar_tabla_tokens(codigo_fuente):
     html.append("</body>")
     html.append("</html>")
   # Crear el directorio Reportes si no existe
-    os.makedirs("Reportes", exist_ok=True)
+    os.makedirs("../Reportes", exist_ok=True)
     # Guardar el HTML en un archivo
-    with open("Reportes/Tabla_de_Tokens.html", "w", encoding="utf-8") as f:
+    with open("../Reportes/Tabla_de_Tokens.html", "w", encoding="utf-8") as f:
         f.write("\n".join(html))
 
 def graficar_tabla_variables(tabla_variables):
@@ -485,8 +485,8 @@ def graficar_tabla_variables(tabla_variables):
     html.append("</body>")
     html.append("</html>")
 
-    os.makedirs("Reportes", exist_ok=True)
-    with open("Reportes/Tabla_de_Variables.html", "w", encoding="utf-8") as f:
+    os.makedirs("../Reportes", exist_ok=True)
+    with open("../Reportes/Tabla_de_Variables.html", "w", encoding="utf-8") as f:
         f.write("\n".join(html))
 
 def graficar_tabla_errores(errores_lexicos, errores_sintacticos, errores_semanticos):
@@ -612,7 +612,7 @@ def graficar_tabla_errores(errores_lexicos, errores_sintacticos, errores_semanti
     html.append("</body>")
     html.append("</html>")
 
-    with open("Reportes/Tabla_de_Errores.html", "w", encoding="utf-8") as f:
+    with open("../Reportes/Tabla_de_Errores.html", "w", encoding="utf-8") as f:
         f.write("\n".join(html))
 
 def graficar_tabla_advertencias(advertencias):
@@ -1063,8 +1063,8 @@ def graficar_tabla_variables_detallada(tabla_variables):
     """
     
     try:
-        os.makedirs("Reportes", exist_ok=True)
-        with open('Reportes/tabla_variables_detallada.html', 'w', encoding='utf-8') as file:
+        os.makedirs("../Reportes", exist_ok=True)
+        with open('../Reportes/tabla_variables_detallada.html', 'w', encoding='utf-8') as file:
             file.write(html_content)
         print("Reporte detallado de tabla de variables generado: Reportes/tabla_variables_detallada.html")
     except Exception as e:
