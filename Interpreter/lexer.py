@@ -787,3 +787,285 @@ def calcular_columna(lexpos, texto):
     return lexpos - ultima_linea
 
 lexer = lex.lex()
+
+def graficar_tabla_variables_detallada(tabla_variables):
+    """Genera un reporte HTML detallado de la tabla de variables con estilo moderno"""
+    html_content = """
+    <!DOCTYPE html>
+    <html lang='es'>
+    <head>
+        <meta charset='UTF-8'>
+        <title>Reporte Detallado de Variables</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #f8f9fa;
+                margin: 0;
+                padding: 20px;
+            }
+            h1 {
+                color: #2c3e50;
+                text-align: center;
+                margin-bottom: 25px;
+                font-size: 28px;
+                text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                overflow-x: auto;
+            }
+            table {
+                border-collapse: separate;
+                border-spacing: 0;
+                width: 100%;
+                background: white;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                margin-bottom: 20px;
+            }
+            th, td {
+                padding: 12px 15px;
+                text-align: left;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            th {
+                background: linear-gradient(135deg, #27ae60, #16a085);
+                color: white;
+                font-weight: 600;
+                text-transform: uppercase;
+                font-size: 14px;
+                letter-spacing: 0.5px;
+                position: sticky;
+                top: 0;
+            }
+            tr:nth-child(even) {
+                background-color: #f8f9fa;
+            }
+            tr:hover {
+                background-color: #eafaf1;
+                transform: scale(1.01);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+            }
+            .variable-name {
+                font-weight: bold;
+                color: #e74c3c;
+                font-size: 16px;
+            }
+            .data-type {
+                color: #27ae60;
+                font-weight: 500;
+                font-style: italic;
+            }
+            .vector-structure {
+                font-family: 'Courier New', monospace;
+                white-space: pre-wrap;
+                background-color: #f4f4f4;
+                padding: 8px;
+                border-radius: 4px;
+                border-left: 3px solid #3498db;
+                max-width: 400px;
+                overflow-x: auto;
+            }
+            .simple-value {
+                color: #34495e;
+                font-weight: 500;
+            }
+            .vector-badge {
+                background: linear-gradient(135deg, #3498db, #2980b9);
+                color: white;
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+            .simple-badge {
+                background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+                color: white;
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+            .dimensions {
+                color: #8e44ad;
+                font-weight: bold;
+            }
+            .no-variables {
+                text-align: center;
+                padding: 40px;
+                color: #7f8c8d;
+                font-size: 18px;
+                font-weight: 500;
+            }
+            .stats {
+                display: flex;
+                justify-content: space-around;
+                margin-bottom: 20px;
+                gap: 10px;
+            }
+            .stat-card {
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                flex: 1;
+            }
+            .stat-number {
+                font-size: 24px;
+                font-weight: bold;
+                color: #2c3e50;
+            }
+            .stat-label {
+                color: #7f8c8d;
+                margin-top: 5px;
+            }
+            @media (max-width: 768px) {
+                table {
+                    border-radius: 5px;
+                }
+                th, td {
+                    padding: 8px 10px;
+                }
+                .stats {
+                    flex-direction: column;
+                }
+                .vector-structure {
+                    max-width: 200px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <h1>📊 Reporte Detallado de Variables</h1>
+    """
+    
+    def format_vector_data(data, dimensiones, nivel=0):
+        """Formatea recursivamente los datos del vector para mostrar su estructura"""
+        indent = "  " * nivel
+        if nivel == len(dimensiones) - 1:
+            # Último nivel, mostrar los valores
+            return f"{indent}[{', '.join(map(str, data))}]"
+        else:
+            # Niveles intermedios
+            result = f"{indent}[\n"
+            for i, sub_data in enumerate(data):
+                result += format_vector_data(sub_data, dimensiones, nivel + 1)
+                if i < len(data) - 1:
+                    result += ",\n"
+                else:
+                    result += "\n"
+            result += f"{indent}]"
+            return result
+    
+    # Estadísticas
+    total_variables = len(tabla_variables)
+    variables_simples = 0
+    variables_vectores = 0
+    
+    for var_value in tabla_variables.values():
+        if isinstance(var_value, dict) and var_value.get('tipo') == 'vector':
+            variables_vectores += 1
+        else:
+            variables_simples += 1
+    
+    # Agregar estadísticas
+    html_content += f"""
+            <div class='stats'>
+                <div class='stat-card'>
+                    <div class='stat-number'>{total_variables}</div>
+                    <div class='stat-label'>Total Variables</div>
+                </div>
+                <div class='stat-card'>
+                    <div class='stat-number'>{variables_simples}</div>
+                    <div class='stat-label'>Variables Simples</div>
+                </div>
+                <div class='stat-card'>
+                    <div class='stat-number'>{variables_vectores}</div>
+                    <div class='stat-label'>Vectores</div>
+                </div>
+            </div>
+    """
+    
+    if not tabla_variables:
+        html_content += """
+            <div class='no-variables'>
+                📝 No se han declarado variables en el programa
+            </div>
+        """
+    else:
+        html_content += """
+            <table>
+                <thead>
+                    <tr>
+                        <th>🏷️ Variable</th>
+                        <th>🏗️ Tipo</th>
+                        <th>🔧 Subtipo</th>
+                        <th>📏 Dimensiones</th>
+                        <th>💾 Estructura de Datos</th>
+                    </tr>
+                </thead>
+                <tbody>
+        """
+        
+        for var_name, var_value in tabla_variables.items():
+            if isinstance(var_value, dict) and var_value.get('tipo') == 'vector':
+                # Es un vector
+                tipo = var_value.get('tipo', 'N/A')
+                subtipo = var_value.get('subtipo', 'N/A')
+                dimensiones = var_value.get('dimensiones', [])
+                data = var_value.get('data', [])
+                
+                dimensiones_str = ' × '.join(map(str, dimensiones))
+                estructura_data = format_vector_data(data, dimensiones)
+                
+                html_content += f"""
+                    <tr>
+                        <td class="variable-name">{var_name}</td>
+                        <td><span class="vector-badge">{tipo.upper()}</span></td>
+                        <td class="data-type">{subtipo}</td>
+                        <td class="dimensions">{dimensiones_str}</td>
+                        <td class="vector-structure">{estructura_data}</td>
+                    </tr>
+                """
+            else:
+                # Variable simple
+                tipo = type(var_value).__name__
+                valor_mostrar = str(var_value)
+                if isinstance(var_value, str):
+                    valor_mostrar = f'"{var_value}"'
+                elif isinstance(var_value, bool):
+                    valor_mostrar = str(var_value).lower()
+                
+                html_content += f"""
+                    <tr>
+                        <td class="variable-name">{var_name}</td>
+                        <td><span class="simple-badge">{tipo.upper()}</span></td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="simple-value">{valor_mostrar}</td>
+                    </tr>
+                """
+        
+        html_content += """
+                </tbody>
+            </table>
+        """
+    
+    html_content += """
+        </div>
+    </body>
+    </html>
+    """
+    
+    try:
+        os.makedirs("Reportes", exist_ok=True)
+        with open('Reportes/tabla_variables_detallada.html', 'w', encoding='utf-8') as file:
+            file.write(html_content)
+        print("Reporte detallado de tabla de variables generado: Reportes/tabla_variables_detallada.html")
+    except Exception as e:
+        print(f"Error al generar el reporte detallado de tabla de variables: {e}")

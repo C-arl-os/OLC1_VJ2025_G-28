@@ -1,0 +1,513 @@
+
+    <!DOCTYPE html>
+    <html lang='es'>
+    <head>
+        <meta charset='UTF-8'>
+        <title>Reporte Detallado de Variables</title>
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #f8f9fa;
+                margin: 0;
+                padding: 20px;
+            }
+            h1 {
+                color: #2c3e50;
+                text-align: center;
+                margin-bottom: 25px;
+                font-size: 28px;
+                text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                overflow-x: auto;
+            }
+            table {
+                border-collapse: separate;
+                border-spacing: 0;
+                width: 100%;
+                background: white;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                margin-bottom: 20px;
+            }
+            th, td {
+                padding: 12px 15px;
+                text-align: left;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            th {
+                background: linear-gradient(135deg, #27ae60, #16a085);
+                color: white;
+                font-weight: 600;
+                text-transform: uppercase;
+                font-size: 14px;
+                letter-spacing: 0.5px;
+                position: sticky;
+                top: 0;
+            }
+            tr:nth-child(even) {
+                background-color: #f8f9fa;
+            }
+            tr:hover {
+                background-color: #eafaf1;
+                transform: scale(1.01);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+            }
+            .variable-name {
+                font-weight: bold;
+                color: #e74c3c;
+                font-size: 16px;
+            }
+            .data-type {
+                color: #27ae60;
+                font-weight: 500;
+                font-style: italic;
+            }
+            .vector-structure {
+                font-family: 'Courier New', monospace;
+                white-space: pre-wrap;
+                background-color: #f4f4f4;
+                padding: 8px;
+                border-radius: 4px;
+                border-left: 3px solid #3498db;
+                max-width: 400px;
+                overflow-x: auto;
+            }
+            .simple-value {
+                color: #34495e;
+                font-weight: 500;
+            }
+            .vector-badge {
+                background: linear-gradient(135deg, #3498db, #2980b9);
+                color: white;
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+            .simple-badge {
+                background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+                color: white;
+                padding: 2px 8px;
+                border-radius: 12px;
+                font-size: 12px;
+                font-weight: bold;
+            }
+            .dimensions {
+                color: #8e44ad;
+                font-weight: bold;
+            }
+            .no-variables {
+                text-align: center;
+                padding: 40px;
+                color: #7f8c8d;
+                font-size: 18px;
+                font-weight: 500;
+            }
+            .stats {
+                display: flex;
+                justify-content: space-around;
+                margin-bottom: 20px;
+                gap: 10px;
+            }
+            .stat-card {
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                flex: 1;
+            }
+            .stat-number {
+                font-size: 24px;
+                font-weight: bold;
+                color: #2c3e50;
+            }
+            .stat-label {
+                color: #7f8c8d;
+                margin-top: 5px;
+            }
+            @media (max-width: 768px) {
+                table {
+                    border-radius: 5px;
+                }
+                th, td {
+                    padding: 8px 10px;
+                }
+                .stats {
+                    flex-direction: column;
+                }
+                .vector-structure {
+                    max-width: 200px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class='container'>
+            <h1>📊 Reporte Detallado de Variables</h1>
+    
+            <div class='stats'>
+                <div class='stat-card'>
+                    <div class='stat-number'>29</div>
+                    <div class='stat-label'>Total Variables</div>
+                </div>
+                <div class='stat-card'>
+                    <div class='stat-number'>8</div>
+                    <div class='stat-label'>Variables Simples</div>
+                </div>
+                <div class='stat-card'>
+                    <div class='stat-number'>21</div>
+                    <div class='stat-label'>Vectores</div>
+                </div>
+            </div>
+    
+            <table>
+                <thead>
+                    <tr>
+                        <th>🏷️ Variable</th>
+                        <th>🏗️ Tipo</th>
+                        <th>🔧 Subtipo</th>
+                        <th>📏 Dimensiones</th>
+                        <th>💾 Estructura de Datos</th>
+                    </tr>
+                </thead>
+                <tbody>
+        
+                    <tr>
+                        <td class="variable-name">ud</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">int</td>
+                        <td class="dimensions">3</td>
+                        <td class="vector-structure">[1, 2, 4]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">default_int</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">int</td>
+                        <td class="dimensions">2</td>
+                        <td class="vector-structure">[0, 0]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">default_float</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">float</td>
+                        <td class="dimensions">2</td>
+                        <td class="vector-structure">[0.0, 0.0]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">default_bool</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">bool</td>
+                        <td class="dimensions">2</td>
+                        <td class="vector-structure">[False, False]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">default_str</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">string</td>
+                        <td class="dimensions">2</td>
+                        <td class="vector-structure">[, ]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">default_char</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">char</td>
+                        <td class="dimensions">2</td>
+                        <td class="vector-structure">[ ,  ]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">dd</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">int</td>
+                        <td class="dimensions">2 × 3</td>
+                        <td class="vector-structure">[
+  [1, 2, 3],
+  [1, 2, 3]
+]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">default_int2</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">int</td>
+                        <td class="dimensions">2 × 2</td>
+                        <td class="vector-structure">[
+  [0, 0],
+  [0, 0]
+]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">default_float2</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">float</td>
+                        <td class="dimensions">2 × 2</td>
+                        <td class="vector-structure">[
+  [0.0, 0.0],
+  [0.0, 0.0]
+]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">default_bool2</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">bool</td>
+                        <td class="dimensions">2 × 2</td>
+                        <td class="vector-structure">[
+  [False, False],
+  [False, False]
+]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">default_str2</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">string</td>
+                        <td class="dimensions">2 × 2</td>
+                        <td class="vector-structure">[
+  [, ],
+  [, ]
+]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">default_char2</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">char</td>
+                        <td class="dimensions">2 × 2</td>
+                        <td class="vector-structure">[
+  [ ,  ],
+  [ ,  ]
+]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">t3</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">int</td>
+                        <td class="dimensions">3 × 2 × 2</td>
+                        <td class="vector-structure">[
+  [
+    [1, 2],
+    [3, 4]
+  ],
+  [
+    [5, 6],
+    [7, 8]
+  ],
+  [
+    [9, 10],
+    [11, 13]
+  ]
+]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">default_t3</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">int</td>
+                        <td class="dimensions">2 × 2 × 3</td>
+                        <td class="vector-structure">[
+  [
+    [0, 0, 0],
+    [0, 0, 0]
+  ],
+  [
+    [0, 0, 0],
+    [0, 0, 0]
+  ]
+]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">t4</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">int</td>
+                        <td class="dimensions">2 × 2 × 2 × 2</td>
+                        <td class="vector-structure">[
+  [
+    [
+      [1, 2],
+      [3, 4]
+    ],
+    [
+      [5, 6],
+      [7, 8]
+    ]
+  ],
+  [
+    [
+      [9, 10],
+      [11, 12]
+    ],
+    [
+      [13, 14],
+      [15, 15]
+    ]
+  ]
+]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">default_t4</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">int</td>
+                        <td class="dimensions">2 × 2 × 2 × 2</td>
+                        <td class="vector-structure">[
+  [
+    [
+      [0, 0],
+      [0, 0]
+    ],
+    [
+      [0, 0],
+      [0, 0]
+    ]
+  ],
+  [
+    [
+      [0, 0],
+      [0, 0]
+    ],
+    [
+      [0, 0],
+      [0, 0]
+    ]
+  ]
+]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">a</td>
+                        <td><span class="simple-badge">INT</span></td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="simple-value">8</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">b</td>
+                        <td><span class="simple-badge">INT</span></td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="simple-value">13</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">temp</td>
+                        <td><span class="simple-badge">INT</span></td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="simple-value">13</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">i</td>
+                        <td><span class="simple-badge">INT</span></td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="simple-value">8</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">sin</td>
+                        <td><span class="simple-badge">FLOAT</span></td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="simple-value">0.9839859468739369</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">cos</td>
+                        <td><span class="simple-badge">FLOAT</span></td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="simple-value">-0.17824605564949209</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">inverso</td>
+                        <td><span class="simple-badge">INT</span></td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="simple-value">654321</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">row_major</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">int</td>
+                        <td class="dimensions">3 × 3</td>
+                        <td class="vector-structure">[
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9]
+]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">column_major</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">int</td>
+                        <td class="dimensions">3 × 3</td>
+                        <td class="vector-structure">[
+  [1, 4, 7],
+  [2, 5, 8],
+  [3, 6, 9]
+]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">to_sort</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">int</td>
+                        <td class="dimensions">4</td>
+                        <td class="vector-structure">[8, 9, 4, 3]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">sorted</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">int</td>
+                        <td class="dimensions">4</td>
+                        <td class="vector-structure">[3, 4, 8, 9]</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">cos_err</td>
+                        <td><span class="simple-badge">FLOAT</span></td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td class="simple-value">0.5403023058681398</td>
+                    </tr>
+                
+                    <tr>
+                        <td class="variable-name">row_major_err</td>
+                        <td><span class="vector-badge">VECTOR</span></td>
+                        <td class="data-type">int</td>
+                        <td class="dimensions">3 × 3</td>
+                        <td class="vector-structure">[
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9]
+]</td>
+                    </tr>
+                
+                </tbody>
+            </table>
+        
+        </div>
+    </body>
+    </html>
+    

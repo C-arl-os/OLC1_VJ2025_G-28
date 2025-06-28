@@ -170,7 +170,7 @@ println(5561);
 # Parseamos la entrada
 from parser import parser, comentarios, errores_sintacticos
 from contexto import tabla_variables, salidas_de_impresion
-from lexer import lexer, errores_lexicos, graficar_tabla_tokens, graficar_tabla_errores, graficar_ast, graficar_tabla_variables, graficar_tabla_advertencias
+from lexer import lexer, errores_lexicos, graficar_tabla_tokens, graficar_tabla_errores, graficar_ast, graficar_tabla_variables, graficar_tabla_advertencias, graficar_tabla_variables_detallada
 from advertencias import limpiar_advertencias, obtener_advertencias
 
 def analizar_texto(texto):
@@ -247,6 +247,9 @@ def analizar_texto(texto):
 
     # Graficar tabla de variables
     graficar_tabla_variables(tabla_variables)
+    
+    # Generar reporte detallado de variables
+    graficar_tabla_variables_detallada(tabla_variables)
 
     # === Tabla de Advertencias ===
     advertencias_lista = obtener_advertencias()
